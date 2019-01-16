@@ -1,22 +1,20 @@
 # CutSolver
 
 Cutting Stock Problem : NP-hard
+Can be derived from the Bin-Packing-Problem(BPP)
 
-Brute Force for small n, Heuristic für larger n
-
-
+Brute Force(best solution) for small n, Heuristic(fast solution) für larger n
 
 Develop easy frontend to call as webservice? -> backend with flask integration
-
-Input:
-1. { LENGTH: int, QUANTITY }
-2. 
 
 # Visualisation
 <pre>
 XXXXXXXXXXXXXXXX  
-XXXXX  
-     XXXXXXXXXXX  
+XXXXX
+     I  
+      XXXXXX
+            I
+             XXX  
 </pre>
 
    

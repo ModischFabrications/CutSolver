@@ -1,13 +1,15 @@
 #!python3
 
-from typing import Collection
+from typing import Collection, Tuple
 
 
 class TargetSize:
     def __init__(self, length: int, amount: int):
-        self._length = length
-        self._amount = amount
+        self.length = length
+        self.amount = amount
 
+    def __lt__(self, other):
+        return self.length < other.length
 
 class Job:
     current_id = 0
@@ -33,31 +35,68 @@ class Solver:
     # backend parameter
     n_max_precise = 20  # max 5sec per calculation
 
-    def distribute(self, job: Job):
+    def distribute(self, job: Job) -> Tuple[Collection[Collection[int]], int]:
         if len(job.target_sizes) > Solver.n_max_precise:
             return self._solve_heuristic(job)
         else:
             return self._solve_bruteforce(job)
 
     # CPU-bound
-    def _solve_bruteforce(self, job: Job):
+    def _solve_bruteforce(self, job: Job) -> Tuple[Collection[Collection[int]], int]:
         raise NotImplementedError()
         # TODO: find every possible ordering
         # calculate trimming for each bar
 
         # use multiprocessing to utilise multiple cores
 
-    def _solve_heuristic(self, job: Job):
-        raise NotImplementedError()
+    def _solve_heuristic(self, job: Job) -> Tuple[Collection[Collection[int]], int]:
+        # input
 
         # TODO:
-        # 1. Sort by magnitude
-        # 2. stack until limit was reached
-        # 3. try smaller as long as possible,
+        # 1. Sort by magnitude (largest first)
+        # 2. stack until limit is reached
+        # 3. try smaller as long as possible
         # 4. create new bar
 
+        targets = sorted(job.target_sizes)
+
+        stocks = []
+        trimming = 0
+
+        current_size = 0
+        current_stock = []
+
+        i_target = 0
+        while len(targets) > 0:
+            current_target = targets[i_target]
+            # target fits inside current stock, transfer to results
+            if (current_size + current_target.length + job.cut_width) < job.length_stock:
+                current_stock.append(current_target.length)
+                current_size += current_target.length
+
+                if current_target.amount <= 0:
+                    targets.remove(current_target)
+                else:
+                    current_target.amount -= 1
+            # try smaller
+            else:
+                i_target += 1
+
+                # nothing fit, next stock
+                if i_target >= len(targets) - 1:
+                    stocks.append(current_stock)
+
+                    trimming += self._get_trimming(job.length_stock, current_stock, job.cut_width)
+
+                    current_stock = []
+                    current_size = 0
+                    i_target = 0
+
+        # (500, 500, 400), (400, 400, 400)
+        return stocks, trimming
+
     @staticmethod
-    def _get_trimming(length_stock: int, lengths: Collection[int], cut_width: int):
+    def _get_trimming(length_stock: int, lengths: Collection[int], cut_width: int) -> int:
         sum_lengths = sum(lengths)
         sum_cuts = len(lengths) * cut_width
 
