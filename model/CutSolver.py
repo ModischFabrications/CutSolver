@@ -84,7 +84,7 @@ class Solver:
                 current_size += current_target.length
 
                 if current_target.amount <= 0:
-                    targets.remove(current_target)
+                    targets.remove(current_target)  # FIXME Index probably here
                 else:
                     current_target.amount -= 1
             # try smaller
