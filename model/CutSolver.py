@@ -11,10 +11,11 @@ class TargetSize:
     def __lt__(self, other):
         return self.length < other.length
 
+
 class Job:
     current_id = 0
 
-    def __init__(self, length_stock: int, target_sizes: Collection[TargetSize], cut_width: int = 2):
+    def __init__(self, length_stock: int, target_sizes: Collection[TargetSize], cut_width: int = 5):
         self._id = Job.current_id
         Job.current_id += 1
 
@@ -34,22 +35,30 @@ class Job:
 class Solver:
     # backend parameter
     n_max_precise = 20  # max 5sec per calculation
+    n_max = 1000        # unreasonable time TODO might use timer instead
 
-    def distribute(self, job: Job) -> Tuple[Collection[Collection[int]], int]:
-        if len(job.target_sizes) > Solver.n_max_precise:
-            return self._solve_heuristic(job)
+    @staticmethod
+    def distribute(job: Job) -> Tuple[Collection[Collection[int]], int]:
+
+        if len(job.target_sizes) < Solver.n_max_precise:
+            return Solver._solve_bruteforce(job)
+        elif len(job.target_sizes) < Solver.n_max:
+            return Solver._solve_heuristic(job)
         else:
-            return self._solve_bruteforce(job)
+            raise OverflowError("Input too large")
 
     # CPU-bound
-    def _solve_bruteforce(self, job: Job) -> Tuple[Collection[Collection[int]], int]:
+    @staticmethod
+    def _solve_bruteforce(job: Job) -> Tuple[Collection[Collection[int]], int]:
         raise NotImplementedError()
         # TODO: find every possible ordering
         # calculate trimming for each bar
 
         # use multiprocessing to utilise multiple cores
 
-    def _solve_heuristic(self, job: Job) -> Tuple[Collection[Collection[int]], int]:
+    # TODO: check if time varies with len(TargetSize) or TargetSize.amount
+    @staticmethod
+    def _solve_heuristic(job: Job) -> Tuple[Collection[Collection[int]], int]:
         # input
 
         # TODO:
@@ -58,7 +67,7 @@ class Solver:
         # 3. try smaller as long as possible
         # 4. create new bar
 
-        targets = sorted(job.target_sizes)
+        targets = sorted(job.target_sizes, reverse=True)
 
         stocks = []
         trimming = 0
@@ -83,10 +92,10 @@ class Solver:
                 i_target += 1
 
                 # nothing fit, next stock
-                if i_target >= len(targets) - 1:
+                if i_target >= len(targets):
                     stocks.append(current_stock)
 
-                    trimming += self._get_trimming(job.length_stock, current_stock, job.cut_width)
+                    trimming += Solver._get_trimming(job.length_stock, current_stock, job.cut_width)
 
                     current_stock = []
                     current_size = 0
