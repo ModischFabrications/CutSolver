@@ -31,6 +31,12 @@ class Job:
     def __eq__(self, other):
         return self._id == other.get_ID()
 
+    def get_lengths(self):
+        # generator, yield all lengths
+        for size in self.target_sizes:
+            for i in range(size.amount):
+                yield size.length
+
 
 class Solver:
     # backend parameter
@@ -43,11 +49,12 @@ class Solver:
         if len(job.target_sizes) < Solver.n_max_precise:
             return Solver._solve_bruteforce(job)
         elif len(job.target_sizes) < Solver.n_max:
-            return Solver._solve_heuristic(job)
+            return Solver._solve_gapfill(job)
         else:
             raise OverflowError("Input too large")
 
     # CPU-bound
+    # O(n!)
     @staticmethod
     def _solve_bruteforce(job: Job) -> Tuple[Collection[Collection[int]], int]:
         raise NotImplementedError()
@@ -57,8 +64,9 @@ class Solver:
         # use multiprocessing to utilise multiple cores
 
     # TODO: check if time varies with len(TargetSize) or TargetSize.amount
+    # O(n^2)
     @staticmethod
-    def _solve_heuristic(job: Job) -> Tuple[Collection[Collection[int]], int]:
+    def _solve_gapfill(job: Job) -> Tuple[Collection[Collection[int]], int]:
         # input
 
         # TODO:
@@ -104,6 +112,14 @@ class Solver:
 
         # (500, 500, 400), (400, 400, 400)
         return stocks, trimming
+
+    # O(n)
+    @staticmethod
+    def _solve_FFD(job: Job) -> Tuple[Collection[Collection[int]], int]:
+        # iterate over list of stocks
+        # put into first stock that it fits into
+        pass
+
 
     @staticmethod
     def _get_trimming(length_stock: int, lengths: Collection[int], cut_width: int) -> int:

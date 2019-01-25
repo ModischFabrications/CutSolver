@@ -22,6 +22,15 @@ class CutSolverTest(unittest.TestCase):
 
         self.assertEqual((450, 234), result)
 
+    def test_job_generator(self):
+        job = Job(1550, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 5)
+
+        resulting_list = []
+        for length in job.get_lengths():
+            resulting_list.append(length)
+
+        self.assertEqual([500, 500, 500, 500, 200, 200, 200, 100, 100], resulting_list)
+
 
 if __name__ == '__main__':
     unittest.main()
