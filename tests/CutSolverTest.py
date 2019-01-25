@@ -1,4 +1,5 @@
 import unittest
+
 from model.CutSolver import *
 
 
@@ -15,7 +16,7 @@ class CutSolverTest(unittest.TestCase):
     def test_heuristic(self):
         Solver.n_max_precise = 0
 
-        job = Job(1000, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 7)), 5)
+        job = Job(1550, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 7)), 5)
 
         result = Solver.distribute(job)
 

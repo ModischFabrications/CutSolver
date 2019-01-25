@@ -77,6 +77,17 @@ class Solver:
 
         i_target = 0
         while len(targets) > 0:
+
+            # nothing fit, next stock
+            if i_target >= len(targets):
+                stocks.append(current_stock)
+
+                trimming += Solver._get_trimming(job.length_stock, current_stock, job.cut_width)
+
+                current_stock = []
+                current_size = 0
+                i_target = 0
+
             current_target = targets[i_target]
             # target fits inside current stock, transfer to results
             if (current_size + current_target.length + job.cut_width) < job.length_stock:
@@ -90,16 +101,6 @@ class Solver:
             # try smaller
             else:
                 i_target += 1
-
-                # nothing fit, next stock
-                if i_target >= len(targets):
-                    stocks.append(current_stock)
-
-                    trimming += Solver._get_trimming(job.length_stock, current_stock, job.cut_width)
-
-                    current_stock = []
-                    current_size = 0
-                    i_target = 0
 
         # (500, 500, 400), (400, 400, 400)
         return stocks, trimming
