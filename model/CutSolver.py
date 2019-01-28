@@ -11,6 +11,9 @@ class TargetSize:
     def __lt__(self, other):
         return self.length < other.length
 
+    def __str__(self):
+        return f"l:{self.length}, n:{self.amount}"
+
 
 class Job:
     current_id = 0
@@ -88,10 +91,11 @@ class Solver:
 
             # nothing fit, next stock
             if i_target >= len(targets):
+                # add local result
                 stocks.append(current_stock)
-
                 trimming += Solver._get_trimming(job.length_stock, current_stock, job.cut_width)
 
+                # reset
                 current_stock = []
                 current_size = 0
                 i_target = 0
@@ -102,8 +106,9 @@ class Solver:
                 current_stock.append(current_target.length)
                 current_size += current_target.length
 
-                if current_target.amount <= 0:
-                    targets.remove(current_target)  # FIXME Index probably here
+                # remove empty entries
+                if current_target.amount <= 1:
+                    targets.remove(current_target)
                 else:
                     current_target.amount -= 1
             # try smaller

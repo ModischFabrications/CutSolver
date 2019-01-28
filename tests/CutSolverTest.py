@@ -10,15 +10,14 @@ class CutSolverTest(unittest.TestCase):
         self.assertEqual(92, trimming)
 
     def test_trimmings_raise(self):
+        # raises Error if more stock was used than available
         with self.assertRaises(OverflowError):
             trimming = Solver._get_trimming(1500, (300, 400, 600, 200), 2)
 
-    def test_heuristic(self):
-        Solver.n_max_precise = 0
-
+    def test_gapfill(self):
         job = Job(1550, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 7)), 5)
 
-        result = Solver.distribute(job)
+        result = Solver._solve_gapfill(job)
 
         self.assertEqual((450, 234), result)
 
