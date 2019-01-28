@@ -16,6 +16,7 @@ class TargetSize:
 
 
 class Job:
+    # TODO: make this persistent across restarts to prevent collisions
     current_id = 0
 
     def __init__(self, length_stock: int, target_sizes: Collection[TargetSize], cut_width: int = 5):
@@ -115,7 +116,12 @@ class Solver:
             else:
                 i_target += 1
 
-        # (500, 500, 400), (400, 400, 400)
+        # apply last "forgotten" stock
+        if current_stock:
+            stocks.append(current_stock)
+            trimming += Solver._get_trimming(job.length_stock, current_stock, job.cut_width)
+
+        # trimming could be calculated from len(stocks) * length - sum(stocks)
         return stocks, trimming
 
     # O(n)

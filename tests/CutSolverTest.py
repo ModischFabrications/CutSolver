@@ -15,11 +15,11 @@ class CutSolverTest(unittest.TestCase):
             trimming = Solver._get_trimming(1500, (300, 400, 600, 200), 2)
 
     def test_gapfill(self):
-        job = Job(1550, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 7)), 5)
+        job = Job(900, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 0)
 
         result = Solver._solve_gapfill(job)
 
-        self.assertEqual((450, 234), result)
+        self.assertEqual(([[500, 200, 100], [500, 200, 100], [500, 200], [500]], 800), result)
 
     def test_job_generator(self):
         job = Job(1550, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 5)
