@@ -1,60 +1,14 @@
 #!python3
 
 from itertools import permutations
-from typing import Collection, Tuple, List, Iterator
+from typing import Collection, Tuple, List
 
-
-class TargetSize:
-    def __init__(self, length: int, amount: int):
-        self.length = length
-        self.amount = amount
-
-    def __lt__(self, other):
-        return self.length < other.length
-
-    def __str__(self):
-        return f"l:{self.length}, n:{self.amount}"
-
-
-class Job:
-    # TODO: make this persistent across restarts to prevent collisions
-    current_id = 0
-
-    def __init__(self, length_stock: int, target_sizes: Collection[TargetSize], cut_width: int = 0):
-        self._id = Job.current_id
-        Job.current_id += 1
-
-        self.length_stock = length_stock
-        self.target_sizes = target_sizes
-        self.cut_width = cut_width
-
-    # utility
-
-    def get_ID(self):
-        return self._id
-
-    def get_sizes(self) -> Iterator[int]:
-        # generator, yield all lengths
-        for size in self.target_sizes:
-            for i in range(size.amount):
-                yield size.length
-
-    def __eq__(self, other):
-        """
-        Equality by ID, not by values
-        """
-        return self._id == other.get_ID()
-
-    def __len__(self):
-        """
-        Number of target sizes in job
-        """
-        return sum(target.amount for target in self.target_sizes)
+from model.Job import Job
 
 
 class Solver:
     # backend parameter
-    n_max_precise = 20  # max 5sec per calculation
+    n_max_precise = 10  # max 5sec per calculation
     n_max = 1000        # unreasonable time TODO might use timer instead
 
     @staticmethod
@@ -71,6 +25,10 @@ class Solver:
     # O(n!)
     @staticmethod
     def _solve_bruteforce(job: Job) -> Tuple[Collection[Collection[int]], int]:
+
+        # failsafe
+        if len(job) > 12:
+            raise OverflowError("Input too large")
 
         # find every possible ordering (n! elements)
         all_orderings = permutations(job.get_sizes())
@@ -104,16 +62,16 @@ class Solver:
         current_size = 0
         current_stock: List[int] = []
         for size in combination:
-            # fits into current
-            if (current_size + size + cut_width) < length_stock:
-                current_size += (size + cut_width)
-                current_stock.append(size)
-            else:
-                # next stock
+            if (current_size + size + cut_width) > length_stock:
+                # start next stock
                 stocks.append(current_stock)
                 trimmings += Solver._get_trimming(length_stock, current_stock, cut_width)
                 current_size = 0
                 current_stock: List[int] = []
+
+            current_size += (size + cut_width)
+            current_stock.append(size)
+        # catch leftovers
         if current_stock:
             stocks.append(current_stock)
             trimmings += Solver._get_trimming(length_stock, current_stock, cut_width)

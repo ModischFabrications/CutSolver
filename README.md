@@ -21,3 +21,6 @@ XXXXX
 
 ## My results are missing decimals
 This Solver is using ints exclusively, try to use whole numbers instead.
+
+# Further informations
+https://scipbook.readthedocs.io/en/latest/bpp.html
