@@ -1,32 +1,32 @@
 import time
 import unittest
 
-from model.CutSolver import *
+from model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill
 from model.Job import TargetSize, Job
 
 
 class CutSolverTest(unittest.TestCase):
     def test_trimmings(self):
-        trimming = Solver._get_trimming(length_stock=1500, lengths=(300, 400, 600, 100), cut_width=2)
+        trimming = _get_trimming(length_stock=1500, lengths=(300, 400, 600, 100), cut_width=2)
 
         self.assertEqual(92, trimming)
 
     def test_trimmings_raise(self):
         # raises Error if more stock was used than available
         with self.assertRaises(OverflowError):
-            trimming = Solver._get_trimming(1500, (300, 400, 600, 200), 2)
+            trimming = _get_trimming(1500, (300, 400, 600, 200), 2)
 
     def test_bruteforce(self):
         job = Job(900, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 0)
 
-        stock, trimmings = Solver._solve_bruteforce(job)
+        stock, trimmings = _solve_bruteforce(job)
 
         self.assertEqual(500, trimmings)
 
     def test_gapfill(self):
         job = Job(900, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 0)
 
-        result = Solver._solve_gapfill(job)
+        result = _solve_gapfill(job)
 
         self.assertEqual(([[500, 200, 100], [500, 200, 100], [500, 200], [500]], 800), result)
 
@@ -50,9 +50,9 @@ class CutSolverTest(unittest.TestCase):
         job = Job(1200, (TargetSize(300, 4), TargetSize(200, 3), TargetSize(100, 3)), 0)
 
         start = time.perf_counter()
-        _, trimmings_bruteforce = Solver._solve_bruteforce(job)
+        _, trimmings_bruteforce = _solve_bruteforce(job)
         t_bruteforce = time.perf_counter() - start
-        _, trimmings_gapfill = Solver._solve_gapfill(job)
+        _, trimmings_gapfill = _solve_gapfill(job)
         t_gapfill = time.perf_counter() - t_bruteforce
         # result_FFD = Solver._solve_gapfill(job)
 

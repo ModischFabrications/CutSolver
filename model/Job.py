@@ -7,6 +7,9 @@ class TargetSize:
         self.amount = amount
 
     def __lt__(self, other):
+        """
+        compares lengths
+        """
         return self.length < other.length
 
     def __str__(self):
@@ -27,11 +30,13 @@ class Job:
 
     # utility
 
-    def get_ID(self):
+    def get_ID(self) -> int:
         return self._id
 
     def get_sizes(self) -> Iterator[int]:
-        # generator, yield all lengths
+        """
+        yields all lengths
+        """
         for size in self.target_sizes:
             for i in range(size.amount):
                 yield size.length
@@ -42,7 +47,7 @@ class Job:
         """
         return self._id == other.get_ID()
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         Number of target sizes in job
         """
