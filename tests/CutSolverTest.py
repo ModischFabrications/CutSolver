@@ -14,6 +14,13 @@ class CutSolverTest(unittest.TestCase):
         with self.assertRaises(OverflowError):
             trimming = Solver._get_trimming(1500, (300, 400, 600, 200), 2)
 
+    def test_bruteforce(self):
+        job = Job(900, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 0)
+
+        stock, trimmings = Solver._solve_bruteforce(job)
+
+        self.assertEqual(500, trimmings)
+
     def test_gapfill(self):
         job = Job(900, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 0)
 
@@ -25,10 +32,17 @@ class CutSolverTest(unittest.TestCase):
         job = Job(1550, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 5)
 
         resulting_list = []
-        for length in job.get_lengths():
+        for length in job.get_sizes():
             resulting_list.append(length)
 
         self.assertEqual([500, 500, 500, 500, 200, 200, 200, 100, 100], resulting_list)
+
+    def test_job_dunders(self):
+        job1 = Job(100, (TargetSize(100, 2), TargetSize(200, 1)), 0)
+        job2 = Job(100, (TargetSize(100, 2), TargetSize(200, 1)), 0)
+
+        self.assertNotEqual(job1, job2)
+        self.assertEqual(3, len(job1))
 
 
 if __name__ == '__main__':
