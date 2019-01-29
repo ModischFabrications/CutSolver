@@ -1,5 +1,7 @@
 from typing import Collection, Iterator
 
+from marshmallow import Schema, fields
+
 
 class TargetSize:
     def __init__(self, length: int, amount: int):
@@ -14,6 +16,11 @@ class TargetSize:
 
     def __str__(self):
         return f"l:{self.length}, n:{self.amount}"
+
+
+class TargetSizeSchema(Schema):
+    length = fields.Integer()
+    amount = fields.Integer()
 
 
 class Job:
@@ -52,3 +59,10 @@ class Job:
         Number of target sizes in job
         """
         return sum(target.amount for target in self.target_sizes)
+
+
+class JobSchema(Schema):
+    id = fields.Integer()
+    length_stock = fields.Integer()
+    target_sizes = fields.Nested(TargetSizeSchema)
+    cut_width = fields.Integer()

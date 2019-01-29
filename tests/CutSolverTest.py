@@ -2,7 +2,7 @@ import time
 import unittest
 
 from model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill
-from model.Job import TargetSize, Job
+from model.Job import TargetSize, Job, JobSchema
 
 
 class CutSolverTest(unittest.TestCase):
@@ -65,6 +65,13 @@ class CutSolverTest(unittest.TestCase):
         # 10 Values (2700X):
         # Bruteforce: 20s with single-core 2700X
         # Gapfill: 0.07s
+
+    def test_2JSON(self):
+        job = Job(1200, (TargetSize(300, 4), TargetSize(200, 3), TargetSize(100, 3)), 0)
+        schema = JobSchema()
+        encoded_job = schema.dump(job)
+
+        self.assertEqual("XX", encoded_job)
 
 
 if __name__ == '__main__':
