@@ -74,3 +74,9 @@ class JobSchema(Schema):
     @post_load
     def make_job(self, data):
         return Job(**data)
+
+
+class SolvedSizes:
+    def __init__(self, stocks: Collection[Collection[int]], trimmings: int):
+        self.stocks = stocks
+        self.trimmings = trimmings

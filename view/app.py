@@ -13,5 +13,10 @@ def index():
     return f"Hello Flask!\n"
 
 
+@app.route("/example", methods=["GET"])
+def example():
+    return
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0")  # host needed to be acessible from outside
