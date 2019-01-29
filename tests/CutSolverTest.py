@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill
-from model.Job import TargetSize, Job, JobSchema, TargetSizeSchema
+from model.Job import TargetSize, Job, JobSchema, TargetSizeSchema, SolvedSizesSchema
 
 
 class CutSolverTest(unittest.TestCase):
@@ -89,7 +89,10 @@ class CutSolverTest(unittest.TestCase):
         with open(json_file, "r") as encoded_job:
             job = JobSchema().loads(encoded_job.read())
 
-            solved = _solve_bruteforce(job.data)
+            solved = _solve_gapfill(job.data)
+
+            encoded_solved = SolvedSizesSchema().dumps(solved)
+            self.assertGreater(20, len(encoded_solved))
 
 
 if __name__ == '__main__':

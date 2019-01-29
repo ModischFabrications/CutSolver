@@ -80,3 +80,12 @@ class SolvedSizes:
     def __init__(self, stocks: Collection[Collection[int]], trimmings: int):
         self.stocks = stocks
         self.trimmings = trimmings
+
+
+class SolvedSizesSchema(Schema):
+    stocks = fields.List(fields.List(fields.Integer()))
+    trimmings = fields.Integer()
+
+    @post_load
+    def make_target_size(self, data):
+        return SolvedSizes(**data)
