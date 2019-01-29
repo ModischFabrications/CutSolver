@@ -1,6 +1,6 @@
 from typing import Collection, Iterator
 
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, post_load
 
 
 class TargetSize:
@@ -21,6 +21,10 @@ class TargetSize:
 class TargetSizeSchema(Schema):
     length = fields.Integer()
     amount = fields.Integer()
+
+    @post_load
+    def make_target_size(self, data):
+        return TargetSize(**data)
 
 
 class Job:
@@ -64,5 +68,9 @@ class Job:
 class JobSchema(Schema):
     id = fields.Integer()
     length_stock = fields.Integer()
-    target_sizes = fields.Nested(TargetSizeSchema)
+    target_sizes = fields.Nested(TargetSizeSchema, many=True)
     cut_width = fields.Integer()
+
+    @post_load
+    def make_job(self, data):
+        return Job(**data)

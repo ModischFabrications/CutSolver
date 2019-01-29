@@ -1,8 +1,11 @@
 import time
 import unittest
+from pathlib import Path
+
+from marshmallow import pprint
 
 from model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill
-from model.Job import TargetSize, Job, JobSchema
+from model.Job import TargetSize, Job, JobSchema, TargetSizeSchema
 
 
 class CutSolverTest(unittest.TestCase):
@@ -21,7 +24,7 @@ class CutSolverTest(unittest.TestCase):
 
         stock, trimmings = _solve_bruteforce(job)
 
-        self.assertEqual(500, trimmings)
+        self.assertEqual(800, trimmings)
 
     def test_gapfill(self):
         job = Job(900, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 0)
@@ -66,12 +69,23 @@ class CutSolverTest(unittest.TestCase):
         # Bruteforce: 20s with single-core 2700X
         # Gapfill: 0.07s
 
-    def test_2JSON(self):
-        job = Job(1200, (TargetSize(300, 4), TargetSize(200, 3), TargetSize(100, 3)), 0)
-        schema = JobSchema()
-        encoded_job = schema.dump(job)
+    def test_to_JSON(self):
+        target = TargetSize(300, 4)
+        target_schema = TargetSizeSchema()
+        encoded_target = target_schema.dumps(target)
+        pprint(encoded_target, indent=4)
 
-        self.assertEqual("XX", encoded_job)
+        job = Job(1200, (target, TargetSize(200, 3), TargetSize(100, 3)), 0)
+        job_schema = JobSchema()
+        encoded_job = job_schema.dumps(job)
+        pprint(encoded_job, indent=4)
+
+    def test_from_JSON(self):
+        json_file = Path("testjob.json")
+        assert json_file.exists()
+
+        with open(json_file, "r") as encoded_job:
+            job = JobSchema().loads(encoded_job.read())
 
 
 if __name__ == '__main__':
