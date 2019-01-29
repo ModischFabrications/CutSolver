@@ -66,7 +66,6 @@ class Job:
 
 
 class JobSchema(Schema):
-    id = fields.Integer()
     length_stock = fields.Integer()
     target_sizes = fields.Nested(TargetSizeSchema, many=True)
     cut_width = fields.Integer()
