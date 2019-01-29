@@ -1,0 +1,14 @@
+{
+  "cutWidth": 2,
+  "stockLength": 1500,
+  "targetSizes": [
+    {
+      "length": 500,
+      "amount": 2
+    },
+    {
+      "length": 200,
+      "amount": 4
+    }
+  ]
+}
