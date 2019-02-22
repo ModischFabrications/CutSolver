@@ -9,15 +9,15 @@ app = Flask(__name__)
 @app.route("/solve", methods=["POST"])
 def solve():
     job = JobSchema().loads(request.data).data
-
     assert job.__class__ == Job
 
     print(f"Got job with ID {job.get_ID()}")
 
     solved = distribute(job)
 
+    response = Response(SolvedSizesSchema().dumps(solved).data, status=200, mimetype='application/json')
     # TODO: redirect(...) to /solved/<id>
-    return SolvedSizesSchema().dumps(solved)
+    return response
 
 
 # TODO: "/solved/<id>"
@@ -36,8 +36,8 @@ def index():
 def about():
     text = 'Visit <a href="https://github.com/ModischFabrications/CutSolver">' \
            'the repository</a> for further informations.'
-    resp = Response(text, status=200, mimetype="text/html")
-    return resp
+    response = Response(text, status=200, mimetype="text/html")
+    return response
 
 
 if __name__ == "__main__":
