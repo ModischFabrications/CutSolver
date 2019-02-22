@@ -1,0 +1,18 @@
+{
+  "cut_width": 2,
+  "length_stock": 1500,
+  "target_sizes": [
+    {
+      "length": 500,
+      "amount": 6
+    },
+    {
+      "length": 300,
+      "amount": 4
+    },
+    {
+      "length": 100,
+      "amount": 4
+    }
+  ]
+}
