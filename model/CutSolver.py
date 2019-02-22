@@ -11,9 +11,9 @@ n_max = 500  # around 1 million with n^2
 
 
 def distribute(job: Job) -> SolvedSizes:
-    if len(job.target_sizes) < n_max_precise:
+    if len(job) < n_max_precise:
         return _solve_bruteforce(job)
-    elif len(job.target_sizes) < n_max:
+    elif len(job) < n_max:
         return _solve_gapfill(job)
     else:
         raise OverflowError("Input too large")

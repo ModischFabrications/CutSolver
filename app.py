@@ -1,23 +1,23 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, Response
 
 from model.CutSolver import distribute
-from model.Job import JobSchema
+from model.Job import JobSchema, Job, SolvedSizesSchema
 
 app = Flask(__name__)
 
 
 @app.route("/solve", methods=["POST"])
 def solve():
-    assert request.is_json
+    job = JobSchema().loads(request.data).data
 
-    job = JobSchema().loads(request.get_json())
+    assert job.__class__ == Job
 
     print(f"Got job with ID {job.get_ID()}")
 
     solved = distribute(job)
 
     # TODO: redirect(...) to /solved/<id>
-    return jsonify(solved)
+    return SolvedSizesSchema().dumps(solved)
 
 
 # TODO: "/solved/<id>"
@@ -28,15 +28,17 @@ def solve():
 
 @app.route("/", methods=["GET"])
 def index():
-    # TODO: add description and index
+    # TODO: add index
     return f"Hello Flask!\n"
 
 
 @app.route("/about", methods=["GET"])
 def about():
-    return 'Visit <a href="https://github.com/ModischFabrications/CutSolver">' \
-           'the repository</a> for further informations'
+    text = 'Visit <a href="https://github.com/ModischFabrications/CutSolver">' \
+           'the repository</a> for further informations.'
+    resp = Response(text, status=200, mimetype="text/html")
+    return resp
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")  # host needed to be acessible from outside
+    app.run(host="0.0.0.0")  # host needed to be accessible from outside
