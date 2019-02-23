@@ -16,14 +16,7 @@ def solve():
     solved = distribute(job)
 
     response = Response(ResultSchema().dumps(solved).data, status=200, mimetype='application/json')
-    # TODO: redirect(...) to /solved/<id>
     return response
-
-
-# TODO: "/solved/<id>"
-# cache results in ring buffer or with max_time
-# return "still calculating" for keys(ids) not in solved but in pending
-# return 404 for keys not in solved or pending
 
 
 @app.route("/", methods=["GET"])
