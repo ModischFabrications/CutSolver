@@ -6,6 +6,7 @@ WORKDIR /home/cutsolver
 
 # copy whole installation (minus dockerignore)
 COPY . .
+VOLUME /data
 
 # install dependencies
 RUN pip install pipenv
