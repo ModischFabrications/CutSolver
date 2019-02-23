@@ -1,5 +1,5 @@
 .idea
-data
+data/*
 tests
 .git
 __pycache__

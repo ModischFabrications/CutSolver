@@ -5,6 +5,8 @@ from pathlib import Path
 # win: appdata/*
 # linux:
 file_path = Path("data/SolverStore.db")
+file_path.parent.mkdir(mode=777, parents=True, exist_ok=True)
+
 
 # writeback is slower but easier
 d = shelve.open(str(file_path), writeback=True)
