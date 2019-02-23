@@ -1,7 +1,6 @@
 from typing import Collection, Iterator
 
 from marshmallow import Schema, fields, post_load
-from model import SolverStore
 
 
 class TargetSize:
@@ -29,16 +28,11 @@ class TargetSizeSchema(Schema):
 
 
 class Job:
-    _current_id = SolverStore.get_ID()
+    _current_id = 0
 
     def __init__(self, length_stock: int, target_sizes: Collection[TargetSize], cut_width: int = 0):
         self._id = Job._current_id
         Job._current_id += 1
-        try:
-            SolverStore.set_ID(Job._current_id)
-        except:
-            # it's not thaaat important
-            pass
 
         self.length_stock = length_stock
         self.target_sizes = target_sizes

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from app.model.CutSolver import distribute
-from app.model.Job import JobSchema, Job, ResultSchema
+from model.CutSolver import distribute
+from model.Job import JobSchema, Job, ResultSchema
 
 app = FastAPI()
 
@@ -21,7 +21,7 @@ def solve(job: str):
 @app.get("/")
 def index():
     # TODO: add index and hyperlinks
-    return f"Hello FastAPI!\n"
+    return f"Hello FastAPI!"
 
 
 @app.get("/about")
