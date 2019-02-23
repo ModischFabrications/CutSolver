@@ -6,11 +6,17 @@ It can be reduced to the Bin-Packing-Problem (BPP).
 Brute Force(best solution) for small n, Heuristic(fast solution) für larger n
 
 # Usage
+
+## Local
 Start flask service locally using `flask run` in project folder.
+Send POST-Requests to `/solve`, see `tests/testjob.json` for syntax.
+
+## Docker
+// ToDo
 
 # Roadmap
-Host as backend
-Make a nice UI with Bootstrap?
+1. Host as backend with docker, gunicorn & nginx?
+1. Make a nice UI with Bootstrap?
 
 ## Declined
 Having workers and a queue with pending jobs was considered but seemed useless, 
