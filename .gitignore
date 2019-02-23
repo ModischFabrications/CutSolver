@@ -1,2 +1,4 @@
 *.idea
 Pipfile.lock
+/data/*
+/tests/data/*
