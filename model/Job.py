@@ -29,11 +29,11 @@ class TargetSizeSchema(Schema):
 
 class Job:
     # TODO: make this persistent across restarts to prevent collisions
-    current_id = 0
+    _current_id = 0
 
     def __init__(self, length_stock: int, target_sizes: Collection[TargetSize], cut_width: int = 0):
-        self._id = Job.current_id
-        Job.current_id += 1
+        self._id = Job._current_id
+        Job._current_id += 1
 
         self.length_stock = length_stock
         self.target_sizes = target_sizes
@@ -75,16 +75,16 @@ class JobSchema(Schema):
         return Job(**data)
 
 
-class SolvedSizes:
+class Result:
     def __init__(self, stocks: Collection[Collection[int]], trimmings: int):
         self.stocks = stocks
         self.trimmings = trimmings
 
 
-class SolvedSizesSchema(Schema):
+class ResultSchema(Schema):
     stocks = fields.List(fields.List(fields.Integer()))
     trimmings = fields.Integer()
 
     @post_load
     def make_target_size(self, data):
-        return SolvedSizes(**data)
+        return Result(**data)

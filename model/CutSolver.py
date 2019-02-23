@@ -3,14 +3,14 @@
 from itertools import permutations
 from typing import Collection, Tuple, List
 
-from model.Job import Job, SolvedSizes
+from model.Job import Job, Result
 
 # backend parameter
 n_max_precise = 10  # 10! calculations, around 3 million
 n_max = 500  # around 1 million with n^2
 
 
-def distribute(job: Job) -> SolvedSizes:
+def distribute(job: Job) -> Result:
     if len(job) < n_max_precise:
         return _solve_bruteforce(job)
     elif len(job) < n_max:
@@ -21,7 +21,7 @@ def distribute(job: Job) -> SolvedSizes:
 
 # CPU-bound
 # O(n!)
-def _solve_bruteforce(job: Job) -> SolvedSizes:
+def _solve_bruteforce(job: Job) -> Result:
     # failsafe
     if len(job) > 12:
         raise OverflowError("Input too large")
@@ -41,7 +41,7 @@ def _solve_bruteforce(job: Job) -> SolvedSizes:
             min_stocks = stocks
             min_trimmings = trimmings
 
-    return SolvedSizes(min_stocks, min_trimmings)
+    return Result(min_stocks, min_trimmings)
 
 
 def _split_combination(combination: Tuple[int], length_stock: int, cut_width: int):
@@ -76,7 +76,7 @@ def _split_combination(combination: Tuple[int], length_stock: int, cut_width: in
 
 # TODO: check if time varies with len(TargetSize) or TargetSize.amount
 # O(n^2) ??
-def _solve_gapfill(job: Job) -> SolvedSizes:
+def _solve_gapfill(job: Job) -> Result:
     # 1. Sort by magnitude (largest first)
     # 2. stack until limit is reached
     # 3. try smaller as long as possible
@@ -125,11 +125,11 @@ def _solve_gapfill(job: Job) -> SolvedSizes:
         trimming += _get_trimming(job.length_stock, current_stock, job.cut_width)
 
     # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return SolvedSizes(stocks, trimming)
+    return Result(stocks, trimming)
 
 
 # O(n)
-def _solve_FFD(job: Job) -> SolvedSizes:
+def _solve_FFD(job: Job) -> Result:
     # iterate over list of stocks
     # put into first stock that it fits into
     pass

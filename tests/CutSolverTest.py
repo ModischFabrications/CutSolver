@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill
-from model.Job import TargetSize, Job, JobSchema, TargetSizeSchema, SolvedSizesSchema
+from model.Job import TargetSize, Job, JobSchema, TargetSizeSchema, ResultSchema
 
 
 class CutSolverTest(unittest.TestCase):
@@ -91,7 +91,7 @@ class CutSolverTest(unittest.TestCase):
 
             solved = _solve_gapfill(job.data)
 
-            encoded_solved = SolvedSizesSchema().dumps(solved)
+            encoded_solved = ResultSchema().dumps(solved)
             self.assertGreater(20, len(encoded_solved))
 
 

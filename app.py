@@ -1,7 +1,7 @@
 from flask import Flask, request, Response
 
 from model.CutSolver import distribute
-from model.Job import JobSchema, Job, SolvedSizesSchema
+from model.Job import JobSchema, Job, ResultSchema
 
 app = Flask(__name__)
 
@@ -15,7 +15,7 @@ def solve():
 
     solved = distribute(job)
 
-    response = Response(SolvedSizesSchema().dumps(solved).data, status=200, mimetype='application/json')
+    response = Response(ResultSchema().dumps(solved).data, status=200, mimetype='application/json')
     # TODO: redirect(...) to /solved/<id>
     return response
 

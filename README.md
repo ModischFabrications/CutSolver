@@ -12,6 +12,10 @@ Start flask service locally using `flask run` in project folder.
 Host as backend
 Make a nice UI with Bootstrap?
 
+## Declined
+Having workers and a queue with pending jobs was considered but seemed useless, 
+as ideally all requests have their own thread and a (by comparison) short calculation time.
+This makes a queue useless. The same argumentation also holds for a result-buffer.
 
 # Visualisation
 // This should definitely be a svg.
