@@ -21,8 +21,8 @@ def solve():
 
 @app.route("/", methods=["GET"])
 def index():
-    # TODO: add index
-    return f"Hello Flask!\n"
+    # TODO: add index and hyperlinks
+    return f"Hello Flask!\n\n- /solve: Use this tool\n- /about: additional informations"
 
 
 @app.route("/about", methods=["GET"])

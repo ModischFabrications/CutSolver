@@ -28,13 +28,13 @@ def _solve_bruteforce(job: Job) -> Result:
 
     # find every possible ordering (n! elements)
     all_orderings = permutations(job.get_sizes())
-    # TODO: remove duplicates
+    # TODO: remove duplicates (due to "amount")
 
     # "infinity"
     min_trimmings = len(job) * job.length_stock
     min_stocks: List[List[int]] = []
 
-    # TODO: Distribute combinations to multiprocessing worker threads
+    # possible improvement: Distribute combinations to multiprocessing worker threads
     for combination in all_orderings:
         stocks, trimmings = _split_combination(combination, job.length_stock, job.cut_width)
         if trimmings < min_trimmings:
