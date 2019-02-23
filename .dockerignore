@@ -1,0 +1,9 @@
+.idea
+data
+tests
+.git
+__pycache__
+
+# don't copy docker-interactions into docker
+docker_*.sh
+
