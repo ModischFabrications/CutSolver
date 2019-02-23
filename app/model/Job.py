@@ -1,7 +1,6 @@
 from typing import Collection, Iterator
 
 from marshmallow import Schema, fields, post_load
-
 from model import SolverStore
 
 
