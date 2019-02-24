@@ -14,6 +14,7 @@ Make sure that you have installed Docker.
 
 # Roadmap
 1. Make a nice UI with Bootstrap?
+1. direct CLI for model
 
 ## Declined
 Having workers and a queue with pending jobs was considered but seemed useless, 

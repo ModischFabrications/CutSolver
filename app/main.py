@@ -19,7 +19,7 @@ def solve(job: Job):
 
 @app.get("/")
 def index():
-    # TODO: add index and hyperlinks
+    # TODO: redirect to docs
     return "Hello FastAPI!"
 
 
