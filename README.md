@@ -1,3 +1,10 @@
+WARNING: THIS BRANCH IS DEPRECATED
+====================================
+Use branch `FastAPI` for the current development. This exists only as a reference point.
+
+
+***************
+
 # CutSolver
 
 This is used to solve the "Cutting Stock Problem", which is NP-hard.  
