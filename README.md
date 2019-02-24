@@ -15,6 +15,10 @@ Make sure that you have installed Docker.
 This Solver is using ints exclusively, as there is no need for arbitrary precision yet. 
 It also has no concept of units so you can use whatever you want.
 
+# Visualisation
+
+![cutsolver](https://user-images.githubusercontent.com/25404728/53304884-fb9c4980-387a-11e9-9a49-330369befc44.png)
+
 # Roadmap
 1. Make a nice UI (Bootstrap?)
 1. direct CLI for model
@@ -26,28 +30,12 @@ Having workers and a queue with pending jobs was considered but seemed useless,
 as ideally all requests have their own thread and a (by comparison) short calculation time.
 This makes a queue useless. The same argumentation also holds for a result-buffer.
 
-# Visualisation
-// This should definitely be a svg.
-<pre>
-XXXXXXXXXXXXXXXX  
-XXXXX
-     I  
-      XXXXXX
-            I
-             XXX  
-</pre>
-
 # Dependencies
 *Everything should be handled by Docker*
 
 This project uses:
 1. [pipenv](https://github.com/pypa/pipenv): library management
 1. [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
-
-# Troubleshooting
-
-Q: My results are missing decimals
-A: 
 
 # External links
 https://scipbook.readthedocs.io/en/latest/bpp.html
