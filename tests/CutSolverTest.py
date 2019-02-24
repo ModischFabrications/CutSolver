@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 
 from model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill
-from model.Job import TargetSize, Job, JobSchema, TargetSizeSchema, ResultSchema
+from model.Job import TargetSize, Job
 
 
 class CutSolverTest(unittest.TestCase):
@@ -17,21 +17,27 @@ class CutSolverTest(unittest.TestCase):
             trimming = _get_trimming(1500, (300, 400, 600, 200), 2)
 
     def test_bruteforce(self):
-        job = Job(900, (TargetSize(500, 2), TargetSize(200, 3), TargetSize(100, 2)), 0)
+        job = Job(length_stock=900, target_sizes=(
+        TargetSize(length=500, amount=2), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
+                  cut_width=0)
 
         solved = _solve_bruteforce(job)
 
         self.assertEqual(0, solved.trimmings)
 
     def test_gapfill(self):
-        job = Job(900, (TargetSize(500, 2), TargetSize(200, 3), TargetSize(100, 2)), 0)
+        job = Job(length_stock=900, target_sizes=(
+        TargetSize(length=500, amount=2), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
+                  cut_width=0)
 
         solved = _solve_gapfill(job)
 
         self.assertEqual(900, solved.trimmings)
 
     def test_job_generator(self):
-        job = Job(1550, (TargetSize(500, 4), TargetSize(200, 3), TargetSize(100, 2)), 5)
+        job = Job(length_stock=1550, target_sizes=(
+        TargetSize(length=500, amount=4), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
+                  cut_width=5)
 
         resulting_list = []
         for length in job.get_sizes():
@@ -40,39 +46,25 @@ class CutSolverTest(unittest.TestCase):
         self.assertEqual([500, 500, 500, 500, 200, 200, 200, 100, 100], resulting_list)
 
     def test_job_dunders(self):
-        job1 = Job(100, (TargetSize(100, 2), TargetSize(200, 1)), 0)
-        job2 = Job(100, (TargetSize(100, 2), TargetSize(200, 1)), 0)
+        job1 = Job(length_stock=100, target_sizes=(TargetSize(length=100, amount=2), TargetSize(length=200, amount=1)),
+                   cut_width=0)
+        job2 = Job(length_stock=100, target_sizes=(TargetSize(length=100, amount=2), TargetSize(length=200, amount=1)),
+                   cut_width=0)
 
-        self.assertNotEqual(job1, job2)
+        self.assertEqual(job1, job2)
         self.assertEqual(3, len(job1))
-
-    def test_to_JSON(self):
-        target = TargetSize(300, 4)
-        target_schema = TargetSizeSchema()
-        encoded_target = target_schema.dumps(target)
-
-        job = Job(1200, (target, TargetSize(200, 3), TargetSize(100, 3)), 0)
-        job_schema = JobSchema()
-        encoded_job = job_schema.dumps(job)
-
-    def test_from_JSON(self):
-        json_file = Path("testjob.json")
-        assert json_file.exists()
-
-        with open(json_file, "r") as encoded_job:
-            job = JobSchema().loads(encoded_job.read())
 
     def test_full_model(self):
         json_file = Path("testjob.json")
         assert json_file.exists()
 
         with open(json_file, "r") as encoded_job:
-            job = JobSchema().loads(encoded_job.read())
+            job = Job.parse_raw(encoded_job.read())
 
-            solved = _solve_gapfill(job.data)
+            solved = _solve_gapfill(job)
 
-            encoded_solved = ResultSchema().dumps(solved)
-            self.assertGreater(20, len(encoded_solved))
+            encoded_solved = solved.json()
+            self.assertLess(20, len(encoded_solved))
 
 
 if __name__ == '__main__':

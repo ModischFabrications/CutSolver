@@ -1,27 +1,26 @@
 from fastapi import FastAPI
 
 from model.CutSolver import distribute
-from model.Job import JobSchema, Job, ResultSchema
+from model.Job import Job
 
 app = FastAPI()
 
 
 @app.post("/solve")
-def solve(job: str):
-    job = JobSchema().loads(job).data
+def solve(job: Job):
     assert job.__class__ == Job
 
-    print(f"Got job with ID {job.get_ID()}")
+    print(f"Got job with length {len(job)}")
 
     solved = distribute(job)
 
-    return ResultSchema().dumps(solved).data
+    return solved
 
 
 @app.get("/")
 def index():
     # TODO: add index and hyperlinks
-    return f"Hello FastAPI!"
+    return "Hello FastAPI!"
 
 
 @app.get("/about")

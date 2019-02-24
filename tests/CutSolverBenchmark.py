@@ -8,7 +8,9 @@ from model.Job import TargetSize, Job
 class CutSolverTest(unittest.TestCase):
 
     def test_benchmark(self):
-        job = Job(1200, (TargetSize(300, 3), TargetSize(200, 3), TargetSize(100, 3)), 0)
+        job = Job(length_stock=1200, target_sizes=(
+        TargetSize(length=300, amount=3), TargetSize(length=200, amount=3), TargetSize(length=100, amount=3)),
+                  cut_width=0)
 
         start = time.perf_counter()
         solved_bruteforce = _solve_bruteforce(job)
@@ -19,7 +21,7 @@ class CutSolverTest(unittest.TestCase):
 
         # bruteforce should be better at the cost of increased runtime
         print(f"[Trimmings] Bruteforce: {solved_bruteforce.trimmings}, Gapfill: {solved_gapfill.trimmings}")
-        print(f"[Runtime] Bruteforce: {t_bruteforce}, Gapfill: {t_gapfill}")
+        print(f"[Runtime] Bruteforce: {t_bruteforce:.2f}s, Gapfill: {t_gapfill:.2f}s")
         self.assertGreaterEqual(solved_gapfill.trimmings, solved_bruteforce.trimmings)
 
         # 10 Values (2700X):

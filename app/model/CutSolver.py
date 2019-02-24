@@ -41,7 +41,7 @@ def _solve_bruteforce(job: Job) -> Result:
             min_stocks = stocks
             min_trimmings = trimmings
 
-    return Result(min_stocks, min_trimmings)
+    return Result(stocks=min_stocks, trimmings=min_trimmings)
 
 
 def _split_combination(combination: Tuple[int], length_stock: int, cut_width: int):
@@ -125,7 +125,7 @@ def _solve_gapfill(job: Job) -> Result:
         trimming += _get_trimming(job.length_stock, current_stock, job.cut_width)
 
     # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return Result(stocks, trimming)
+    return Result(stocks=stocks, trimmings=trimming)
 
 
 # O(n)
