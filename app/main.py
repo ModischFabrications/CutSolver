@@ -1,12 +1,14 @@
 from fastapi import FastAPI
+from starlette.responses import HTMLResponse
 
 from model.CutSolver import distribute
-from model.Job import Job
+from model.Job import Job, Result
 
 app = FastAPI()
 
 
-@app.post("/solve")
+# response model ensures correct documentation
+@app.post("/solve", response_model=Result)
 def solve(job: Job):
     assert job.__class__ == Job
 
@@ -17,13 +19,14 @@ def solve(job: Job):
     return solved
 
 
-@app.get("/")
+# content_type results in browser pretty printing
+@app.get("/", content_type=HTMLResponse)
 def index():
     # TODO: redirect to docs
     return "Hello FastAPI!"
 
 
-@app.get("/about")
+@app.get("/about", content_type=HTMLResponse)
 def about():
     text = 'Visit <a href="https://github.com/ModischFabrications/CutSolver">' \
            'the repository</a> for further informations.'
