@@ -6,16 +6,13 @@ It can be reduced to the Bin-Packing-Problem (BPP).
 Brute Force(best solution) for small n, Heuristic(fast solution) für larger n
 
 # Usage
+Make sure that you have installed Docker.  
 
-## Local
-Start flask service locally using `flask run` in project folder.
-Send POST-Requests to `/solve`, see `tests/testjob.json` for syntax.
-
-## Docker
-// ToDo
+1. Build this image using `docker_build.sh`
+1. Start using `docker_start.sh`
+1. Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
 
 # Roadmap
-1. Host as backend with docker, gunicorn & nginx?
 1. Make a nice UI with Bootstrap?
 
 ## Declined
@@ -34,6 +31,13 @@ XXXXX
              XXX  
 </pre>
 
+# Dependencies
+*Everything should be handled by Docker*
+
+This project uses:
+1. [pipenv](https://github.com/pypa/pipenv): library management
+1. [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
+
 # Troubleshooting
 
 ## My results are missing decimals
@@ -41,3 +45,5 @@ This Solver is using ints exclusively, try to use whole numbers instead.
 
 # External links
 https://scipbook.readthedocs.io/en/latest/bpp.html
+
+
