@@ -28,3 +28,10 @@ def about():
     text = 'Visit <a href="https://github.com/ModischFabrications/CutSolver">' \
            'the repository</a> for further informations.'
     return text
+
+
+# for debugging only
+if __name__ == '__main__':
+    import uvicorn
+
+    uvicorn.run(app, host='0.0.0.0', port=8000)
