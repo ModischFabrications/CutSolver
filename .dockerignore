@@ -1,6 +1,4 @@
 *.idea
-data/*
-tests
 .git
 *__pycache__
 

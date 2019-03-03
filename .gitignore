@@ -1,5 +1,6 @@
 *.idea
-/data/*
-/tests/data/*
+*/data/*
 *__pycache__
 
+# Pipfile is just for debugging
+Pipfile.lock
