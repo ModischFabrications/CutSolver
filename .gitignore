@@ -1,4 +1,5 @@
 *.idea
-Pipfile.lock
 /data/*
 /tests/data/*
+*__pycache__
+
