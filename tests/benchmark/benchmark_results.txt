@@ -1,0 +1,18 @@
+Desktop Powershell
+
+docker build -t cutsolver:latest .
+docker run --name cutsolver -d -p 80:80 --rm cutsolver:latest
+docker image inspect ###
+docker stats
+
+Results:
+-- tiangolo/uvicorn-gunicorn:python3.7-alpine3.8
+size: 114 554 660
+init mem: 65MiB
+
+Idle 0.4%
+Run 7.5%
+
+avg: 4ms
+
+
