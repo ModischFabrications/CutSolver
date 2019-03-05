@@ -6,7 +6,7 @@ docker run --name cutsolver -d -p 80:80 --rm cutsolver:latest
 docker stats
 docker stop cutsolver
 
-Results:
+Results PC:
 -- tiangolo/uvicorn-gunicorn:python3.7-alpine3.8
 size: 114 554 660
 init mem: 65MiB
@@ -24,3 +24,13 @@ Idle: 0.1%
 Run: 7.3%
 
 avg: 4ms
+
+Results 3B:
+-- python:3.7 (manual build)
+size: 785 969 525
+init mem: 0B (?)
+
+Idle: 0.3%
+Run: 28%
+
+avg: 31ms
