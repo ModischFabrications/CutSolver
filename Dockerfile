@@ -1,16 +1,13 @@
 FROM python:3.7
 EXPOSE 80
 
-# manual installation
-RUN pip install fastapi uvicorn
-
-# copy whole installation (minus dockerignore)
-COPY ./app /app
-
 # install additional dependencies (might have duplicates?)
 # (was pipenv previously but had problems with alpine)
 COPY ./requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+
+# copy whole installation (minus dockerignore)
+COPY ./app /app
 
 # set workdir to have subscripts in scope
 WORKDIR ./app
