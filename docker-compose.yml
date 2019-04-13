@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+
+  cutsolver:
+    build: .
+    #    image: ...
+    restart: unless-stopped
+    ports:
+      - "80:80"
+
