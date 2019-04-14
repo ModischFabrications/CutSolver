@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill
+from model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill, _solve_FFD
 from model.Job import TargetSize, Job
 
 
@@ -18,25 +18,40 @@ class CutSolverTest(unittest.TestCase):
 
     def test_bruteforce(self):
         job = Job(length_stock=900, target_sizes=(
-        TargetSize(length=500, amount=2), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
+            TargetSize(length=500, amount=2), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
                   cut_width=0)
 
+        cmp_job = job.copy(deep=True)
         solved = _solve_bruteforce(job)
 
         self.assertEqual("bruteforce", solved.solver)
+        self.assertEqual(cmp_job, job)
 
     def test_gapfill(self):
         job = Job(length_stock=900, target_sizes=(
-        TargetSize(length=500, amount=2), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
+            TargetSize(length=500, amount=2), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
                   cut_width=0)
 
+        cmp_job = job.copy(deep=True)
         solved = _solve_gapfill(job)
 
         self.assertEqual("gapfill", solved.solver)
+        self.assertEqual(cmp_job, job)
+
+    def test_FFD(self):
+        job = Job(length_stock=900, target_sizes=(
+            TargetSize(length=500, amount=2), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
+                  cut_width=0)
+
+        cmp_job = job.copy(deep=True)
+        solved = _solve_FFD(job)
+
+        self.assertEqual("FFD", solved.solver)
+        self.assertEqual(cmp_job, job)
 
     def test_job_generator(self):
         job = Job(length_stock=1550, target_sizes=(
-        TargetSize(length=500, amount=4), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
+            TargetSize(length=500, amount=4), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
                   cut_width=5)
 
         resulting_list = []

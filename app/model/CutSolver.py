@@ -1,5 +1,5 @@
 #!python3
-
+import copy
 from itertools import permutations
 from typing import Collection, Tuple, List
 
@@ -41,7 +41,7 @@ def _solve_bruteforce(job: Job) -> Result:
             min_stocks = stocks
             min_trimmings = trimmings
 
-    return Result(stocks=min_stocks, trimmings=min_trimmings, solver=SolverType.bruteforce)
+    return Result(stocks=min_stocks, solver=SolverType.bruteforce)
 
 
 def _split_combination(combination: Tuple[int], length_stock: int, cut_width: int):
@@ -83,10 +83,11 @@ def _solve_gapfill(job: Job) -> Result:
     # 3. try smaller as long as possible
     # 4. create new bar
 
-    targets = sorted(job.target_sizes, reverse=True)
+    # we are writing around in target sizes, prevent leaking changes to job
+    mutable_sizes = copy.deepcopy(job.target_sizes)
+    targets = sorted(mutable_sizes, reverse=True)
 
     stocks = []
-    trimming = 0
 
     current_size = 0
     current_stock = []
@@ -98,7 +99,6 @@ def _solve_gapfill(job: Job) -> Result:
         if i_target >= len(targets):
             # add local result
             stocks.append(current_stock)
-            trimming += _get_trimming(job.length_stock, current_stock, job.cut_width)
 
             # reset
             current_stock = []
@@ -123,17 +123,55 @@ def _solve_gapfill(job: Job) -> Result:
     # apply last "forgotten" stock
     if current_stock:
         stocks.append(current_stock)
-        trimming += _get_trimming(job.length_stock, current_stock, job.cut_width)
 
     # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return Result(stocks=stocks, trimmings=trimming, solver=SolverType.gapfill)
+    return Result(stocks=stocks, solver=SolverType.gapfill)
 
 
-# O(n)
+# textbook solution, guaranteed to need at most double
+# TODO this has ridiculous execution times, check why
 def _solve_FFD(job: Job) -> Result:
     # iterate over list of stocks
     # put into first stock that it fits into
-    pass
+
+    # 1. Sort by magnitude (largest first)
+    # 2. stack until limit is reached
+    # 3. try smaller as long as possible
+    # 4. create new bar
+
+    mutable_sizes = copy.deepcopy(job.target_sizes)
+    targets = sorted(mutable_sizes, reverse=True)
+
+    assert len(targets) > 0
+
+    stocks: List[List[int]] = [[]]
+    stock_lengths: List[int] = [0]
+
+    i_target = 0
+
+    while i_target < len(targets):
+        current_size = targets[i_target]
+
+        for i, stock in enumerate(stocks):
+            # step through existing stocks until current size fits
+            if (job.length_stock - stock_lengths[i]) > current_size.length:
+                # add size
+                stock.append(current_size.length)
+                stock_lengths[i] += job.cut_width + current_size.length
+                break
+        else:  # nothing fit, opening next bin
+            stocks.append([current_size.length])
+            stock_lengths.append(0)
+
+            assert len(stocks) == len(stock_lengths)
+
+        # decrease/get next
+        if current_size.amount <= 1:
+            i_target += 1
+        else:
+            current_size.amount -= 1
+
+    return Result(stocks=stocks, solver=SolverType.FFD)
 
 
 def _get_trimming(length_stock: int, lengths: Collection[int], cut_width: int) -> int:
