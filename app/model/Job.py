@@ -33,6 +33,12 @@ class Job(BaseModel):
             for i in range(size.amount):
                 yield size.length
 
+    def compress(self):
+        """
+        join TargetSizes that have the same length
+        """
+        raise NotImplementedError()
+
     def __len__(self) -> int:
         """
         Number of target sizes in job

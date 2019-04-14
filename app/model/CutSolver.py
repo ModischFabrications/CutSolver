@@ -12,6 +12,9 @@ n_max = 500  # around 1 million with n^2
 
 
 def distribute(job: Job) -> Result:
+    # optimize before distibuting
+    # job.compress()
+
     if len(job) < n_max_precise:
         return _solve_bruteforce(job)
     elif len(job) < n_max_good:
