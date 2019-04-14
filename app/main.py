@@ -12,8 +12,6 @@ app = FastAPI()
 def solve(job: Job):
     assert job.__class__ == Job
 
-    print(f"Got job with length {len(job)}")
-
     solved = distribute(job)
 
     return solved

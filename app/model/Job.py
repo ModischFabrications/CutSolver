@@ -1,3 +1,4 @@
+from enum import Enum, unique
 from typing import Iterator, List
 
 from pydantic import BaseModel
@@ -39,6 +40,14 @@ class Job(BaseModel):
         return sum(target.amount for target in self.target_sizes)
 
 
+@unique
+class SolverType(str, Enum):  # str as base enables Pydantic-Schemas
+    bruteforce = "bruteforce"
+    gapfill = "gapfill"
+    FFD = "FFD"
+
+
 class Result(BaseModel):
     stocks: List[List[int]]
-    trimmings: int
+    # no trimmings as they can be inferred from stocks
+    solver: SolverType

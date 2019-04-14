@@ -3,7 +3,7 @@
 from itertools import permutations
 from typing import Collection, Tuple, List
 
-from model.Job import Job, Result
+from model.Job import Job, Result, SolverType
 
 # backend parameter
 n_max_precise = 10  # 10! calculations, around 3 million
@@ -41,7 +41,7 @@ def _solve_bruteforce(job: Job) -> Result:
             min_stocks = stocks
             min_trimmings = trimmings
 
-    return Result(stocks=min_stocks, trimmings=min_trimmings)
+    return Result(stocks=min_stocks, trimmings=min_trimmings, solver=SolverType.bruteforce)
 
 
 def _split_combination(combination: Tuple[int], length_stock: int, cut_width: int):
@@ -75,6 +75,7 @@ def _split_combination(combination: Tuple[int], length_stock: int, cut_width: in
 
 
 # TODO: check if time varies with len(TargetSize) or TargetSize.amount
+# this might actually be worse than FFD (both in runtime and solution)
 # O(n^2) ??
 def _solve_gapfill(job: Job) -> Result:
     # 1. Sort by magnitude (largest first)
@@ -125,7 +126,7 @@ def _solve_gapfill(job: Job) -> Result:
         trimming += _get_trimming(job.length_stock, current_stock, job.cut_width)
 
     # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return Result(stocks=stocks, trimmings=trimming)
+    return Result(stocks=stocks, trimmings=trimming, solver=SolverType.gapfill)
 
 
 # O(n)
