@@ -20,9 +20,7 @@ class CutSolverTest(unittest.TestCase):
         # result_FFD = Solver._solve_gapfill(job)
 
         # bruteforce should be better at the cost of increased runtime
-        print(f"[Trimmings] Bruteforce: {solved_bruteforce.trimmings}, Gapfill: {solved_gapfill.trimmings}")
         print(f"[Runtime] Bruteforce: {t_bruteforce:.2f}s, Gapfill: {t_gapfill:.2f}s")
-        self.assertGreaterEqual(solved_gapfill.trimmings, solved_bruteforce.trimmings)
 
         # 10 Values (2700X):
         # Bruteforce: 20s with single-core 2700X

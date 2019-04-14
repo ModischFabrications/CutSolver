@@ -23,7 +23,7 @@ class CutSolverTest(unittest.TestCase):
 
         solved = _solve_bruteforce(job)
 
-        self.assertEqual(0, solved.trimmings)
+        self.assertEqual("bruteforce", solved.solver)
 
     def test_gapfill(self):
         job = Job(length_stock=900, target_sizes=(
@@ -32,7 +32,7 @@ class CutSolverTest(unittest.TestCase):
 
         solved = _solve_gapfill(job)
 
-        self.assertEqual(900, solved.trimmings)
+        self.assertEqual("gapfill", solved.solver)
 
     def test_job_generator(self):
         job = Job(length_stock=1550, target_sizes=(
