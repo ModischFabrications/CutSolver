@@ -1,28 +1,29 @@
 # CutSolver
 
-This is used to solve the "Cutting Stock Problem", which is NP-hard.  
-It can be reduced to the Bin-Packing-Problem (BPP).
+This API can be used to solve the 2D "Cutting Stock Problem", which is NP-hard. It can be reduced to the Bin-Packing-Problem (BPP).
 
-This solver uses brute force (best solution) for small n and a heuristic (fast solution) für larger n.
-
-# Usage
-Make sure that you have installed Docker.  
-
-1. Build this image using `docker_build.sh`
-1. Start using `docker_start.sh`
-1. Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
+No efficient algorithm exists to calculate a perfect solution in an acceptable timeframe, therefore brute force (perfect solution) is used for small jobs and a heuristic (fast solution) für larger ones. 
 
 This Solver is using ints exclusively, as there is no need for arbitrary precision yet. 
 It also has no concept of units so you can use whatever you want.
+
+# Usage
+Make sure that you have installed Docker + Docker Compose.  
+
+1. Build and start this image using `docker-compose up`
+1. Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
 
 # Visualisation
 
 ![cutsolver](https://user-images.githubusercontent.com/25404728/53304884-fb9c4980-387a-11e9-9a49-330369befc44.png)
 # Roadmap
-### Declined
+## Support welcome
+It seems like no other free service tackles this specific problem in an easy to use format, so this is my attempt. Feel free to contact me or make a pull-request if you want to participate in it.
+
+## Declined
 Having workers and a queue with pending jobs was considered but seemed useless, 
 as ideally all requests have their own thread and a (by comparison) short calculation time.
-This makes a queue useless. The same argumentation also holds for a result-buffer.
+This makes a queue useless. The same argumentation also holds true for a result-buffer.
 
 # Dependencies
 *Everything should be handled by Docker*
