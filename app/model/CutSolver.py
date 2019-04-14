@@ -7,12 +7,15 @@ from model.Job import Job, Result, SolverType
 
 # backend parameter
 n_max_precise = 10  # 10! calculations, around 3 million
+n_max_good = 100
 n_max = 500  # around 1 million with n^2
 
 
 def distribute(job: Job) -> Result:
     if len(job) < n_max_precise:
         return _solve_bruteforce(job)
+    elif len(job) < n_max_good:
+        return _solve_FFD(job)
     elif len(job) < n_max:
         return _solve_gapfill(job)
     else:
