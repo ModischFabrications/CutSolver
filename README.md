@@ -1,5 +1,7 @@
 # CutSolver
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/11d689cd44b0407fac23d537ca0f239f)](https://app.codacy.com/app/ModischFabrications/CutSolver?utm_source=github.com&utm_medium=referral&utm_content=ModischFabrications/CutSolver&utm_campaign=Badge_Grade_Dashboard)
+
 This API can be used to solve the 2D "Cutting Stock Problem", which is NP-hard. It can be reduced to the Bin-Packing-Problem (BPP).
 
 No efficient algorithm exists to calculate a perfect solution in an acceptable timeframe, therefore brute force (perfect solution) is used for small jobs and a heuristic (fast solution) für larger ones. 
