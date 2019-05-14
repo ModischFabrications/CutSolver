@@ -46,7 +46,9 @@ class Job(BaseModel):
         return sum(target.amount for target in self.target_sizes)
 
     def __eq__(self, other):
-        return self.length_stock == other.length_stock and self.target_sizes == other.target_sizes and self.cut_width == other.cut_width
+        return self.length_stock == other.length_stock and \
+               self.target_sizes == other.target_sizes and \
+               self.cut_width == other.cut_width
 
 
 @unique
