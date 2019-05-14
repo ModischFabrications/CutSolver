@@ -1,6 +1,9 @@
 # CutSolver
 
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/modischfabrications/cutsolver.svg)](https://cloud.docker.com/repository/docker/modischfabrications/cutsolver)
+[![Docker Image Size](https://images.microbadger.com/badges/image/modischfabrications/cutsolver.svg)](https://cloud.docker.com/repository/docker/modischfabrications/cutsolver)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/11d689cd44b0407fac23d537ca0f239f)](https://app.codacy.com/app/ModischFabrications/CutSolver?utm_source=github.com&utm_medium=referral&utm_content=ModischFabrications/CutSolver&utm_campaign=Badge_Grade_Dashboard)
+![](https://img.shields.io/badge/rating-awesome-brightgreen.svg)
 
 This API can be used to solve the 2D "Cutting Stock Problem", which is NP-hard. It can be reduced to the Bin-Packing-Problem (BPP).
 
@@ -26,6 +29,11 @@ It seems like no other free service tackles this specific problem in an easy to 
 Having workers and a queue with pending jobs was considered but seemed useless, 
 as ideally all requests have their own thread and a (by comparison) short calculation time.
 This makes a queue useless. The same argumentation also holds true for a result-buffer.
+
+## Contributing
+Make sure to execute `pipenv lock --requirements > requirements.txt` when updating "Pipfile".
+
+Rebuild the docker image with `docker-compose up --build` and check uncompressed image size with `docker-compose images`.
 
 ## Dependencies
 *Everything should be handled by Docker*

@@ -18,13 +18,13 @@ def solve(job: Job):
 
 
 # content_type results in browser pretty printing
-@app.get("/", content_type=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 def index():
     # TODO: redirect to docs
     return "Hello FastAPI!"
 
 
-@app.get("/about", content_type=HTMLResponse)
+@app.get("/about", response_class=HTMLResponse)
 def about():
     text = 'Visit <a href="https://github.com/ModischFabrications/CutSolver">' \
            'the repository</a> for further informations.'
