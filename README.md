@@ -12,8 +12,8 @@ It also has no concept of units so you can use whatever you want.
 ## Usage
 Make sure that you have installed Docker + Docker Compose.  
 
- 1. Build and start this image using `docker-compose up`
- 2. Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
+1. Build and start this image using `docker-compose up`
+2. Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
 
 ## Visualisation
 
@@ -31,8 +31,8 @@ This makes a queue useless. The same argumentation also holds true for a result-
 *Everything should be handled by Docker*
 
 This project uses:
- 1. [pipenv](https://github.com/pypa/pipenv): library management
- 2. [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
+* [pipenv](https://github.com/pypa/pipenv): library management
+* [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
 
 ## External links
 <https://scipbook.readthedocs.io/en/latest/bpp.html>
