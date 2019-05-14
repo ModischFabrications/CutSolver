@@ -31,8 +31,8 @@ This makes a queue useless. The same argumentation also holds true for a result-
 *Everything should be handled by Docker*
 
 This project uses:
-1. [pipenv](https://github.com/pypa/pipenv): library management
-1. [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
+ 1. [pipenv](https://github.com/pypa/pipenv): library management
+ 2. [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
 
 ## External links
 <https://scipbook.readthedocs.io/en/latest/bpp.html>
