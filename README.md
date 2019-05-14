@@ -27,6 +27,11 @@ Having workers and a queue with pending jobs was considered but seemed useless,
 as ideally all requests have their own thread and a (by comparison) short calculation time.
 This makes a queue useless. The same argumentation also holds true for a result-buffer.
 
+## Contributing
+Make sure to execute `pipenv lock --requirements > requirements.txt` when updating "Pipfile".
+
+Rebuild the docker image with `docker-compose up --build` and check uncompressed image size with `docker-compose images`.
+
 ## Dependencies
 *Everything should be handled by Docker*
 
