@@ -3,13 +3,13 @@
 FROM python:3.7
 EXPOSE 80
 
-# install additional dependencies (might have duplicates?)
+# install additional dependencies
 # (was pipenv previously but had problems with alpine)
 COPY ./requirements.txt requirements.txt
 # caches are useless in containers
 RUN pip install --no-cache-dir -r requirements.txt
 
-# copy whole installation (minus dockerignore)
+# only the application is relevant for the container
 COPY ./app /app
 
 # set workdir to have subscripts in scope
