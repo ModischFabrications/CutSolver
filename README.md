@@ -31,9 +31,10 @@ as ideally all requests have their own thread and a (by comparison) short calcul
 This makes a queue useless. The same argumentation also holds true for a result-buffer.
 
 ## Contributing
-Make sure to execute `pipenv lock --requirements > requirements.txt` when updating "Pipfile".
+Make sure to execute `pipenv lock -r > requirements.txt && pipenv lock -r --dev > dev-requirements.txt` when updating "Pipfile".
 
 Rebuild the docker image with `docker-compose up --build` and check uncompressed image size with `docker-compose images`.
+
 
 ## Dependencies
 *Everything should be handled by Docker*
