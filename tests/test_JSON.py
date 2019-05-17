@@ -1,7 +1,8 @@
 import unittest
 from pathlib import Path
 
-from model.Job import TargetSize, Job
+# import from app! Modules won't be found otherwise
+from app.model.Job import TargetSize, Job
 
 
 class MyTestCase(unittest.TestCase):
@@ -14,7 +15,7 @@ class MyTestCase(unittest.TestCase):
                          '"amount": 3}], "cut_width": 0}', job.json())
 
     def test_from_JSON(self):
-        json_file = Path("testjob.json")
+        json_file = Path("./tests/testjob.json")
         assert json_file.exists()
 
         with open(json_file, "r") as encoded_job:

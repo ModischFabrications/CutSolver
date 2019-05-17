@@ -15,7 +15,11 @@ matrix:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 install:
-  - pip3 install -U -r requirements.txt
+  - pip3 install -U -r dev-requirements.txt
 
 script:
-  - python3 -m unittest tests/CutSolverTest.py
+  # python -m appends current path to PYTHONPATH, pytest would not find app.model
+  - python -m pytest
+
+after_success:
+  - codecov
