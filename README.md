@@ -15,8 +15,8 @@ It also has no concept of units so you can use whatever you want.
 ## Usage
 Make sure that you have installed Docker + Docker Compose.  
 
-1. Build and start this image using `docker-compose up`
-2. Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
+1.  Build and start this image using `docker-compose up`
+2.  Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
 
 ## Visualisation
 
@@ -35,13 +35,12 @@ Make sure to execute `pipenv lock -r > requirements.txt && pipenv lock -r --dev 
 
 Rebuild the docker image with `docker-compose up --build` and check uncompressed image size with `docker-compose images`.
 
-
 ## Dependencies
 *Everything should be handled by Docker*
 
 This project uses:
-* [pipenv](https://github.com/pypa/pipenv): library management
-* [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
+*   [pipenv](https://github.com/pypa/pipenv): library management
+*   [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
 
 ## External links
 <https://scipbook.readthedocs.io/en/latest/bpp.html>
