@@ -3,7 +3,7 @@ import copy
 from itertools import permutations
 from typing import Collection, Tuple, List
 
-from model.Job import Job, Result, SolverType
+from app.model.Job import Job, Result, SolverType
 
 # backend parameter
 n_max_precise = 10  # 10! calculations, around 3 million

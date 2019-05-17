@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from starlette.responses import HTMLResponse
 
-from model.CutSolver import distribute
-from model.Job import Job, Result
+from app.model.CutSolver import distribute
+from app.model.Job import Job, Result
 
 app = FastAPI()
 

@@ -19,6 +19,7 @@ install:
 
 script:
   # python -m appends current path to PYTHONPATH, pytest would not find app.model
+  # it's important to use absolute paths in test files for both files and modules
   - python -m pytest
 
 after_success:
