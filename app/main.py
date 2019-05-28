@@ -19,19 +19,24 @@ def solve(job: Job):
     return solved
 
 
+@app.get("/debug", response_class=HTMLResponse)
+def debug_info():
+    static_answer = f"Debug Infos:" \
+        f"<ul>" \
+        f"<li>System: {platform.system()}</li>" \
+        f"<li>Architecture: {platform.machine()}</li>" \
+        f"<li>Python Version: {platform.python_version()}</li>" \
+        f"<li>Python Impl: {platform.python_implementation()}</li>"
+
+    return static_answer
+
+
 # content_type results in browser pretty printing
 @app.get("/", response_class=HTMLResponse)
 def index():
-    # TODO: redirect to docs
-    debug_infos = platform.uname()
-
-    static_answer = f"<h1>Hello from {debug_infos.node}!</h1>" \
-        f"Debug Infos:" \
-        f"<ul>" \
-        f"<li>System: {debug_infos.system}</li>" \
-        f"<li>Architecture: {debug_infos.machine}</li>" \
-        f"<li>Python Version: {platform.python_version()}</li>" \
-        f"<li>Python Impl: {platform.python_implementation()}</li>"
+    static_answer = f"<h2>Hello from {platform.node()}!</h2>" \
+        f"<h3>Have a look at the documentation at <a href=\"/docs\">/docs</a> for usage hints.</h3>" \
+        f"Debug information are at <a href=\"/debug\">/debug</a>"
 
     return static_answer
 
