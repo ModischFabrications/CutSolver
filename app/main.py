@@ -1,3 +1,5 @@
+import platform
+
 from fastapi import FastAPI
 from starlette.responses import HTMLResponse
 
@@ -21,7 +23,17 @@ def solve(job: Job):
 @app.get("/", response_class=HTMLResponse)
 def index():
     # TODO: redirect to docs
-    return "Hello FastAPI!"
+    debug_infos = platform.uname()
+
+    static_answer = f"<h1>Hello from {debug_infos.node}!</h1>" \
+        f"Debug Infos:" \
+        f"<ul>" \
+        f"<li>System: {debug_infos.system}</li>" \
+        f"<li>Architecture: {debug_infos.machine}</li>" \
+        f"<li>Python Version: {platform.python_version()}</li>" \
+        f"<li>Python Impl: {platform.python_implementation()}</li>"
+
+    return static_answer
 
 
 @app.get("/about", response_class=HTMLResponse)
