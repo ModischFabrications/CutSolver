@@ -14,10 +14,20 @@ This Solver is using ints exclusively, as there is no need for arbitrary precisi
 It also has no concept of units so you can use whatever you want.
 
 ## Usage
-Make sure that you have installed Docker + Docker Compose.  
+Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
 
+The easiest (and advised) way to deploy this is by using Docker.
+
+### Docker Hub
+**Now with 100% more Multiarchitecture!**  
+Both `linux/amd64` and `linux/arm/v7` are currently supported, message me if you use another platform. 
+
+You don't need to checkout this repository, I am building images and pushing them to Docker Hub.
+Download and start this container by running: `docker run [--rm -it] -p80:80 modischfabrications:latest`
+
+### Local build
 1.  Build and start this image using `docker-compose up`
-2.  Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
+2. (wait a while for uvloop to build...)
 
 ## Visualisation
 
