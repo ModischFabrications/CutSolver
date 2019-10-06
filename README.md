@@ -13,6 +13,8 @@ No efficient algorithm exists to calculate a perfect solution in an acceptable t
 This Solver is using ints exclusively, as there is no need for arbitrary precision yet. 
 It also has no concept of units so you can use whatever you want.
 
+*Hint: Try using mm instead of cm if you have fractions.*
+
 ## Usage
 Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
 
@@ -35,7 +37,7 @@ Note: Replace `latest` with a version number if you depend on this interface, I 
 
 ![cutsolver](https://user-images.githubusercontent.com/25404728/53304884-fb9c4980-387a-11e9-9a49-330369befc44.png)
 ## Roadmap
-I would like to have a frontend for a visualisation, look at https://github.com/ModischFabrications/CutSolver/issues/4 if you have the capabilites and would like to contribute.
+I would like to have a frontend for a visualisation, look at https://github.com/ModischFabrications/CutSolver/issues/4 if you have some knowledge about frontends and would like to contribute.
 
 ### Support welcome
 It seems like no other free service tackles this specific problem in an easy to use format, so this is my attempt. Feel free to contact me or make a pull-request if you want to participate in it.
