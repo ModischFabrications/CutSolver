@@ -23,7 +23,9 @@ The easiest (and advised) way to deploy this is by using Docker.
 Both `linux/amd64` and `linux/arm/v7` are currently supported, message me if you use another platform. 
 
 You don't need to checkout this repository, I am building images and pushing them to Docker Hub.
-Download and start this container by running: `docker run [--rm -it] -p80:80 modischfabrications:latest`
+Download and start this container by running: `docker run [--rm -it] -p80:80 modischfabrications/cutsolver:latest`
+
+Note: Replace `latest` with a version number if you depend on this interface, I can't guarantee that nothing will ever change.
 
 ### Local build
 1.  Build and start this image using `docker-compose up`
@@ -33,6 +35,8 @@ Download and start this container by running: `docker run [--rm -it] -p80:80 mod
 
 ![cutsolver](https://user-images.githubusercontent.com/25404728/53304884-fb9c4980-387a-11e9-9a49-330369befc44.png)
 ## Roadmap
+I would like to have a frontend for a visualisation, look at https://github.com/ModischFabrications/CutSolver/issues/4 if you have the capabilites and would like to contribute.
+
 ### Support welcome
 It seems like no other free service tackles this specific problem in an easy to use format, so this is my attempt. Feel free to contact me or make a pull-request if you want to participate in it.
 
