@@ -17,3 +17,12 @@ class Result(BaseModel):
     lengths: List[List[int]]
 
     # no trimmings as they can be inferred from stocks
+
+    def __eq__(self, other):
+        return self.solver_type == other.solver_type and \
+               self.lengths == other.lengths
+
+    def exactly(self, other):
+        return self.solver_type == other.solver_type and \
+               self.time_us == other.time_us and \
+               self.lengths == other.lengths

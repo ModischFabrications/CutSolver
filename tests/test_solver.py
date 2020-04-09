@@ -2,8 +2,9 @@ from pathlib import Path
 
 import pytest
 
-from app.model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill, _solve_FFD
-from app.model.Job import TargetSize, Job
+from app.model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill, _solve_FFD, distribute
+from app.model.Job import Job
+from app.model.Result import Result
 
 
 def test_trimmings():
@@ -19,9 +20,11 @@ def test_trimmings_raise():
 
 
 def generate_testjob():
-    return Job(max_length=900, target_sizes=(
-        TargetSize(length=500, quantity=2), TargetSize(length=200, quantity=3), TargetSize(length=100, quantity=2)),
-               cut_width=0)
+    json_job = Path("./tests/data/in/testjob.json")
+    assert json_job.exists()
+
+    with open(json_job, "r") as encoded_job:
+        return Job.parse_raw(encoded_job.read())
 
 
 def test_bruteforce():
@@ -55,13 +58,20 @@ def test_FFD():
 
 
 def test_full_model():
-    json_file = Path("./tests/data/in/testjob.json")
-    assert json_file.exists()
+    json_job = Path("./tests/data/in/testjob.json")
+    assert json_job.exists()
 
-    with open(json_file, "r") as encoded_job:
+    json_result = Path("./tests/data/out/testresult.json")
+
+    with open(json_job, "r") as encoded_job:
         job = Job.parse_raw(encoded_job.read())
 
-        solved = _solve_gapfill(job)
+        solved = distribute(job)
 
         encoded_solved = solved.json()
         assert len(encoded_solved) > 20
+
+    with open(json_result, "r") as encoded_result:
+        result = Result.parse_raw(encoded_result.read())
+
+        assert solved == result
