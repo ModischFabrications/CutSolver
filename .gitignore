@@ -1,5 +1,4 @@
 *.idea
-*/data/*
 *__pycache__
 
 # Pipfile is just for debugging

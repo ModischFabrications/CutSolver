@@ -1,9 +1,11 @@
 #!python3
 import copy
 from itertools import permutations
+from time import perf_counter
 from typing import Collection, Tuple, List
 
-from app.model.Job import Job, Result, SolverType
+from app.model.Job import Job
+from app.model.Result import SolverType, Result
 
 # backend parameter
 n_max_precise = 10  # 10! calculations, around 3 million
@@ -15,14 +17,20 @@ def distribute(job: Job) -> Result:
     # optimize before distibuting
     # job.compress()
 
-    if len(job) < n_max_precise:
-        return _solve_bruteforce(job)
-    elif len(job) < n_max_good:
-        return _solve_FFD(job)
-    elif len(job) < n_max:
-        return _solve_gapfill(job)
+    result: Result
+    time: float = perf_counter()
+
+    if len(job) <= n_max_precise:
+        result = _solve_bruteforce(job)
+    elif len(job) <= n_max_good:
+        result = _solve_FFD(job)
+    elif len(job) <= n_max:
+        result = _solve_gapfill(job)
     else:
         raise OverflowError("Input too large")
+
+    result.time_us = int((perf_counter() - time) * 1000 * 1000)
+    return result
 
 
 # CPU-bound
@@ -34,27 +42,27 @@ def _solve_bruteforce(job: Job) -> Result:
 
     # find every possible ordering (n! elements)
     all_orderings = permutations(job.get_sizes())
-    # TODO: remove duplicates (due to "amount")
+    # TODO: remove duplicates (due to "quantity")
 
     # "infinity"
-    min_trimmings = len(job) * job.length_stock
+    min_trimmings = len(job) * job.max_length
     min_stocks: List[List[int]] = []
 
     # possible improvement: Distribute combinations to multiprocessing worker threads
     for combination in all_orderings:
-        stocks, trimmings = _split_combination(combination, job.length_stock, job.cut_width)
+        stocks, trimmings = _split_combination(combination, job.max_length, job.cut_width)
         if trimmings < min_trimmings:
             min_stocks = stocks
             min_trimmings = trimmings
 
-    return Result(stocks=min_stocks, solver=SolverType.bruteforce)
+    return Result(solver_type=SolverType.bruteforce, lengths=min_stocks)
 
 
-def _split_combination(combination: Tuple[int], length_stock: int, cut_width: int):
+def _split_combination(combination: Tuple[int], max_length: int, cut_width: int):
     """
     Collects sizes until length is reached, then starts another stock
     :param combination:
-    :param length_stock:
+    :param max_length:
     :param cut_width:
     :return:
     """
@@ -64,10 +72,10 @@ def _split_combination(combination: Tuple[int], length_stock: int, cut_width: in
     current_size = 0
     current_stock: List[int] = []
     for size in combination:
-        if (current_size + size + cut_width) > length_stock:
+        if (current_size + size + cut_width) > max_length:
             # start next stock
             stocks.append(current_stock)
-            trimmings += _get_trimming(length_stock, current_stock, cut_width)
+            trimmings += _get_trimming(max_length, current_stock, cut_width)
             current_size = 0
             current_stock: List[int] = []
 
@@ -76,11 +84,11 @@ def _split_combination(combination: Tuple[int], length_stock: int, cut_width: in
     # catch leftovers
     if current_stock:
         stocks.append(current_stock)
-        trimmings += _get_trimming(length_stock, current_stock, cut_width)
+        trimmings += _get_trimming(max_length, current_stock, cut_width)
     return stocks, trimmings
 
 
-# TODO: check if time varies with len(TargetSize) or TargetSize.amount
+# TODO: check if time varies with len(TargetSize) or TargetSize.quantity
 # this might actually be worse than FFD (both in runtime and solution)
 # O(n^2) ??
 def _solve_gapfill(job: Job) -> Result:
@@ -113,15 +121,15 @@ def _solve_gapfill(job: Job) -> Result:
 
         current_target = targets[i_target]
         # target fits inside current stock, transfer to results
-        if (current_size + current_target.length + job.cut_width) < job.length_stock:
+        if (current_size + current_target.length + job.cut_width) < job.max_length:
             current_stock.append(current_target.length)
             current_size += current_target.length + job.cut_width
 
             # remove empty entries
-            if current_target.amount <= 1:
+            if current_target.quantity <= 1:
                 targets.remove(current_target)
             else:
-                current_target.amount -= 1
+                current_target.quantity -= 1
         # try smaller
         else:
             i_target += 1
@@ -131,7 +139,7 @@ def _solve_gapfill(job: Job) -> Result:
         stocks.append(current_stock)
 
     # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return Result(stocks=stocks, solver=SolverType.gapfill)
+    return Result(solver_type=SolverType.gapfill, lengths=stocks)
 
 
 # textbook solution, guaranteed to need at most double
@@ -160,7 +168,7 @@ def _solve_FFD(job: Job) -> Result:
 
         for i, stock in enumerate(stocks):
             # step through existing stocks until current size fits
-            if (job.length_stock - stock_lengths[i]) > current_size.length:
+            if (job.max_length - stock_lengths[i]) > current_size.length:
                 # add size
                 stock.append(current_size.length)
                 stock_lengths[i] += job.cut_width + current_size.length
@@ -172,19 +180,19 @@ def _solve_FFD(job: Job) -> Result:
             assert len(stocks) == len(stock_lengths)
 
         # decrease/get next
-        if current_size.amount <= 1:
+        if current_size.quantity <= 1:
             i_target += 1
         else:
-            current_size.amount -= 1
+            current_size.quantity -= 1
 
-    return Result(stocks=stocks, solver=SolverType.FFD)
+    return Result(solver_type=SolverType.FFD, lengths=stocks)
 
 
-def _get_trimming(length_stock: int, lengths: Collection[int], cut_width: int) -> int:
+def _get_trimming(max_length: int, lengths: Collection[int], cut_width: int) -> int:
     sum_lengths = sum(lengths)
     sum_cuts = len(lengths) * cut_width
 
-    trimmings = length_stock - (sum_lengths + sum_cuts)
+    trimmings = max_length - (sum_lengths + sum_cuts)
 
     if trimmings < 0:
         raise OverflowError

@@ -2,8 +2,8 @@ from app.model.Job import Job, TargetSize
 
 
 def test_job_generator():
-    job = Job(length_stock=1550, target_sizes=(
-        TargetSize(length=500, amount=4), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
+    job = Job(max_length=1550, target_sizes=(
+        TargetSize(length=500, quantity=4), TargetSize(length=200, quantity=3), TargetSize(length=100, quantity=2)),
               cut_width=5)
 
     resulting_list = []
@@ -14,9 +14,9 @@ def test_job_generator():
 
 
 def test_job_dunders():
-    job1 = Job(length_stock=100, target_sizes=(TargetSize(length=100, amount=2), TargetSize(length=200, amount=1)),
+    job1 = Job(max_length=100, target_sizes=(TargetSize(length=100, quantity=2), TargetSize(length=200, quantity=1)),
                cut_width=0)
-    job2 = Job(length_stock=100, target_sizes=(TargetSize(length=100, amount=2), TargetSize(length=200, amount=1)),
+    job2 = Job(max_length=100, target_sizes=(TargetSize(length=100, quantity=2), TargetSize(length=200, quantity=1)),
                cut_width=0)
 
     assert job1 == job2

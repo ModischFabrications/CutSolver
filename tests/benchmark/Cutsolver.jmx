@@ -33,19 +33,19 @@
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
   &quot;cut_width&quot;: 2,&#xd;
-  &quot;length_stock&quot;: 1500,&#xd;
+  &quot;max_length&quot;: 1500,&#xd;
   &quot;target_sizes&quot;: [&#xd;
     {&#xd;
       &quot;length&quot;: 500,&#xd;
-      &quot;amount&quot;: 6&#xd;
+      &quot;quantity&quot;: 6&#xd;
     },&#xd;
     {&#xd;
       &quot;length&quot;: 300,&#xd;
-      &quot;amount&quot;: 4&#xd;
+      &quot;quantity&quot;: 4&#xd;
     },&#xd;
     {&#xd;
       &quot;length&quot;: 100,&#xd;
-      &quot;amount&quot;: 4&#xd;
+      &quot;quantity&quot;: 4&#xd;
     }&#xd;
   ]&#xd;
 }</stringProp>

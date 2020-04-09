@@ -7,7 +7,7 @@ from app.model.Job import TargetSize, Job
 
 
 def test_trimmings():
-    trimming = _get_trimming(length_stock=1500, lengths=(300, 400, 600, 100), cut_width=2)
+    trimming = _get_trimming(max_length=1500, lengths=(300, 400, 600, 100), cut_width=2)
 
     assert trimming == 92
 
@@ -19,8 +19,8 @@ def test_trimmings_raise():
 
 
 def generate_testjob():
-    return Job(length_stock=900, target_sizes=(
-        TargetSize(length=500, amount=2), TargetSize(length=200, amount=3), TargetSize(length=100, amount=2)),
+    return Job(max_length=900, target_sizes=(
+        TargetSize(length=500, quantity=2), TargetSize(length=200, quantity=3), TargetSize(length=100, quantity=2)),
                cut_width=0)
 
 
@@ -30,7 +30,7 @@ def test_bruteforce():
     cmp_job = job.copy(deep=True)
     solved = _solve_bruteforce(job)
 
-    assert solved.solver == "bruteforce"
+    assert solved.solver_type == "bruteforce"
     assert cmp_job == job
 
 
@@ -40,7 +40,7 @@ def test_gapfill():
     cmp_job = job.copy(deep=True)
     solved = _solve_gapfill(job)
 
-    assert solved.solver == "gapfill"
+    assert solved.solver_type == "gapfill"
     assert cmp_job == job
 
 
@@ -50,12 +50,12 @@ def test_FFD():
     cmp_job = job.copy(deep=True)
     solved = _solve_FFD(job)
 
-    assert solved.solver == "FFD"
+    assert solved.solver_type == "FFD"
     assert cmp_job == job
 
 
 def test_full_model():
-    json_file = Path("./tests/testjob.json")
+    json_file = Path("./tests/data/in/testjob.json")
     assert json_file.exists()
 
     with open(json_file, "r") as encoded_job:

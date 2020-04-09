@@ -16,8 +16,8 @@ class CutSolverBenchmark(unittest.TestCase):
 
     @staticmethod
     def test_benchmark():
-        job = Job(length_stock=1200, target_sizes=(
-            TargetSize(length=300, amount=3), TargetSize(length=200, amount=3), TargetSize(length=100, amount=3)),
+        job = Job(max_length=1200, target_sizes=(
+            TargetSize(length=300, quantity=3), TargetSize(length=200, quantity=3), TargetSize(length=100, quantity=3)),
                   cut_width=0)
 
         start = time.perf_counter()
@@ -46,20 +46,20 @@ class CutSolverBenchmark(unittest.TestCase):
         t_FFD = time.perf_counter() - t_gapfill
 
         print(f"[Runtime] Gapfill: {t_gapfill:.2f}s, FFD: {t_FFD:.2f}s")
-        print(f"[Quality] Gapfill: {len(solved_gapfill.stocks)} stocks, FFD: {len(solved_FFD.stocks)} stocks")
+        print(f"[Quality] Gapfill: {len(solved_gapfill.lengths)} stocks, FFD: {len(solved_FFD.lengths)} stocks")
 
 
 def random_job() -> Job:
-    length_stock = random.randint(1000, 2000)
+    max_length = random.randint(1000, 2000)
     cut_width = random.randint(0, 10)
 
     n_sizes = random.randint(5, 10)
 
     sizes = []
     for i in range(n_sizes):
-        sizes.append(TargetSize(length=random.randint(10, 1000), amount=random.randint(1, 20)))
+        sizes.append(TargetSize(length=random.randint(10, 1000), quantity=random.randint(1, 20)))
 
-    return Job(length_stock=length_stock, target_sizes=sizes, cut_width=cut_width)
+    return Job(max_length=max_length, target_sizes=sizes, cut_width=cut_width)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,3 @@
-from enum import Enum, unique
 from typing import Iterator, List
 
 from pydantic import BaseModel
@@ -6,7 +5,7 @@ from pydantic import BaseModel
 
 class TargetSize(BaseModel):
     length: int
-    amount: int
+    quantity: int
 
     def __lt__(self, other):
         """
@@ -15,11 +14,11 @@ class TargetSize(BaseModel):
         return self.length < other.length
 
     def __str__(self):
-        return f"l:{self.length}, n:{self.amount}"
+        return f"l:{self.length}, n:{self.quantity}"
 
 
 class Job(BaseModel):
-    length_stock: int
+    max_length: int
     target_sizes: List[TargetSize]
     cut_width: int = 0
 
@@ -30,7 +29,7 @@ class Job(BaseModel):
         yields all lengths
         """
         for size in self.target_sizes:
-            for i in range(size.amount):
+            for i in range(size.quantity):
                 yield size.length
 
     def compress(self):
@@ -43,22 +42,9 @@ class Job(BaseModel):
         """
         Number of target sizes in job
         """
-        return sum(target.amount for target in self.target_sizes)
+        return sum(target.quantity for target in self.target_sizes)
 
     def __eq__(self, other):
-        return self.length_stock == other.length_stock and \
+        return self.max_length == other.max_length and \
                self.target_sizes == other.target_sizes and \
                self.cut_width == other.cut_width
-
-
-@unique
-class SolverType(str, Enum):  # str as base enables Pydantic-Schemas
-    bruteforce = "bruteforce"
-    gapfill = "gapfill"
-    FFD = "FFD"
-
-
-class Result(BaseModel):
-    stocks: List[List[int]]
-    # no trimmings as they can be inferred from stocks
-    solver: SolverType
