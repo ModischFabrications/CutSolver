@@ -21,3 +21,12 @@ def test_job_dunders():
 
     assert job1 == job2
     assert len(job1) == 3
+
+
+def test_compress():
+    job = Job(max_length=100, target_sizes=(TargetSize(length=100, quantity=2), TargetSize(length=100, quantity=3)),
+              cut_width=0)
+    job.compress()
+    compressed_job = Job(max_length=100, target_sizes=([TargetSize(length=100, quantity=5)]), cut_width=0)
+
+    assert job == compressed_job

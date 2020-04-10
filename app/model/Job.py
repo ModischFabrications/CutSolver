@@ -36,7 +36,17 @@ class Job(BaseModel):
         """
         join TargetSizes that have the same length
         """
-        raise NotImplementedError()
+        known_sizes = dict()
+
+        # list to dict to make them unique
+        for size in self.target_sizes:
+            if size.length in known_sizes:
+                known_sizes[size.length] += size.quantity
+            else:
+                known_sizes[size.length] = size.quantity
+
+        # back to list again for compatibility
+        self.target_sizes = [TargetSize(length=l, quantity=q) for (l, q) in known_sizes.items()]
 
     def __len__(self) -> int:
         """
