@@ -12,7 +12,8 @@ from app.model.Result import Result
 version = "0.1"
 
 app = FastAPI(
-    title="CutSolverBackend"
+    title="CutSolverBackend",
+    version=version
 )
 
 
@@ -45,7 +46,7 @@ app.add_middleware(CORSMiddleware,
 
 # response model ensures correct documentation
 @app.post("/solve", response_model=Result)
-def solve(job: Job):
+def post_solve(job: Job):
     assert job.__class__ == Job
     assert job.valid()
 
@@ -56,7 +57,7 @@ def solve(job: Job):
 
 
 @app.get("/debug", response_class=HTMLResponse)
-def debug_info():
+def get_debug():
     static_answer = f"Debug Infos:" \
                     f"<ul>" \
                     f"<li>System: {platform.system()}</li>" \
@@ -69,7 +70,7 @@ def debug_info():
 
 # content_type results in browser pretty printing
 @app.get("/", response_class=HTMLResponse)
-def index():
+def get_root():
     static_answer = f"<h2>Hello from {platform.node()}!</h2>" \
                     f"<h3>Have a look at the documentation at <a href=\"/docs\">/docs</a> for usage hints.</h3>" \
                     f"Debug information are at <a href=\"/debug\">/debug</a>"
@@ -78,10 +79,15 @@ def index():
 
 
 @app.get("/about", response_class=HTMLResponse)
-def about():
+def get_about():
     text = 'Visit <a href="https://github.com/ModischFabrications/CutSolver">' \
            'the repository</a> for further informations.'
     return text
+
+
+@app.get("/version", response_class=PlainTextResponse)
+def get_version():
+    return version
 
 
 # for debugging only
