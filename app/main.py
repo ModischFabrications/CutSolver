@@ -2,15 +2,32 @@ import platform
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import HTMLResponse
+from starlette.requests import Request
+from starlette.responses import HTMLResponse, PlainTextResponse
 
 from app.model.CutSolver import distribute
 from app.model.Job import Job
 from app.model.Result import Result
 
+version = "0.1"
+
 app = FastAPI(
     title="CutSolverBackend"
 )
+
+
+# needs to be before CORS!
+# https://github.com/tiangolo/fastapi/issues/775#issuecomment-592946834
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        # TODO: filter out expected exceptions and let unexpected ones go?
+        # probably want some kind of logging here
+        return PlainTextResponse(str(e), status_code=400)
+
+
+app.middleware('http')(catch_exceptions_middleware)
 
 cors_origins = [
     "http:localhost",
