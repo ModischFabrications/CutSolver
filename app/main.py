@@ -16,8 +16,10 @@ app = FastAPI(
 @app.post("/solve", response_model=Result)
 def solve(job: Job):
     assert job.__class__ == Job
+    assert job.valid()
 
-    solved = distribute(job)
+    solved: Result = distribute(job)
+    assert solved.valid()
 
     return solved
 
