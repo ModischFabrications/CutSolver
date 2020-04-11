@@ -2,6 +2,7 @@
 # try switching again after 2019/10
 FROM python:3.7
 EXPOSE 80
+HEALTHCHECK --interval=5m --timeout=5s CMD curl -s http://localhost:80/ || exit 1
 
 # install additional dependencies
 # (was pipenv previously but had problems with alpine)
