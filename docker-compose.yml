@@ -7,4 +7,4 @@ services:
     # image: modischfabrications/cutsolver:latest
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8000:80"

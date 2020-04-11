@@ -1,6 +1,7 @@
 import platform
 
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse
 
 from app.model.CutSolver import distribute
@@ -10,6 +11,19 @@ from app.model.Result import Result
 app = FastAPI(
     title="CutSolverBackend"
 )
+
+cors_origins = [
+    "http:localhost",
+    "https:localhost",
+    "http:localhost:8080",
+    "*"  # this might be dangerous
+]
+
+app.add_middleware(CORSMiddleware,
+                   allow_origins=cors_origins,
+                   allow_credentials=True,
+                   allow_methods=["*"],
+                   allow_headers=["*"])
 
 
 # response model ensures correct documentation
