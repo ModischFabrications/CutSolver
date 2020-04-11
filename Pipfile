@@ -4,9 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
-fastapi = "==0.20.1"
-uvicorn = "*"
+pytest = "==5.4.1"
+fastapi = "==0.54.1"
+uvicorn = "==0.11.3"
 
 [packages]
 fastapi = "==0.54.1"
