@@ -7,7 +7,9 @@ from app.model.CutSolver import distribute
 from app.model.Job import Job
 from app.model.Result import Result
 
-app = FastAPI()
+app = FastAPI(
+    title="CutSolverBackend"
+)
 
 
 # response model ensures correct documentation
@@ -23,11 +25,11 @@ def solve(job: Job):
 @app.get("/debug", response_class=HTMLResponse)
 def debug_info():
     static_answer = f"Debug Infos:" \
-        f"<ul>" \
-        f"<li>System: {platform.system()}</li>" \
-        f"<li>Architecture: {platform.machine()}</li>" \
-        f"<li>Python Version: {platform.python_version()}</li>" \
-        f"<li>Python Impl: {platform.python_implementation()}</li>"
+                    f"<ul>" \
+                    f"<li>System: {platform.system()}</li>" \
+                    f"<li>Architecture: {platform.machine()}</li>" \
+                    f"<li>Python Version: {platform.python_version()}</li>" \
+                    f"<li>Python Impl: {platform.python_implementation()}</li>"
 
     return static_answer
 
@@ -36,8 +38,8 @@ def debug_info():
 @app.get("/", response_class=HTMLResponse)
 def index():
     static_answer = f"<h2>Hello from {platform.node()}!</h2>" \
-        f"<h3>Have a look at the documentation at <a href=\"/docs\">/docs</a> for usage hints.</h3>" \
-        f"Debug information are at <a href=\"/debug\">/debug</a>"
+                    f"<h3>Have a look at the documentation at <a href=\"/docs\">/docs</a> for usage hints.</h3>" \
+                    f"Debug information are at <a href=\"/debug\">/debug</a>"
 
     return static_answer
 
