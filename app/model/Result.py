@@ -26,3 +26,6 @@ class Result(BaseModel):
         return self.solver_type == other.solver_type and \
                self.time_us == other.time_us and \
                self.lengths == other.lengths
+
+    def valid(self):
+        return self.solver_type in SolverType and self.time_us >= 0 and len(self.lengths) > 0
