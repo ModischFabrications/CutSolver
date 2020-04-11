@@ -8,14 +8,14 @@ from app.model.Job import Job
 from app.model.Result import SolverType, Result
 
 # backend parameter
-n_max_precise = 10  # 10! calculations, around 3 million
+n_max_precise = 9  # 10 takes 30s on a beefy desktop, 9 only 1.2s
 n_max_good = 100
 n_max = 500  # around 1 million with n^2
 
 
 def distribute(job: Job) -> Result:
     # optimize before distibuting
-    # job.compress()
+    job.compress()
 
     result: Result
     time: float = perf_counter()
