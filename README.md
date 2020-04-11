@@ -32,13 +32,16 @@ The easiest (and advised) way to deploy this is by using Docker.
 Both `linux/amd64` and `linux/arm/v7` are currently supported, message me if you use another platform. 
 
 You don't need to checkout this repository, I am building images and pushing them to Docker Hub.
-Download and start this container by running: `docker run [--rm -it] -p80:80 modischfabrications/cutsolver:latest`
+Download and start this container by using the provided docker-compose file or running: 
+`docker run [--rm -it] -p80:80 modischfabrications/cutsolver:latest`. 
 
-Note: Replace `latest` with a version number if you depend on this interface, I can't guarantee that nothing will ever change.
+Note: Replace `latest` with a version number if you depend on this interface, I can guarantee you that the interface 
+will change randomly however I think is best at that moment.
 
 ### Local build
-1.  Build and start this image using `docker-compose up`
-2. (wait a while for uvloop to build...)
+1. Build and start this image using `docker-compose up`
+2. wait a while for uvloop to build... (1000s)
+3. See usage for interactions.
 
 ## Developing
 Feel free to contact me or make a pull-request if you want to participate in it.
@@ -53,8 +56,9 @@ Update Docker Hub with the following steps:
     2. `docker buildx create --name multibuilder --use`
 2. `docker login -u modischfabrications`
 3. `docker buildx build --platform linux/amd64,linux/arm/v7 -t modischfabrications/cutsolver:latest --push .`
-4. Wait for > 20min for uvloop to build...
-5. Check <https://hub.docker.com/repository/docker/modischfabrications/cutsolver>
+4. wait a while for uvloop to build... (1000s)
+5. wait for all layers to be pushed... (400s)
+6. Check <https://hub.docker.com/repository/docker/modischfabrications/cutsolver>
 
 ## Dependencies
 *Everything should be handled by Docker*
