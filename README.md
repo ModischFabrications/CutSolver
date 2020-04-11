@@ -7,15 +7,22 @@
 [![Rating](https://img.shields.io/badge/rating-awesome-brightgreen.svg)](#)
 
 This API can be used to solve the 2D "Cutting Stock Problem", which is NP-hard. It can be reduced to the Bin-Packing-Problem (BPP).
+It seems like no other free service tackles this specific problem in an easy to use format, so this is my attempt. 
 
-No efficient algorithm exists to calculate a perfect solution in an acceptable timeframe, therefore brute force (perfect solution) is used for small jobs and a heuristic (fast solution) für larger ones. 
+No efficient algorithm exists to calculate a perfect solution in an acceptable timeframe, therefore brute force (perfect solution) 
+is used for small jobs and a heuristic (fast solution) für larger ones. 
 
 This Solver is using ints exclusively, as there is no need for arbitrary precision yet. 
 It also has no concept of units so you can use whatever you want.
 
 *Hint: Try using mm instead of cm if you have fractions.*
 
+![cutsolver](https://user-images.githubusercontent.com/25404728/53304884-fb9c4980-387a-11e9-9a49-330369befc44.png)
+
+
 ## Usage
+*This is a backend, see [CutSolverFrontend](https://github.com/ModischFabrications/CutSolverFrontend) for a human usable version. *
+
 Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
 
 The easiest (and advised) way to deploy this is by using Docker.
@@ -33,24 +40,21 @@ Note: Replace `latest` with a version number if you depend on this interface, I 
 1.  Build and start this image using `docker-compose up`
 2. (wait a while for uvloop to build...)
 
-## Visualisation
+## Developing
+Feel free to contact me or make a pull-request if you want to participate in it.
 
-![cutsolver](https://user-images.githubusercontent.com/25404728/53304884-fb9c4980-387a-11e9-9a49-330369befc44.png)
-## Roadmap
-I would like to have a frontend for a visualisation, look at https://github.com/ModischFabrications/CutSolver/issues/4 if you have some knowledge about frontends and would like to contribute.
-
-### Support welcome
-It seems like no other free service tackles this specific problem in an easy to use format, so this is my attempt. Feel free to contact me or make a pull-request if you want to participate in it.
-
-### Declined
-Having workers and a queue with pending jobs was considered but seemed useless, 
-as ideally all requests have their own thread and a (by comparison) short calculation time.
-This makes a queue useless. The same argumentation also holds true for a result-buffer.
-
-## Contributing
 Make sure to execute `pipenv lock -r > requirements.txt && pipenv lock -r --dev > dev-requirements.txt` when updating "Pipfile".
 
 Rebuild the docker image with `docker-compose up --build` and check uncompressed image size with `docker-compose images`.
+
+Update Docker Hub with the following steps:
+1. Installation (once)
+    1. check "experimental features" in Docker Desktop
+    2. `docker buildx create --name multibuilder --use`
+2. `docker login -u modischfabrications`
+3. `docker buildx build --platform linux/amd64,linux/arm/v7 -t modischfabrications/cutsolver:latest --push .`
+4. Wait for > 20min for uvloop to build...
+5. Check <https://hub.docker.com/repository/docker/modischfabrications/cutsolver>
 
 ## Dependencies
 *Everything should be handled by Docker*
