@@ -1,8 +1,8 @@
 -i https://pypi.org/simple
-click==7.0
-fastapi==0.20.1
-h11==0.8.1
-pydantic==0.23
-starlette==0.11.1
-uvicorn==0.7.1
-websockets==7.0
+click==7.1.1
+fastapi==0.54.1
+h11==0.9.0
+pydantic==1.4
+starlette==0.13.2
+uvicorn==0.11.3
+websockets==8.1
