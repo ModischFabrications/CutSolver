@@ -29,7 +29,7 @@ class Job(BaseModel):
         yields all lengths
         """
         for size, quantity in self.target_sizes.items():
-            for i in range(quantity):
+            for _ in range(quantity):
                 yield size
 
     def sizes_from_list(self, sizes_list: List[TargetSize]):

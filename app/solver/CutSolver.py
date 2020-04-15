@@ -161,8 +161,6 @@ def _solve_FFD(job: Job) -> List[List[int]]:
     mutable_sizes = copy.deepcopy(job.sizes_as_list())
     sizes = sorted(mutable_sizes, reverse=True)
 
-    assert len(sizes) > 0
-
     stocks: List[List[int]] = [[]]
     stock_lengths: List[int] = [0]
 
@@ -181,8 +179,6 @@ def _solve_FFD(job: Job) -> List[List[int]]:
         else:  # nothing fit, opening next bin
             stocks.append([current_size.length])
             stock_lengths.append(0)
-
-            assert len(stocks) == len(stock_lengths)
 
         # decrease/get next
         if current_size.quantity <= 1:

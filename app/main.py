@@ -44,10 +44,10 @@ app.add_middleware(CORSMiddleware,
                    allow_headers=["*"])
 
 
-# response solver ensures correct documentation
+# response model ensures correct documentation
 @app.post("/solve", response_model=Result)
 def post_solve(job: Job):
-    assert job.__class__ == Job
+    # pydantic guarantees type safety
     job.assert_valid()
 
     solved: Result = distribute(job)
