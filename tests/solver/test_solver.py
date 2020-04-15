@@ -23,31 +23,31 @@ def test_trimmings_raise():
 def test_bruteforce():
     job = generate_testjob()
 
-    cmp_job = job.copy(deep=True)
+    orig_job = job.copy(deep=True)
     solved = _solve_bruteforce(job)
 
-    assert solved.solver_type == "bruteforce"
-    assert cmp_job == job
+    assert solved == [[500, 500, 200, 200], [200, 200]]
+    assert orig_job == job
 
 
 def test_gapfill():
     job = generate_testjob()
 
-    cmp_job = job.copy(deep=True)
+    orig_job = job.copy(deep=True)
     solved = _solve_gapfill(job)
 
-    assert solved.solver_type == "gapfill"
-    assert cmp_job == job
+    assert solved == [[500, 500, 200, 200], [200, 200]]
+    assert orig_job == job
 
 
 def test_FFD():
     job = generate_testjob()
 
-    cmp_job = job.copy(deep=True)
+    orig_job = job.copy(deep=True)
     solved = _solve_FFD(job)
 
-    assert solved.solver_type == "FFD"
-    assert cmp_job == job
+    assert solved == [[500, 500, 200, 200], [200, 200]]
+    assert orig_job == job
 
 
 def test_full_model():

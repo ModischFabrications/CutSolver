@@ -14,50 +14,51 @@ n_max = 500  # around 1 million with n^2
 
 
 def distribute(job: Job) -> Result:
-    # optimize before distibuting
-    job.compress()
-
-    result: Result
     time: float = perf_counter()
 
+    lengths: List[List[int]]
+    solver_type: SolverType
+
     if len(job) <= n_max_precise:
-        result = _solve_bruteforce(job)
+        lengths = _solve_bruteforce(job)
+        solver_type = SolverType.bruteforce
     elif len(job) <= n_max_good:
-        result = _solve_FFD(job)
+        lengths = _solve_FFD(job)
+        solver_type = SolverType.FFD
     elif len(job) <= n_max:
-        result = _solve_gapfill(job)
+        lengths = _solve_gapfill(job)
+        solver_type = SolverType.gapfill
     else:
         raise OverflowError("Input too large")
 
-    result.time_us = int((perf_counter() - time) * 1000 * 1000)
-    result.job = job
+    time_us = int((perf_counter() - time) * 1000 * 1000)
 
-    return result
+    return Result(job=job, solver_type=solver_type, time_us=time_us, lengths=lengths)
 
 
 # CPU-bound
 # O(n!)
-def _solve_bruteforce(job: Job) -> Result:
+def _solve_bruteforce(job: Job) -> List[List[int]]:
     # failsafe
     if len(job) > 12:
         raise OverflowError("Input too large")
 
     # find every possible ordering (n! elements)
-    all_orderings = permutations(job.get_sizes())
+    all_orderings = permutations(job.iterate_sizes())
     # TODO: remove duplicates (due to "quantity")
 
     # "infinity"
-    min_trimmings = len(job) * job.max_length
-    min_stocks: List[List[int]] = []
+    minimal_trimmings = len(job) * job.max_length
+    best_stock: List[List[int]] = []
 
     # possible improvement: Distribute combinations to multiprocessing worker threads
     for combination in all_orderings:
         stocks, trimmings = _split_combination(combination, job.max_length, job.cut_width)
-        if trimmings < min_trimmings:
-            min_stocks = stocks
-            min_trimmings = trimmings
+        if trimmings < minimal_trimmings:
+            best_stock = stocks
+            minimal_trimmings = trimmings
 
-    return Result(solver_type=SolverType.bruteforce, lengths=min_stocks)
+    return best_stock
 
 
 def _split_combination(combination: Tuple[int], max_length: int, cut_width: int):
@@ -93,14 +94,14 @@ def _split_combination(combination: Tuple[int], max_length: int, cut_width: int)
 # TODO: check if time varies with len(TargetSize) or TargetSize.quantity
 # this might actually be worse than FFD (both in runtime and solution)
 # O(n^2) ??
-def _solve_gapfill(job: Job) -> Result:
+def _solve_gapfill(job: Job) -> List[List[int]]:
     # 1. Sort by magnitude (largest first)
     # 2. stack until limit is reached
     # 3. try smaller as long as possible
     # 4. create new bar
 
     # we are writing around in target sizes, prevent leaking changes to job
-    mutable_sizes = copy.deepcopy(job.target_sizes)
+    mutable_sizes = copy.deepcopy(job.sizes_as_list())
     targets = sorted(mutable_sizes, reverse=True)
 
     stocks = []
@@ -141,12 +142,12 @@ def _solve_gapfill(job: Job) -> Result:
         stocks.append(current_stock)
 
     # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return Result(solver_type=SolverType.gapfill, lengths=stocks)
+    return stocks
 
 
 # textbook solution, guaranteed to need at most double
 # TODO this has ridiculous execution times, check why
-def _solve_FFD(job: Job) -> Result:
+def _solve_FFD(job: Job) -> List[List[int]]:
     # iterate over list of stocks
     # put into first stock that it fits into
 
@@ -155,18 +156,18 @@ def _solve_FFD(job: Job) -> Result:
     # 3. try smaller as long as possible
     # 4. create new bar
 
-    mutable_sizes = copy.deepcopy(job.target_sizes)
-    targets = sorted(mutable_sizes, reverse=True)
+    mutable_sizes = copy.deepcopy(job.sizes_as_list())
+    sizes = sorted(mutable_sizes, reverse=True)
 
-    assert len(targets) > 0
+    assert len(sizes) > 0
 
     stocks: List[List[int]] = [[]]
     stock_lengths: List[int] = [0]
 
     i_target = 0
 
-    while i_target < len(targets):
-        current_size = targets[i_target]
+    while i_target < len(sizes):
+        current_size = sizes[i_target]
 
         for i, stock in enumerate(stocks):
             # step through existing stocks until current size fits
@@ -187,7 +188,7 @@ def _solve_FFD(job: Job) -> Result:
         else:
             current_size.quantity -= 1
 
-    return Result(solver_type=SolverType.FFD, lengths=stocks)
+    return stocks
 
 
 def _get_trimming(max_length: int, lengths: Collection[int], cut_width: int) -> int:
