@@ -14,6 +14,7 @@ class SolverType(str, Enum):  # str as base enables Pydantic-Schemas
 
 
 class Result(BaseModel):
+    # allow IDs to skip redundant transmission for future versions
     job: Job
     solver_type: SolverType
     time_us: int = -1
