@@ -23,6 +23,15 @@ def test_job_dunders():
     assert len(job1) == 3
 
 
+def test_equal_hash():
+    job1 = Job(max_length=100, target_sizes=(TargetSize(length=100, quantity=2), TargetSize(length=200, quantity=1)),
+               cut_width=0)
+    job2 = Job(max_length=100, target_sizes=(TargetSize(length=100, quantity=2), TargetSize(length=200, quantity=1)),
+               cut_width=0)
+
+    assert hash(job1) == hash(job2)
+
+
 def test_compress():
     job = Job(max_length=100, target_sizes=(TargetSize(length=100, quantity=2), TargetSize(length=100, quantity=3)),
               cut_width=0)

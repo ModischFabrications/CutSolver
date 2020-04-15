@@ -19,8 +19,8 @@ class TargetSize(BaseModel):
 
 class Job(BaseModel):
     max_length: int
-    target_sizes: List[TargetSize]
     cut_width: int = 0
+    target_sizes: List[TargetSize]
 
     # utility
 
@@ -59,5 +59,8 @@ class Job(BaseModel):
 
     def __eq__(self, other):
         return self.max_length == other.max_length and \
-               self.target_sizes == other.target_sizes and \
-               self.cut_width == other.cut_width
+               self.cut_width == other.cut_width and \
+               self.target_sizes == other.target_sizes
+
+    def __hash__(self) -> int:
+        return hash((self.max_length, self.cut_width, self.target_sizes))
