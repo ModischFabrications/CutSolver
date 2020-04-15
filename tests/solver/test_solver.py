@@ -2,9 +2,10 @@ from pathlib import Path
 
 import pytest
 
-from app.model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill, _solve_FFD, distribute
-from app.model.Job import Job
-from app.model.Result import Result
+from solver.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill, _solve_FFD, distribute
+from solver.data.Job import Job
+from solver.data.Result import Result
+from tests.test_utils import generate_testjob
 
 
 def test_trimmings():
@@ -19,49 +20,41 @@ def test_trimmings_raise():
         trimming = _get_trimming(1500, (300, 400, 600, 200), 2)
 
 
-def generate_testjob():
-    json_job = Path("./tests/data/in/testjob.json")
-    assert json_job.exists()
-
-    with open(json_job, "r") as encoded_job:
-        return Job.parse_raw(encoded_job.read())
-
-
 def test_bruteforce():
     job = generate_testjob()
 
-    cmp_job = job.copy(deep=True)
+    orig_job = job.copy(deep=True)
     solved = _solve_bruteforce(job)
 
-    assert solved.solver_type == "bruteforce"
-    assert cmp_job == job
+    assert solved == [[500, 500, 200, 200], [200, 200]]
+    assert orig_job == job
 
 
 def test_gapfill():
     job = generate_testjob()
 
-    cmp_job = job.copy(deep=True)
+    orig_job = job.copy(deep=True)
     solved = _solve_gapfill(job)
 
-    assert solved.solver_type == "gapfill"
-    assert cmp_job == job
+    assert solved == [[500, 500, 200, 200], [200, 200]]
+    assert orig_job == job
 
 
 def test_FFD():
     job = generate_testjob()
 
-    cmp_job = job.copy(deep=True)
+    orig_job = job.copy(deep=True)
     solved = _solve_FFD(job)
 
-    assert solved.solver_type == "FFD"
-    assert cmp_job == job
+    assert solved == [[500, 500, 200, 200], [200, 200]]
+    assert orig_job == job
 
 
 def test_full_model():
-    json_job = Path("./tests/data/in/testjob.json")
+    json_job = Path("./tests/res/in/testjob.json")
     assert json_job.exists()
 
-    json_result = Path("./tests/data/out/testresult.json")
+    json_result = Path("./tests/res/out/testresult.json")
 
     with open(json_job, "r") as encoded_job:
         job = Job.parse_raw(encoded_job.read())

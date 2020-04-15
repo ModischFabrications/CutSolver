@@ -14,14 +14,12 @@ is used for small jobs and a heuristic (fast solution) für larger ones.
 
 This Solver is using ints exclusively, as there is no need for arbitrary precision yet. 
 It also has no concept of units so you can use whatever you want.
-
-*Hint: Try using mm instead of cm if you have fractions.*
+Try using mm instead of cm if you have fractions.
 
 ![cutsolver](https://user-images.githubusercontent.com/25404728/53304884-fb9c4980-387a-11e9-9a49-330369befc44.png)
 
-
 ## Usage
-*This is a backend, see [CutSolverFrontend](https://github.com/ModischFabrications/CutSolverFrontend) for a human usable version. *
+*This is a backend, see [CutSolverFrontend](https://github.com/ModischFabrications/CutSolverFrontend) for a human usable version.*
 
 Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
 
