@@ -48,8 +48,10 @@ class Job(BaseModel):
         # back to list again for compatibility
         self.target_sizes = [TargetSize(length=l, quantity=q) for (l, q) in known_sizes.items()]
 
-    def valid(self):
-        return self.max_length > 0 and self.cut_width >= 0 and len(self.target_sizes) > 0
+    def assert_valid(self):
+        # could be extended with texts for each case
+        if self.max_length > 0 and self.cut_width >= 0 and len(self.target_sizes) > 0:
+            raise ValueError("Job is not valid.")
 
     def __len__(self) -> int:
         """

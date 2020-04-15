@@ -48,10 +48,10 @@ app.add_middleware(CORSMiddleware,
 @app.post("/solve", response_model=Result)
 def post_solve(job: Job):
     assert job.__class__ == Job
-    assert job.valid()
+    job.assert_valid()
 
     solved: Result = distribute(job)
-    assert solved.valid()
+    solved.assert_valid()
 
     return solved
 

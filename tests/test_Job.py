@@ -1,3 +1,5 @@
+import pytest
+
 from app.model.Job import Job, TargetSize
 
 
@@ -44,10 +46,11 @@ def test_compress():
 def test_valid():
     job1 = Job(max_length=100, target_sizes=(TargetSize(length=100, quantity=2), TargetSize(length=200, quantity=1)),
                cut_width=0)
-    assert job1.valid()
+    job1.assert_valid()
 
 
 def test_invalid():
     job1 = Job(max_length=0, target_sizes=(TargetSize(length=100, quantity=2), TargetSize(length=200, quantity=1)),
                cut_width=0)
-    assert not job1.valid()
+    with pytest.raises(ValueError):
+        job1.assert_valid()
