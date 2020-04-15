@@ -1,16 +1,13 @@
 from pathlib import Path
 
 # import from app! Modules won't be found otherwise
-from solver.data.Job import TargetSize, Job
+from solver.data.Job import Job
 
 
 def test_to_JSON():
-    target = TargetSize(length=300, quantity=4)
-    assert target.json() == '{"length": 300, "quantity": 4}'
-
-    job = Job(max_length=1200, target_sizes=(target, TargetSize(length=200, quantity=3)), cut_width=0)
-    assert job.json() == '{"max_length": 1200, "target_sizes": [{"length": 300, "quantity": 4}, ' \
-                         '{"length": 200, "quantity": 3}], "cut_width": 0}'
+    job = Job(max_length=1200, cut_width=5, target_sizes={"300": 4, "200": 3})
+    assert job.json() == '{"max_length": 1200, "cut_width": 5, ' \
+                         '"target_sizes": {"300": 4, "200": 3}}'
 
 
 def test_from_JSON():

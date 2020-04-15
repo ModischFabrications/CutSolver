@@ -1,4 +1,4 @@
-from typing import Iterator, List
+from typing import Iterator, Dict, List
 
 from pydantic import BaseModel
 
@@ -20,33 +20,36 @@ class TargetSize(BaseModel):
 class Job(BaseModel):
     max_length: int
     cut_width: int = 0
-    target_sizes: List[TargetSize]
+    target_sizes: Dict[int, int]
 
     # utility
 
-    def get_sizes(self) -> Iterator[int]:
+    def iterate_sizes(self) -> Iterator[int]:
         """
         yields all lengths
         """
-        for size in self.target_sizes:
-            for i in range(size.quantity):
-                yield size.length
+        for size, quantity in self.target_sizes.items():
+            for i in range(quantity):
+                yield size
 
-    def compress(self):
-        """
-        join TargetSizes that have the same length
-        """
+    def sizes_from_list(self, sizes_list: List[TargetSize]):
         known_sizes = dict()
 
         # list to dict to make them unique
-        for size in self.target_sizes:
+        for size in sizes_list:
             if size.length in known_sizes:
                 known_sizes[size.length] += size.quantity
             else:
                 known_sizes[size.length] = size.quantity
 
+        self.target_sizes = known_sizes
+
+    def sizes_as_list(self) -> List[TargetSize]:
+        """
+        Compatibility function
+        """
         # back to list again for compatibility
-        self.target_sizes = [TargetSize(length=l, quantity=q) for (l, q) in known_sizes.items()]
+        return [TargetSize(length=l, quantity=q) for (l, q) in self.target_sizes.items()]
 
     def assert_valid(self):
         if self.max_length <= 0:
@@ -60,7 +63,7 @@ class Job(BaseModel):
         """
         Number of target sizes in job
         """
-        return sum(target.quantity for target in self.target_sizes)
+        return sum(self.target_sizes.values())
 
     def __eq__(self, other):
         return self.max_length == other.max_length and \
