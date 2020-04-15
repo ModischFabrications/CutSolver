@@ -71,4 +71,4 @@ class Job(BaseModel):
                self.target_sizes == other.target_sizes
 
     def __hash__(self) -> int:
-        return hash((self.max_length, self.cut_width, self.target_sizes))
+        return hash((self.max_length, self.cut_width, str(sorted(self.target_sizes.items()))))
