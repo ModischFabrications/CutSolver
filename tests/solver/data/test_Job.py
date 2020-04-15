@@ -43,3 +43,10 @@ def test_invalid():
     invalid_job.max_length = -1
     with pytest.raises(ValueError):
         invalid_job.assert_valid()
+
+
+def test_too_long():
+    job = generate_testjob()
+    job.target_sizes[job.max_length + 1] = 4
+    with pytest.raises(ValueError):
+        job.assert_valid()
