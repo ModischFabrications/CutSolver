@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from solver.data.Job import Job
+from solver.data.Result import Result
 
 
 def generate_testjob():
@@ -16,4 +17,4 @@ def generate_testresult():
     assert json_result.exists()
 
     with open(json_result, "r") as encoded_result:
-        return Job.parse_raw(encoded_result.read())
+        return Result.parse_raw(encoded_result.read())

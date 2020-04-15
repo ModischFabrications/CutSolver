@@ -1,7 +1,7 @@
 {
   "job": {
-    "cut_width": 2,
     "max_length": 1500,
+    "cut_width": 2,
     "target_sizes": {
       "500": 2,
       "200": 4
