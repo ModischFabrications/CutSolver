@@ -2,9 +2,10 @@ from pathlib import Path
 
 import pytest
 
-from app.model.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill, _solve_FFD, distribute
-from app.model.Job import Job
-from app.model.Result import Result
+from solver.CutSolver import _get_trimming, _solve_bruteforce, _solve_gapfill, _solve_FFD, distribute
+from solver.data.Job import Job
+from solver.data.Result import Result
+from tests.test_utils import generate_testjob
 
 
 def test_trimmings():
@@ -58,10 +59,10 @@ def test_FFD():
 
 
 def test_full_model():
-    json_job = Path("./tests/data/in/testjob.json")
+    json_job = Path("./tests/res/in/testjob.json")
     assert json_job.exists()
 
-    json_result = Path("./tests/data/out/testresult.json")
+    json_result = Path("./tests/res/out/testresult.json")
 
     with open(json_job, "r") as encoded_job:
         job = Job.parse_raw(encoded_job.read())

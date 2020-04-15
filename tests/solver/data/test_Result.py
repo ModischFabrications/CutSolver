@@ -1,4 +1,7 @@
-from app.model.Result import Result, SolverType
+import pytest
+
+from solver.data.Result import Result, SolverType
+from tests.test_utils import generate_testjob
 
 
 def test_constructor():

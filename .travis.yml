@@ -21,7 +21,7 @@ install:
   - pip3 install -U -r dev-requirements.txt
 
 script:
-  # python -m appends current path to PYTHONPATH, pytest would not find app.model
+  # python -m appends current path to PYTHONPATH, pytest would not find app.solver
   # it's important to use absolute paths in test files for both files and modules
   - python -m pytest
 

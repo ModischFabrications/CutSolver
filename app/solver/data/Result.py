@@ -3,7 +3,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from model.Job import Job
+from solver.data.Job import Job
 
 
 @unique
@@ -34,5 +34,9 @@ class Result(BaseModel):
 
     def assert_valid(self):
         self.job.assert_valid()
-        if self.solver_type in SolverType and self.time_us >= 0 and len(self.lengths) > 0:
-            raise ValueError("Result is not valid")
+        if self.solver_type not in SolverType:
+            raise ValueError(f"Result has invalid solver_type {self.solver_type}")
+        if self.time_us < 0:
+            raise ValueError(f"Result has invalid time_us {self.time_us}")
+        if len(self.lengths) <= 0:
+            raise ValueError("Result is missing lengths")

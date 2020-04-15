@@ -5,9 +5,9 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, PlainTextResponse
 
-from app.model.CutSolver import distribute
-from app.model.Job import Job
-from app.model.Result import Result
+from solver.CutSolver import distribute
+from solver.data.Job import Job
+from solver.data.Result import Result
 
 version = "0.1"
 
@@ -44,7 +44,7 @@ app.add_middleware(CORSMiddleware,
                    allow_headers=["*"])
 
 
-# response model ensures correct documentation
+# response solver ensures correct documentation
 @app.post("/solve", response_model=Result)
 def post_solve(job: Job):
     assert job.__class__ == Job

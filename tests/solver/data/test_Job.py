@@ -1,6 +1,6 @@
 import pytest
 
-from app.model.Job import Job, TargetSize
+from solver.data.Job import Job, TargetSize
 
 
 def test_job_generator():

@@ -4,8 +4,8 @@ from itertools import permutations
 from time import perf_counter
 from typing import Collection, Tuple, List
 
-from app.model.Job import Job
-from app.model.Result import SolverType, Result
+from solver.data.Job import Job
+from solver.data.Result import SolverType, Result
 
 # backend parameter
 n_max_precise = 9  # 10 takes 30s on a beefy desktop, 9 only 1.2s
@@ -30,6 +30,8 @@ def distribute(job: Job) -> Result:
         raise OverflowError("Input too large")
 
     result.time_us = int((perf_counter() - time) * 1000 * 1000)
+    result.job = job
+
     return result
 
 

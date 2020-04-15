@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # import from app! Modules won't be found otherwise
-from app.model.Job import TargetSize, Job
+from solver.data.Job import TargetSize, Job
 
 
 def test_to_JSON():
@@ -14,7 +14,7 @@ def test_to_JSON():
 
 
 def test_from_JSON():
-    json_file = Path("./tests/data/in/testjob.json")
+    json_file = Path("./tests/res/in/testjob.json")
     assert json_file.exists()
 
     with open(json_file, "r") as encoded_job:
