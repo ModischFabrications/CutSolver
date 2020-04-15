@@ -20,14 +20,6 @@ def test_trimmings_raise():
         trimming = _get_trimming(1500, (300, 400, 600, 200), 2)
 
 
-def generate_testjob():
-    json_job = Path("./tests/data/in/testjob.json")
-    assert json_job.exists()
-
-    with open(json_job, "r") as encoded_job:
-        return Job.parse_raw(encoded_job.read())
-
-
 def test_bruteforce():
     job = generate_testjob()
 
