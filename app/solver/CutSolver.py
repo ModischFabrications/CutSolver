@@ -100,6 +100,7 @@ def _solve_gapfill(job: Job) -> List[List[int]]:
     # 3. try smaller as long as possible
     # 4. create new bar
 
+    # TODO: rewrite to use native map instead
     # we are writing around in target sizes, prevent leaking changes to job
     mutable_sizes = copy.deepcopy(job.sizes_as_list())
     targets = sorted(mutable_sizes, reverse=True)
@@ -156,6 +157,7 @@ def _solve_FFD(job: Job) -> List[List[int]]:
     # 3. try smaller as long as possible
     # 4. create new bar
 
+    # TODO: rewrite to use native map instead
     mutable_sizes = copy.deepcopy(job.sizes_as_list())
     sizes = sorted(mutable_sizes, reverse=True)
 
