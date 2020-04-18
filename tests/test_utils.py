@@ -4,17 +4,16 @@ from app.solver.data.Job import Job
 from app.solver.data.Result import Result
 
 
-def generate_testjob():
-    json_job = Path("./tests/res/in/testjob.json")
-    assert json_job.exists()
+def load_json(json_path: Path):
+    assert json_path.exists()
 
-    with open(json_job, "r") as encoded_job:
-        return Job.parse_raw(encoded_job.read())
+    with json_path.open("r") as encoded_obj:
+        return encoded_obj.read()
+
+
+def generate_testjob():
+    return Job.parse_raw(load_json(Path("./tests/res/in/testjob.json")))
 
 
 def generate_testresult():
-    json_result = Path("./tests/res/out/testresult.json")
-    assert json_result.exists()
-
-    with open(json_result, "r") as encoded_result:
-        return Result.parse_raw(encoded_result.read())
+    return Result.parse_raw(load_json(Path("./tests/res/out/testresult.json")))
