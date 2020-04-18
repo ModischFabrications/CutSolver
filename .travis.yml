@@ -33,11 +33,12 @@ env:
 
 after_success:
   # build once for every deploy, updating both latest and adding a tag
-  - docker build --tag ${IMAGE_NAME}:latest --tag IMAGE_NAME_TAGGED .
+  - docker build --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
 
 deploy:
   - provider: script
     script:
+      # push all tags
       docker login -u ${DOCKERHUB_USER} -p ${DOCKERHUB_PW} && docker push ${IMAGE_NAME}
     on:
       branch: master
