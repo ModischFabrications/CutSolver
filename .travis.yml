@@ -50,5 +50,5 @@ jobs:
             # push all tags
             docker login -u ${DOCKERHUB_USER} -p ${DOCKERHUB_PW} && docker push ${IMAGE_NAME}
           on:
-            # fallback solution to push only from master
-            branch: master
+            # fallback solution to allow pushing from tags, branch is still equal to tag
+            all_branches: true
