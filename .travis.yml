@@ -33,7 +33,7 @@ env:
 
 after_success:
   # build once for every deploy, updating both latest and adding a tag
-  - docker build --tag ${IMAGE_NAME}:latest IMAGE_NAME_TAGGED .
+  - docker build --tag ${IMAGE_NAME}:latest --tag IMAGE_NAME_TAGGED .
 
 deploy:
   - provider: script
