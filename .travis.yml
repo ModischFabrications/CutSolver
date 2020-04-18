@@ -1,5 +1,5 @@
 # this is needed so pip3 can be found
-dist: xenial	
+dist: xenial
 language: python
 
 cache: pip
@@ -18,7 +18,8 @@ matrix:
 
 install:
   # additional dependencies just for testing (mostly pytest)
-  - pip3 install -U -r dev-requirements.txt
+  - pip3 install pipenv
+  - pipenv install --dev
 
 script:
   # python -m appends current path to PYTHONPATH, pytest would not find app.solver
