@@ -1,20 +1,12 @@
-# this is needed so pip3 can be found
-dist: xenial
 language: python
 
-cache: pip
+python:
+  #  - "3.6"
+  - "3.7"
+  #  - "3.8"
+  - "nightly"  # future python
 
-matrix:
-  include:
-    - name: "Python 3.7 on Xenial"
-      python: 3.7
-      dist: xenial
-
-    - name: "Python 3.7 on Windows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
-      before_install: choco install python --version 3.7
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+# windows test dropped as they were too unreliable (2020/04/18)
 
 install:
   # additional dependencies just for testing (mostly pytest)
@@ -22,10 +14,6 @@ install:
   - pipenv install --dev
 
 script:
-  # python -m appends current path to PYTHONPATH, pytest would not find app.solver
-  # it's important to use absolute paths in test files for both files and modules
+  # `python -m` appends current path to PYTHONPATH, `pytest` would not find app.solver
+  # import from app.* (absolute paths) for both files and modules needed
   - python -m pytest
-
-after_success:
-  # this should eventually show code coverage but is not working at the moment
-  - codecov
