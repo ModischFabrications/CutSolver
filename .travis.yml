@@ -41,8 +41,7 @@ jobs:
 
     - stage: deploy to docker hub
       install:
-        - mkdir -p ${HOME}/.docker
-        - echo '{"experimental":"enabled"}' > ${HOME}/.docker/config.json
+        - cat <<< $(jq '.+{"experimental":"enabled"}' ~/.docker/config.json) > ~/.docker/config.json
         - docker buildx create --name multibuilder --use
         - docker buildx inspect multibuilder --bootstrap
       script:
