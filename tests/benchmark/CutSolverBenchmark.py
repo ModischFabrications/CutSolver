@@ -46,7 +46,7 @@ class CutSolverBenchmark(unittest.TestCase):
         t_FFD = time.perf_counter() - t_gapfill
 
         print(f"[Runtime] Gapfill: {t_gapfill:.2f}s, FFD: {t_FFD:.2f}s")
-        print(f"[Quality] Gapfill: {len(solved_gapfill.lengths)} stocks, FFD: {len(solved_FFD.lengths)} stocks")
+        print(f"[Quality] Gapfill: {len(solved_gapfill)} stocks, FFD: {len(solved_FFD)} stocks")
 
 
 def random_job() -> Job:

@@ -17,7 +17,7 @@ def test_trimmings():
 def test_trimmings_raise():
     # raises Error if more stock was used than available
     with pytest.raises(OverflowError):
-        trimming = _get_trimming(1500, (300, 400, 600, 200), 2)
+        _get_trimming(1500, (300, 400, 600, 200), 2)
 
 
 def test_bruteforce():
