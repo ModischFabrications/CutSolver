@@ -22,7 +22,7 @@ stages:
   - name: deploy to docker hub
     # tag = v0.1[.2[.3]]
     # TRAVIS SETS BRANCH = TAG if TAG != ""!
-    if: tag =~ ^v([0-9]+.)+[0-9]$ AND fork = false
+    if: tag =~ ^v([0-9]+.)+[0-9]$ AND fork = false AND type = push
 
 
 jobs:
@@ -37,6 +37,7 @@ jobs:
         # `python -m` appends current path to PYTHONPATH, `pytest` would not find app.solver
         # import from app.* (absolute paths) for both files and modules needed
         - python -m pytest
+        - echo "$TRAVIS_EVENT_TYPE | $TRAVIS_BRANCH | $TRAVIS_TAG"
 
     - stage: deploy to docker hub
       script:
@@ -48,3 +49,6 @@ jobs:
           script:
             # push all tags
             docker login -u ${DOCKERHUB_USER} -p ${DOCKERHUB_PW} && docker push ${IMAGE_NAME}
+        on:
+          # fallback solution to push only from master
+          branch: master
