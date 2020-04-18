@@ -40,9 +40,14 @@ jobs:
         - echo "$TRAVIS_EVENT_TYPE | $TRAVIS_BRANCH | $TRAVIS_TAG"
 
     - stage: deploy to docker hub
+      install:
+        - mkdir -p ${HOME}/.docker
+        - echo '{"experimental":"enabled"}' > ${HOME}/.docker/config.json
+        - docker buildx create --name multibuilder --use
+        - docker buildx inspect multibuilder --bootstrap
       script:
         # build once for every deploy, updating both latest and adding a tag
-        - docker build --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
+        - docker buildx build --platform linux/amd64,linux/arm/v7 --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
 
       deploy:
         - provider: script
