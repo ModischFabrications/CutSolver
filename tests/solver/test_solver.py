@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pytest
 
-from solver.data.Job import Job
-from solver.data.Result import Result
-from solver.solver import _get_trimming, _solve_bruteforce, _solve_gapfill, _solve_FFD, distribute
+from app.solver.data.Job import Job
+from app.solver.data.Result import Result
+from app.solver.solver import _get_trimming, _solve_bruteforce, _solve_gapfill, _solve_FFD, distribute
 from tests.test_utils import generate_testjob
 
 

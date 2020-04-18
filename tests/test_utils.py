@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from solver.data.Job import Job
-from solver.data.Result import Result
+from app.solver.data.Job import Job
+from app.solver.data.Result import Result
 
 
 def generate_testjob():

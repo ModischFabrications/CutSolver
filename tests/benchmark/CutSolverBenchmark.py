@@ -2,8 +2,8 @@ import random
 import time
 import unittest
 
-from solver.data.Job import TargetSize, Job
-from solver.solver import _solve_bruteforce, _solve_gapfill, _solve_FFD
+from app.solver.data.Job import TargetSize, Job
+from app.solver.solver import _solve_bruteforce, _solve_gapfill, _solve_FFD
 
 
 # from tests.CutSolverBenchmark import CutSolverBenchmark

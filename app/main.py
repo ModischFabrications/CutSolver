@@ -5,9 +5,9 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, PlainTextResponse
 
-from solver.data.Job import Job
-from solver.data.Result import Result
-from solver.solver import distribute
+from app.solver.data.Job import Job
+from app.solver.data.Result import Result
+from app.solver.solver import distribute
 
 version = "0.2"
 

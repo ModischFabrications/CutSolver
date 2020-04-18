@@ -3,7 +3,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from solver.data.Job import Job
+from app.solver.data.Job import Job
 
 
 @unique

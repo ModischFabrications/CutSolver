@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # import from app! Modules won't be found otherwise
-from solver.data.Job import Job
+from app.solver.data.Job import Job
 
 
 def test_to_JSON():

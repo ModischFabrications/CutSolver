@@ -1,10 +1,11 @@
 import pytest
 
+from app.solver.data.Job import Job
 from tests.test_utils import generate_testjob
 
 
 def test_iterator():
-    job = generate_testjob()
+    job: Job = generate_testjob()
 
     resulting_list = []
     for length in job.iterate_sizes():
