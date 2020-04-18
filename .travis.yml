@@ -17,6 +17,13 @@ env:
     - IMAGE_NAME=${DOCKERHUB_USER}/cutsolver
     - IMAGE_NAME_TAGGED=${DOCKERHUB_USER}/cutsolver:${TRAVIS_TAG}
 
+stages:
+  - test
+  - name: deploy to docker hub
+    # tag = v0.1[.2[.3]]
+    if: tags =~ ^v([0-9]+.)+[0-9]$ AND branch = master AND fork = false
+
+
 jobs:
   include:
     - stage: test
@@ -31,9 +38,6 @@ jobs:
         - python -m pytest
 
     - stage: deploy to docker hub
-      # tag = v0.1[.2[.3]]
-      if: branch = master AND tags =~ ^v([0-9]+.)+[0-9]$
-
       script:
         # build once for every deploy, updating both latest and adding a tag
         - docker build --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
