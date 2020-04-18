@@ -1,5 +1,6 @@
 *.idea
 *__pycache__
+*.pytest_cache
 
 # Pipfile is just for debugging
 Pipfile.lock

@@ -1,6 +1,7 @@
 *.idea
 .git
 *__pycache__
+*.pytest_cache
 
 # don't copy docker-interactions into docker
 docker_*.sh
