@@ -5,11 +5,11 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, PlainTextResponse
 
-from solver.CutSolver import distribute
 from solver.data.Job import Job
 from solver.data.Result import Result
+from solver.solver import distribute
 
-version = "0.1"
+version = "0.2"
 
 app = FastAPI(
     title="CutSolverBackend",
