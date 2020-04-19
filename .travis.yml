@@ -44,7 +44,7 @@ jobs:
     - stage: deploy to docker hub
       script:
         - source ./multi-arch-docker-ci.sh
-        - set -ex; multi_arch_docker::main; set +x
+        - travis_wait 40 multi_arch_docker::main
         # script:
         # build once for every deploy, updating both latest and adding a tag
         # takes forever, might timeout travis

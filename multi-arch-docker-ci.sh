@@ -71,7 +71,7 @@ function multi_arch_docker::login_to_docker_hub() {
 # Env:
 #   DOCKER_PLATFORMS ... space separated list of Docker platforms to build.
 function multi_arch_docker::build_and_push() {
-  travis_wait 40 docker buildx build \
+  docker buildx build \
     --platform "${DOCKER_PLATFORMS// /,}" \
     -t "$IMAGE_NAME:latest" -t "$IMAGE_NAME:$TRAVIS_TAG" \
     --progress plain \
@@ -79,35 +79,13 @@ function multi_arch_docker::build_and_push() {
     .
 }
 
-# Test all pushed docker images.
-# Env:
-#   DOCKER_PLATFORMS ... space separated list of Docker platforms to test.
-#   IMAGE_NAME ........ docker image base name to test
-#   TAGS ............... space separated list of docker image tags to test.
-function multi_arch_docker::test_all() {
-  for platform in $DOCKER_PLATFORMS; do
-    for tag in $TAGS; do
-      image="${IMAGE_NAME}:${tag}"
-      msg="Testing docker image $image on platform $platform"
-      line="${msg//?/=}"
-      printf '\n%s\n%s\n%s\n' "${line}" "${msg}" "${line}"
-      docker pull -q --platform "$platform" "$image"
-
-      echo -n "Image architecture: "
-      docker run --rm --entrypoint /bin/sh "$image" -c 'uname -m'
-
-      # Run your test on the built image.
-      # docker run --rm -v "$PWD:/mnt" -w /mnt "$image" <your-arguments-here>
-    done
-  done
-}
-
 function multi_arch_docker::main() {
+  set -ex
   # Set docker platforms for which to build (careful, takes forever!)
   export DOCKER_PLATFORMS='linux/amd64'
-  # DOCKER_PLATFORMS+=' linux/arm64'
   # DOCKER_PLATFORMS+=' linux/arm/v6'
   DOCKER_PLATFORMS+=' linux/arm/v7'
+  # DOCKER_PLATFORMS+=' linux/arm64'
 
   export IMAGE_NAME=${DOCKERHUB_USER}/cutsolver
 
@@ -115,5 +93,5 @@ function multi_arch_docker::main() {
   multi_arch_docker::login_to_docker_hub
   multi_arch_docker::build_and_push
   set +x
-  # multi_arch_docker::test_all
+  return 0
 }

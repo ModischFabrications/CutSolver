@@ -35,7 +35,7 @@ Download and start this container by using the provided docker-compose file or r
 `docker run [--rm -it] -p80:80 modischfabrications/cutsolver:latest`. 
 
 Note: Replace `latest` with a version number if you depend on this interface, I can guarantee you that the interface 
-will change randomly however I think is best at that moment.
+will change randomly. It's not like I know what I'm doing, it's more like a learning curve.
 
 ### Local build
 1. Build and start this image using `docker-compose up`
@@ -45,19 +45,30 @@ will change randomly however I think is best at that moment.
 ## Developing
 Feel free to contact me or make a pull-request if you want to participate in it.
 
-Make sure to execute `pipenv lock -r > requirements.txt && pipenv lock -r --dev > dev-requirements.txt` when updating "Pipfile".
+### Prebuild docker images
+Docker Hub should be updated automatically by Travis, but it's a broken mess (#16). 
 
-Rebuild the docker image with `docker-compose up --build` and check uncompressed image size with `docker-compose images`.
 
-Update Docker Hub with the following steps:
-1. Installation (once)
-    1. check "experimental features" in Docker Desktop
-    2. `docker buildx create --name multibuilder --use`
-2. `docker login -u modischfabrications`
-3. `docker buildx build --platform linux/amd64,linux/arm/v7 -t modischfabrications/cutsolver:latest --push .`
-4. wait a while for uvloop to build... (1000s)
-5. wait for all layers to be pushed... (400s)
-6. Check <https://hub.docker.com/repository/docker/modischfabrications/cutsolver>
+Installation of a multibuilder (once):
+check "experimental features" in Docker Desktop.
+```docker buildx create --name multibuilder --use
+docker buildx inspect multibuilder --bootstrap
+```
+Update manually with the following steps:
+```
+docker login -u modischfabrications
+docker buildx build --platform linux/amd64,linux/arm/v7 \
+    -t modischfabrications/cutsolver:### \
+    -t modischfabrications/cutsolver:latest --push .
+# wait a while for uvloop to build... (1000s)
+# wait for all layers to be pushed... (400s)
+
+```
+Check <https://hub.docker.com/repository/docker/modischfabrications/cutsolver> to see results. 
+
+Want to check the size prior to pushing it?
+Rebuild the docker image with `docker-compose up --build` and check uncompressed 
+image size with `docker-compose images`.
 
 ## Dependencies
 *Everything should be handled by Docker*
