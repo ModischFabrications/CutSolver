@@ -45,10 +45,10 @@ jobs:
       install:
         - source ./multi-arch-docker-ci.sh
         - set -ex; multi_arch_docker::main; set +x
-      script:
+      # script:
         # build once for every deploy, updating both latest and adding a tag
         # takes forever, might timeout travis
-        - travis_wait 20 docker buildx build --platform linux/amd64,linux/arm/v7 --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
+        # - travis_wait 20 docker buildx build --platform linux/amd64,linux/arm/v7 --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
 
       deploy:
         - provider: script
