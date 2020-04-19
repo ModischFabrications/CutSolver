@@ -71,7 +71,7 @@ function multi_arch_docker::login_to_docker_hub() {
 # Env:
 #   DOCKER_PLATFORMS ... space separated list of Docker platforms to build.
 function multi_arch_docker::build_and_push() {
-  travis_wait 20 docker buildx build \
+  travis_wait 60 docker buildx build \
     --platform "${DOCKER_PLATFORMS// /,}" \
     -t "$IMAGE_NAME:latest" -t "$IMAGE_NAME:$TRAVIS_TAG" \
     --progress plain \
