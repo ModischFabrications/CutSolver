@@ -6,7 +6,7 @@ RUN pip install pipenv
 RUN pipenv lock -r > requirements.txt
 
 # caches are useless in containers, user needed to make installation portable
-RUN pip install --user --no-cache-dir -r requirements.txt
+RUN pip install --user --no-cache-dir --no-warn-script-location -r requirements.txt
 
 FROM python:3.7-slim
 # copy over the pip installation with all dependencies
