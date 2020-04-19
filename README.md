@@ -54,16 +54,15 @@ check "experimental features" in Docker Desktop.
 ```docker buildx create --name multibuilder --use
 docker buildx inspect multibuilder --bootstrap
 ```
-Update manually with the following steps:
+Update manually with the following steps (replace with version, e.g. v0.3.7):
 ```
 docker login -u modischfabrications
 docker buildx build --platform linux/amd64,linux/arm/v7 \
-    -t modischfabrications/cutsolver:### \
+    -t modischfabrications/cutsolver:<VERSION> \
     -t modischfabrications/cutsolver:latest --push .
-# wait a while for uvloop to build... (1000s)
-# wait for all layers to be pushed... (400s)
-
 ```
+Wait a while for uvloop to build (~1000s) and all layers to be pushed (~400s).
+
 Check <https://hub.docker.com/repository/docker/modischfabrications/cutsolver> to see results. 
 
 Want to check the size prior to pushing it?
