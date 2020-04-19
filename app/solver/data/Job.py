@@ -26,9 +26,11 @@ class Job(BaseModel):
 
     def iterate_sizes(self) -> Iterator[int]:
         """
-        yields all lengths
+        yields all lengths, sorted descending
         """
-        for size, quantity in self.target_sizes.items():
+
+        # sort descending to favor combining larger sizes first
+        for size, quantity in sorted(self.target_sizes.items(), reverse=True):
             for _ in range(quantity):
                 yield size
 

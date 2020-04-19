@@ -10,7 +10,8 @@ This API can be used to solve the 2D "Cutting Stock Problem", which is NP-hard. 
 It seems like no other free service tackles this specific problem in an easy to use format, so this is my attempt. 
 
 No efficient algorithm exists to calculate a perfect solution in an acceptable timeframe, therefore brute force (perfect solution) 
-is used for small jobs and a heuristic (fast solution) für larger ones. 
+is used for small jobs and a heuristic (fast solution) für larger ones. Don't be surprised if you get different results, 
+many combinations have equal trimmings and are therefore seen as equally good. 
 
 This Solver is using ints exclusively, as there is no need for arbitrary precision yet. 
 It also has no concept of units so you can use whatever you want.
