@@ -59,9 +59,9 @@ class Job(BaseModel):
         if self.cut_width < 0:
             raise ValueError(f"Job has invalid cut_width {self.cut_width}")
         if len(self.target_sizes) <= 0:
-            raise ValueError(f"Job is missing target_sizes.")
+            raise ValueError(f"Job is missing target_sizes")
         if any(size > (self.max_length - self.cut_width) for size in self.target_sizes.keys()):
-            raise ValueError(f"Job contains too long target sizes")
+            raise ValueError(f"Job has too long target size")
 
     def __len__(self) -> int:
         """
