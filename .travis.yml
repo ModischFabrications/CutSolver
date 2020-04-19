@@ -49,12 +49,3 @@ jobs:
         # build once for every deploy, updating both latest and adding a tag
         # takes forever, might timeout travis
         # - travis_wait 20 docker buildx build --platform linux/amd64,linux/arm/v7 --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
-
-      deploy:
-        - provider: script
-          script:
-            # push all tags
-            docker login -u ${DOCKERHUB_USER} -p ${DOCKERHUB_PW} && docker push ${IMAGE_NAME}
-          on:
-            # fallback solution to allow pushing from tags, branch is still equal to tag
-            all_branches: true
