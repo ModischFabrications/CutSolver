@@ -41,9 +41,8 @@ jobs:
 
     - stage: deploy to docker hub
       install:
-        - cat <<< $(jq '.+{"experimental":"enabled"}' ~/.docker/config.json) > ~/.docker/config.json
-        - docker buildx create --name multibuilder --use
-        - docker buildx inspect multibuilder --bootstrap
+        - source ./multi-arch-docker-ci.sh
+        - set -ex; multi_arch_docker::main; set +x
       script:
         # build once for every deploy, updating both latest and adding a tag
         - docker buildx build --platform linux/amd64,linux/arm/v7 --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
