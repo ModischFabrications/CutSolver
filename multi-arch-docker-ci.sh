@@ -64,44 +64,30 @@ function multi_arch_docker::install_docker_buildx() {
 #   DOCKER_USERNAME ... user name of Docker Hub account
 #   DOCKER_PASSWORD ... password of Docker Hub account
 function multi_arch_docker::login_to_docker_hub() {
-  echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin
+  echo "$DOCKERHUB_PW" | docker login -u="$DOCKERHUB_USER" --password-stdin
 }
 
 # Run buildx build and push.
 # Env:
 #   DOCKER_PLATFORMS ... space separated list of Docker platforms to build.
-# Args:
-#   Optional additional arguments for 'docker buildx build'.
-function multi_arch_docker::buildx() {
+function multi_arch_docker::build_and_push() {
   docker buildx build \
     --platform "${DOCKER_PLATFORMS// /,}" \
-    --push \
+    -t "$IMAGE_NAME:latest" -t "$IMAGE_NAME:$TRAVIS_TAG" \
     --progress plain \
-    -f Dockerfile.multi-arch \
-    "$@" \
+    --push \
     .
-}
-
-# Build and push docker images for all tags.
-# Env:
-#   DOCKER_PLATFORMS ... space separated list of Docker platforms to build.
-#   DOCKER_BASE ........ docker image base name to build
-#   TAGS ............... space separated list of docker image tags to build.
-function multi_arch_docker::build_and_push_all() {
-  for tag in $TAGS; do
-    multi_arch_docker::buildx -t "$DOCKER_BASE:$tag" <your-arguments-here>
-  done
 }
 
 # Test all pushed docker images.
 # Env:
 #   DOCKER_PLATFORMS ... space separated list of Docker platforms to test.
-#   DOCKER_BASE ........ docker image base name to test
+#   IMAGE_NAME ........ docker image base name to test
 #   TAGS ............... space separated list of docker image tags to test.
 function multi_arch_docker::test_all() {
   for platform in $DOCKER_PLATFORMS; do
     for tag in $TAGS; do
-      image="${DOCKER_BASE}:${tag}"
+      image="${IMAGE_NAME}:${tag}"
       msg="Testing docker image $image on platform $platform"
       line="${msg//?/=}"
       printf '\n%s\n%s\n%s\n' "${line}" "${msg}" "${line}"
@@ -111,7 +97,7 @@ function multi_arch_docker::test_all() {
       docker run --rm --entrypoint /bin/sh "$image" -c 'uname -m'
 
       # Run your test on the built image.
-      docker run --rm -v "$PWD:/mnt" -w /mnt "$image" <your-arguments-here>
+      # docker run --rm -v "$PWD:/mnt" -w /mnt "$image" <your-arguments-here>
     done
   done
 }
@@ -121,10 +107,13 @@ function multi_arch_docker::main() {
   export DOCKER_PLATFORMS='linux/amd64'
   DOCKER_PLATFORMS+=' linux/arm64'
   DOCKER_PLATFORMS+=' linux/arm/v6'
+  DOCKER_PLATFORMS+=' linux/arm/v7'
+
+  export IMAGE_NAME=${DOCKERHUB_USER}/cutsolver
 
   multi_arch_docker::install_docker_buildx
   multi_arch_docker::login_to_docker_hub
-  multi_arch_docker::build_and_push_all
+  multi_arch_docker::build_and_push
   set +x
-  multi_arch_docker::test_all
+  # multi_arch_docker::test_all
 }
