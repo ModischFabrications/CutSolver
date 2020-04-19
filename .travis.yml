@@ -22,8 +22,9 @@ stages:
   - name: deploy to docker hub
     # tag = v0.1[.2[.3]]
     # TRAVIS SETS BRANCH = TAG if TAG != ""!
-    # don't try to deploy, multi-arch is needed and not working right now
-    if: true == false # tag =~ ^v([0-9]+.)+[0-9]$ AND fork = false AND type = push
+    # deploy is bad, multi-arch is needed and not working well right now
+    # see c27cc27b and surrounding commits for a cleaner amd64 only solution
+    if: tag =~ ^v([0-9]+.)+[0-9]$ AND fork = false AND type = push
 
 
 jobs:
@@ -46,7 +47,8 @@ jobs:
         - set -ex; multi_arch_docker::main; set +x
       script:
         # build once for every deploy, updating both latest and adding a tag
-        - docker buildx build --platform linux/amd64,linux/arm/v7 --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
+        # takes forever, might timeout travis
+        - travis_wait 20 docker buildx build --platform linux/amd64,linux/arm/v7 --tag ${IMAGE_NAME}:latest --tag ${IMAGE_NAME_TAGGED} .
 
       deploy:
         - provider: script

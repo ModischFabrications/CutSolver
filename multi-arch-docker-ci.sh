@@ -103,10 +103,10 @@ function multi_arch_docker::test_all() {
 }
 
 function multi_arch_docker::main() {
-  # Set docker platforms for which to build.
+  # Set docker platforms for which to build (careful, takes forever!)
   export DOCKER_PLATFORMS='linux/amd64'
-  DOCKER_PLATFORMS+=' linux/arm64'
-  DOCKER_PLATFORMS+=' linux/arm/v6'
+  # DOCKER_PLATFORMS+=' linux/arm64'
+  # DOCKER_PLATFORMS+=' linux/arm/v6'
   DOCKER_PLATFORMS+=' linux/arm/v7'
 
   export IMAGE_NAME=${DOCKERHUB_USER}/cutsolver
