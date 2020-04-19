@@ -9,6 +9,12 @@ python:
 
 # windows test dropped as they were too unreliable (2020/04/18)
 
+notifications:
+  webhooks:
+    urls:
+      # this will trigger way too often but that doesn't matter. Ideally only on deploy
+      - https://hooks.microbadger.com/images/modischfabrications/cutsolver/7QER4yvc2aqewXsugjPuzOV_UrU=
+
 services:
   - docker
 
