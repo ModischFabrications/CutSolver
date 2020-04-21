@@ -2,5 +2,5 @@
 *__pycache__
 *.pytest_cache
 
-# Pipfile is just for debugging
-Pipfile.lock
+# Pipfile should be enough but a badge requires it
+# Pipfile.lock
