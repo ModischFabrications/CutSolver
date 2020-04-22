@@ -1,11 +1,10 @@
 # CutSolver
 
 [![Travis (.org)](https://img.shields.io/travis/ModischFabrications/cutsolver.svg)](https://travis-ci.org/ModischFabrications/CutSolver)
-[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/modischfabrications/cutsolver.svg)](https://cloud.docker.com/repository/docker/modischfabrications/cutsolver)
-[![Docker Image Version](https://images.microbadger.com/badges/version/modischfabrications/cutsolver.svg)](https://microbadger.com/images/modischfabrications/cutsolver)
-[![Docker Image Size](https://images.microbadger.com/badges/image/modischfabrications/cutsolver.svg)](https://cloud.docker.com/repository/docker/modischfabrications/cutsolver)
+[![Docker Image Version](https://img.shields.io/docker/v/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
+[![Docker Image Size](https://img.shields.io/docker/image-size/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/11d689cd44b0407fac23d537ca0f239f)](https://app.codacy.com/app/ModischFabrications/CutSolver)
-[![Rating](https://img.shields.io/badge/rating-awesome-brightgreen.svg)](#)
+![Rating](https://img.shields.io/badge/rating-awesome-brightgreen.svg)
 
 This API can be used to solve the 2D "Cutting Stock Problem", which is NP-hard. It can be reduced to the Bin-Packing-Problem (BPP).
 It seems like no other free service tackles this specific problem in an easy to use format, so this is my attempt. 
