@@ -12,7 +12,7 @@ client: TestClient = TestClient(app)
 def test_get_version():
     response = client.get("/version")
     assert response.status_code == 200
-    assert re.match(r"^v([0-9]+.)+[0-9]$", response.text)
+    assert re.match(r"^v([0-9]+.)+[0-9]$", response.text) is not None
 
 
 def test_full():
