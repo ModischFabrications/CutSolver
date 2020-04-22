@@ -1,7 +1,7 @@
 # CutSolver
 
 [![GitHub Pipenv locked dependency version](https://img.shields.io/github/pipenv/locked/dependency-version/modischfabrications/cutsolver/fastapi)]((https://github.com/tiangolo/fastapi))
-[![Travis Build Status](https://img.shields.io/travis/ModischFabrications/cutsolver.svg)](https://travis-ci.org/ModischFabrications/CutSolver)
+[![Travis Build Status](https://travis-ci.org/ModischFabrications/CutSolver.svg?branch=master)](https://travis-ci.org/ModischFabrications/cutsolver)
 [![Docker Image Version](https://img.shields.io/docker/v/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
 [![Docker Image Size](https://img.shields.io/docker/image-size/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/11d689cd44b0407fac23d537ca0f239f)](https://app.codacy.com/app/ModischFabrications/CutSolver)
