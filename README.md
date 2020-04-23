@@ -81,6 +81,7 @@ image size with `docker-compose images`.
 This project uses:
 *   [pipenv](https://github.com/pypa/pipenv): library management
 *   [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
+*   [httpie](https://github.com/jakubroztocil/httpie): curl-like docker healthcheck
 
 ## External links
 <https://scipbook.readthedocs.io/en/latest/bpp.html>
