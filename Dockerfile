@@ -9,6 +9,13 @@ RUN pipenv lock -r > requirements.txt
 RUN pip install --user --no-cache-dir --no-warn-script-location -r requirements.txt
 
 FROM python:3.7-slim
+# https://github.com/opencontainers/image-spec/blob/master/annotations.md
+LABEL "org.opencontainers.image.title"="CutSolver"
+LABEL "org.opencontainers.image.version"=$(TRAVIS_TAG)
+LABEL "org.opencontainers.image.vendor"="modisch.fabrications@gmail.com"
+LABEL "org.opencontainers.image.source"="https://github.com/ModischFabrications/CutSolver/"
+LABEL "org.opencontainers.image.licenses"="LGPL-3.0"
+
 # I know it's not strictly needed, but I want a healthcheck and wget is not available either
 RUN apt-get update && apt-get install -y wget
 

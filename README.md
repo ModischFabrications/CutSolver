@@ -46,6 +46,11 @@ will change randomly. It's not like I know what I'm doing, it's more like a lear
 ## Developing
 Feel free to contact me or make a pull-request if you want to participate in it.
 
+Change version number in:
+1. main.py:version
+2. git tag
+3. Dockerfile?
+
 ### Prebuild docker images
 Docker Hub should be updated automatically by Travis, but it's a broken mess (#16). 
 
