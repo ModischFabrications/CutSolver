@@ -16,7 +16,7 @@ LABEL "org.opencontainers.image.vendor"="modisch.fabrications@gmail.com"
 LABEL "org.opencontainers.image.source"="https://github.com/ModischFabrications/CutSolver/"
 LABEL "org.opencontainers.image.licenses"="LGPL-3.0"
 
-# I know it's not strictly needed, but I want a healthcheck and wget is not available either
+# I know it's not strictly needed, but I want a healthcheck and wget the smallest option (see #37)
 RUN apt-get update && apt-get install -y wget
 
 # copy over the pip installation with all dependencies
