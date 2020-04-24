@@ -64,7 +64,8 @@ repos:
         # git version check only needed if version could have changed
         files: main.py
         types: [python]
-        stages: [commit]
+        # TODO: use post-commit
+        stages: [push]
 
       - id: tests
         name: run tests
