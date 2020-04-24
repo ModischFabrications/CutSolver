@@ -71,7 +71,7 @@ repos:
         description: Run pytest
         # don't run for every file, always full execution (with default filters to skip untestable files)
         pass_filenames: false
-        entry: python -m pytest
+        entry: python -m pytest -sv
         language: system
         types: [python]
         stages: [push]
