@@ -1,7 +1,7 @@
 import sys
 
 if sys.version_info[0] == 2:
-    raise RuntimeError("You are using Python 2.7 , let it die already...")
+    sys.exit("You are using Python 2.7 , let it die already...")
 
 from pathlib import Path
 from sys import stderr
