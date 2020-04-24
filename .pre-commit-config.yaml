@@ -59,7 +59,7 @@ repos:
         description: tag git version if it's outdated
         pass_filenames: false
         verbose: true
-        entry: python tag_from_version.py
+        entry: pipenv run python tag_from_version.py
         language: system
         # git version check only needed if version could have changed
         files: main.py
@@ -72,7 +72,7 @@ repos:
         description: Run pytest
         # don't run for every file, always full execution (with default filters to skip untestable files)
         pass_filenames: false
-        entry: python -m pytest -sv
+        entry: pipenv run python -m pytest -sv
         language: system
         types: [python]
         stages: [push]
