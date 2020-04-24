@@ -11,7 +11,7 @@ from app.solver.data.Job import Job
 from app.solver.data.Result import Result
 from app.solver.solver import distribute
 
-version = "v0.4.11"
+version = "v0.4.12"
 
 app = FastAPI(
     title="CutSolverBackend",
