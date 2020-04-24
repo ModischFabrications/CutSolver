@@ -23,15 +23,19 @@ class Result(BaseModel):
     # no trimmings as they can be inferred from difference to job
 
     def __eq__(self, other):
-        return self.job == other.job and \
-               self.solver_type == other.solver_type and \
-               self.lengths == other.lengths
+        return (
+                self.job == other.job
+                and self.solver_type == other.solver_type
+                and self.lengths == other.lengths
+        )
 
     def exactly(self, other):
-        return self.job == other.job and \
-               self.solver_type == other.solver_type and \
-               self.time_us == other.time_us and \
-               self.lengths == other.lengths
+        return (
+                self.job == other.job
+                and self.solver_type == other.solver_type
+                and self.time_us == other.time_us
+                and self.lengths == other.lengths
+        )
 
     def assert_valid(self):
         self.job.assert_valid()

@@ -35,7 +35,7 @@ class Job(BaseModel):
                 yield size
 
     def sizes_from_list(self, sizes_list: List[TargetSize]):
-        known_sizes = dict()
+        known_sizes = {}
 
         # list to dict to make them unique
         for size in sizes_list:

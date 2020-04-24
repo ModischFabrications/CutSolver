@@ -82,7 +82,7 @@ def _split_combination(combination: Tuple[int], max_length: int, cut_width: int)
             current_size = 0
             current_stock: List[int] = []
 
-        current_size += (size + cut_width)
+        current_size += size + cut_width
         current_stock.append(size)
     # catch leftovers
     if current_stock:
