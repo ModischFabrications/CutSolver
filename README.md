@@ -47,7 +47,9 @@ will change randomly. It's not like I know what I'm doing, it's more like a lear
 3. See usage for interactions.
 
 ## Developing
-Feel free to contact me or make a pull-request if you want to participate in it.
+Feel free to contact me or make a pull-request if you want to participate.
+
+Install pre-commit with `pre-commit install && pre-commit install -t pre-push`.
 
 Change version number in:
 1. main.py:version

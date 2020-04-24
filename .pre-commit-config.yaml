@@ -58,7 +58,7 @@ repos:
         name: tag git version
         description: tag git version if it's outdated
         pass_filenames: false
-        # verbose: true
+        verbose: true
         entry: python tag_from_version.py
         language: system
         # git version check only needed if version could have changed
