@@ -59,9 +59,8 @@ repos:
         description: tag git version if it's outdated
         pass_filenames: false
         verbose: true
-        entry: tag_from_version.py
-        language: python
-        additional_dependencies: [gitpython]
+        entry: python tag_from_version.py
+        language: system
         # git version check only needed if version could have changed
         files: main.py
         types: [python]
@@ -74,7 +73,6 @@ repos:
         # don't run for every file, always full execution (with default filters to skip untestable files)
         pass_filenames: false
         entry: python -m pytest -sv
-        language: python
-        additional_dependencies: [pytest]
+        language: system
         types: [python]
         stages: [push]
