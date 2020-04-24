@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 pytest = "==5.4.1"
 requests = "==2.23.0"
+pre-commit = "==2.3.0"
 
 [packages]
 fastapi = "==0.54.1"
