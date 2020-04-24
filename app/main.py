@@ -30,20 +30,22 @@ async def catch_exceptions_middleware(request: Request, call_next):
         return PlainTextResponse(str(e), status_code=400)
 
 
-app.middleware('http')(catch_exceptions_middleware)
+app.middleware("http")(catch_exceptions_middleware)
 
 cors_origins = [
     "http:localhost",
     "https:localhost",
     "http:localhost:8080",
-    "*"  # this might be dangerous
+    "*",  # this might be dangerous
 ]
 
-app.add_middleware(CORSMiddleware,
-                   allow_origins=cors_origins,
-                   allow_credentials=True,
-                   allow_methods=["*"],
-                   allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # response model ensures correct documentation
@@ -60,12 +62,15 @@ def post_solve(job: Job):
 
 @app.get("/debug", response_class=HTMLResponse)
 def get_debug():
-    static_answer = f"Debug Infos:" \
-                    f"<ul>" \
-                    f"<li>System: {platform.system()}</li>" \
-                    f"<li>Architecture: {platform.machine()}</li>" \
-                    f"<li>Python Version: {platform.python_version()}</li>" \
-                    f"<li>Python Impl: {platform.python_implementation()}</li>"
+    static_answer = (
+        "Debug Infos:"
+        "<ul>"
+        f"<li>Node: {platform.node()}</li>"
+        f"<li>System: {platform.system()}</li>"
+        f"<li>Architecture: {platform.machine()}</li>"
+        f"<li>Python Version: {platform.python_version()}</li>"
+        f"<li>Python Impl: {platform.python_implementation()}</li>"
+    )
 
     return static_answer
 
@@ -73,18 +78,14 @@ def get_debug():
 # content_type results in browser pretty printing
 @app.get("/", response_class=HTMLResponse)
 def get_root():
-    static_answer = f"<h2>Hello from {platform.node()}!</h2>" \
-                    f"<h3>Have a look at the documentation at <a href=\"/docs\">/docs</a> for usage hints.</h3>" \
-                    f"Debug information are at <a href=\"/debug\">/debug</a>"
+    static_answer = (
+        f"<h2>Hello from CutSolver {version}!</h2>"
+        '<h3>Have a look at the documentation at <a href="/docs">/docs</a> for usage hints.</h3>'
+        'Visit <a href="https://github.com/ModischFabrications/CutSolver">the repository</a> for further information. '
+        'Debug stuff is available at <a href="/debug">/debug</a>. '
+    )
 
     return static_answer
-
-
-@app.get("/about", response_class=HTMLResponse)
-def get_about():
-    text = 'Visit <a href="https://github.com/ModischFabrications/CutSolver">' \
-           'the repository</a> for further informations.'
-    return text
 
 
 @app.get("/version", response_class=PlainTextResponse)
@@ -93,7 +94,7 @@ def get_version():
 
 
 # for debugging only
-if __name__ == '__main__':
+if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
