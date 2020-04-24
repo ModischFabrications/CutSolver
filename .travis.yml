@@ -30,7 +30,7 @@ stages:
     # TRAVIS SETS BRANCH = TAG if TAG != ""!
     # deploy is bad, multi-arch is needed and not working well right now
     # see c27cc27b and surrounding commits for a cleaner amd64 only solution
-    if: tag =~ ^v([0-9]+.)+[0-9]$ AND fork = false AND type = push
+    if: tag =~ ^v([0-9]+.)+[0-9]+$ AND fork = false AND type = push
 
 
 jobs:
