@@ -162,7 +162,6 @@ def _solve_FFD(job: Job) -> List[List[int]]:
     sizes = sorted(mutable_sizes, reverse=True)
 
     stocks: List[List[int]] = [[]]
-    stock_lengths: List[int] = [0]
 
     i_target = 0
 
@@ -170,15 +169,15 @@ def _solve_FFD(job: Job) -> List[List[int]]:
         current_size = sizes[i_target]
 
         for i, stock in enumerate(stocks):
+            # calculate current stock length
+            stock_length = sum(stock) + (len(stock) - 1) * job.cut_width
             # step through existing stocks until current size fits
-            if (job.max_length - stock_lengths[i]) > current_size.length:
+            if (job.max_length - stock_length) > current_size.length:
                 # add size
                 stock.append(current_size.length)
-                stock_lengths[i] += job.cut_width + current_size.length
                 break
         else:  # nothing fit, opening next bin
             stocks.append([current_size.length])
-            stock_lengths.append(0)
 
         # decrease/get next
         if current_size.quantity <= 1:
