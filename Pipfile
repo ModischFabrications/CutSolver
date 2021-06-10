@@ -10,7 +10,7 @@ pre-commit = "==2.7.1"
 GitPython = "==3.1.9"
 
 [packages]
-fastapi = "==0.61.1"
+fastapi = "==0.65.2"
 uvicorn = "==0.12.1"
 
 [requires]
