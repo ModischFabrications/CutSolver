@@ -46,7 +46,7 @@ will change randomly. It's not like I know what I'm doing, it's more like a lear
 2. wait a while for uvloop to build... (1000s)
 3. See usage for interactions.
 
-## Developing
+## Contributing
 Feel free to contact me or make a pull-request if you want to participate.
 
 Install pre-commit with `pre-commit install && pre-commit install -t pre-push`.
