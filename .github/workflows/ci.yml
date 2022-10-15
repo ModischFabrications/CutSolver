@@ -15,12 +15,13 @@ concurrency: ci-${{ github.ref }}
 
 jobs:
   build-and-test:
-    timeout-minutes: 5
-
     strategy:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest, windows-latest ]
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
