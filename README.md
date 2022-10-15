@@ -19,7 +19,8 @@ It has no concept of units, so you can use whatever you want.
 BPP).
 No efficient algorithm exists to calculate a perfect solution in an acceptable timeframe, therefore brute force (perfect
 solution)
-is used for small jobs and a heuristic (fast solution) für larger ones. Don't be surprised if you get different results,
+is used for small jobs (<13 entries) and FFD (fast solution) für larger ones. Don't be surprised if you get different
+results,
 many combinations have equal trimmings and are therefore seen as equally good.
 
 ## Usage
@@ -27,14 +28,25 @@ many combinations have equal trimmings and are therefore seen as equally good.
 *This is a backend, see [CutSolverFrontend](https://github.com/ModischFabrications/CutSolverFrontend) for a human usable
 version.*
 
-The easiest (and advised) way to deploy this is by using Docker and pulling an up-to-date image.
+Feel free to run manually, but the easiest (and advised) way to deploy this is by using Docker and pulling an up-to-date
+image.
 
 Send POST-Requests to `[localhost]/solve` to get your results, see `/docs` for further information.
 
-Solver `bruteforce` guarantees the ideal solution, but is very expensive and works only for <13 entries. `FFD` is a lot
-faster and works for larger sets, but won't guarantee perfect results.
+### Docker
 
-### Performance
+You don't need to check out this repository and build your own image, I am pushing prebuild ones to Docker Hub.
+Download and start this container by using the provided docker-compose file or
+with `docker run [--rm -it] -p80:80 modischfabrications/cutsolver:latest`.
+
+Note: Replace `latest` with a version number if you depend on this interface, I can guarantee you that the interface
+will change randomly. It's not like I know what I'm doing, expect a learning curve.
+
+Both `linux/amd64` and `linux/arm/v7` are currently supported, more will be build whenever I get around to it, message
+me if
+you need another architecture.
+
+## Performance
 
 If it can run Docker it will probably be able to run CutSolver.
 1 vCPU with 500MB RAM should be fine for small workloads.
@@ -44,47 +56,29 @@ You can expect 10 entries to be solved after ~20s with `bruteforce`and <0.1s wit
 weaker machines.
 Multiple cores won't speed up job time, but will enable efficient solving of parallel jobs.
 
-### Docker Hub
-
-You don't need to check out this repository, I am building images and pushing them to Docker Hub.
-
-**Now with 100% more Multiarchitecture!**
-
-Both `linux/amd64` and `linux/arm/v7` are currently supported, some will be build whenever comfortable, message me if
-you need another platform.
-
-Download and start this container by using the provided docker-compose file or running:
-`docker run [--rm -it] -p80:80 modischfabrications/cutsolver:latest`.
-
-Note: Replace `latest` with a version number if you depend on this interface, I can guarantee you that the interface
-will change randomly. It's not like I know what I'm doing, it's more like a learning curve.
-
-### Local build
-
-1. Build and start this image using `docker-compose up`
-2. wait a while for dependencies to build... (1000s)
-3. See usage for interactions
-
 ## Contributing
 
 Feel free to contact me or make a pull-request if you want to participate.
 
 Install pre-commit with `pre-commit install && pre-commit install -t pre-push`.
 
-Change version number in:
-
-1. main.py:version
-2. git tag
-
 This should be checked and or fixed by pre-commit, execute `pre-commit run --all-files --hook-stage push` to run
 manually.
 
+Change version number in main.py:version for newer releases, git tags will be created automatically.
+
 Remember to test your changes using `pytest [--durations=5]`.
 
-### Prebuild docker images
+### Development Docker Images
+
+1. Build and start this image using `docker-compose up`
+2. wait a while for dependencies to build... (1000s)
+3. Hope that everything works
+
+### Push Production Docker Images
 
 Docker Hub Images should be updated automatically, but that doesn't work at the moment (see #44).
-That isn't as bad as it sounds, because local builds are easily manageable with `buildx`.
+Thankfully, local builds are easy with the modern `buildx` workflow.
 
 Installation of a multibuilder (once):
 
@@ -104,21 +98,17 @@ docker buildx build --platform linux/amd64,linux/arm/v7 \
 
 Wait a while for every dependency to build (~1000s) and all layers to be pushed (~400s).
 
-Want to check the size prior to pushing it?
-Rebuild the docker image with `docker-compose up --build` and check uncompressed image size with `docker-compose images`
-.
-
 Check [Docker Hub](https://hub.docker.com/repository/docker/modischfabrications/cutsolver) to see results.
 
 ## Dependencies
 
-*Everything should be handled by Docker*
+*Everything should be handled by Docker and/or pipenv*
 
 This project uses:
 
 * [pipenv](https://github.com/pypa/pipenv): library management
 * [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
-* [httpie](https://github.com/jakubroztocil/httpie): curl-like for docker healthcheck
+* [httpie](https://github.com/jakubroztocil/httpie): simpler `curl` for docker healthchecks
 
 ## External links
 
