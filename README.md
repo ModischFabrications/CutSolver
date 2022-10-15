@@ -32,8 +32,17 @@ The easiest (and advised) way to deploy this is by using Docker and pulling an u
 Send POST-Requests to `[localhost]/solve` to get your results, see `/docs` for further information.
 
 Solver `bruteforce` guarantees the ideal solution, but is very expensive and works only for <13 entries. `FFD` is a lot
-faster and works for larger sets, but won't
-guarantee perfect results.
+faster and works for larger sets, but won't guarantee perfect results.
+
+### Performance
+
+If it can run Docker it will probably be able to run CutSolver.
+1 vCPU with 500MB RAM should be fine for small workloads.
+
+Runtimes strongly depend on the single-core performance of your CPU.
+You can expect 10 entries to be solved after ~20s with `bruteforce`and <0.1s with `FFD` for generic desktops, slower on
+weaker machines.
+Multiple cores won't speed up job time, but will enable efficient solving of parallel jobs.
 
 ### Docker Hub
 
@@ -51,21 +60,26 @@ Note: Replace `latest` with a version number if you depend on this interface, I 
 will change randomly. It's not like I know what I'm doing, it's more like a learning curve.
 
 ### Local build
+
 1. Build and start this image using `docker-compose up`
-2. wait a while for uvloop to build... (1000s)
-3. See usage for interactions.
+2. wait a while for dependencies to build... (1000s)
+3. See usage for interactions
 
 ## Contributing
+
 Feel free to contact me or make a pull-request if you want to participate.
 
 Install pre-commit with `pre-commit install && pre-commit install -t pre-push`.
 
 Change version number in:
+
 1. main.py:version
 2. git tag
-3. Dockerfile?
 
-This should be checked and or fixed by pre-commit, execute `pre-commit run --all-files --hook-stage push` to run manually.
+This should be checked and or fixed by pre-commit, execute `pre-commit run --all-files --hook-stage push` to run
+manually.
+
+Remember to test your changes using `pytest [--durations=5]`.
 
 ### Prebuild docker images
 
@@ -107,4 +121,5 @@ This project uses:
 * [httpie](https://github.com/jakubroztocil/httpie): curl-like for docker healthcheck
 
 ## External links
+
 <https://scipbook.readthedocs.io/en/latest/bpp.html>
