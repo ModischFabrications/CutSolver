@@ -1,5 +1,5 @@
 # this size should be irrelevant
-FROM python:3.7 as build
+FROM python:3.9 as build
 # exporting here is a lot safer than depending on the dev, it's worth the additional minute
 COPY ./Pipfile /Pipfile
 RUN pip install pipenv
@@ -9,11 +9,10 @@ RUN pipenv lock -r > requirements.txt
 # httpie allows healthchecks with tiny installation size (#37)
 RUN pip install --user --no-cache-dir --no-warn-script-location -r requirements.txt httpie
 
-FROM python:3.7-slim
+FROM python:3.9-slim
 # https://github.com/opencontainers/image-spec/blob/master/annotations.md
 LABEL "org.opencontainers.image.title"="CutSolver"
-LABEL "org.opencontainers.image.version"=$(TRAVIS_TAG)
-LABEL "org.opencontainers.image.vendor"="modisch.fabrications@gmail.com"
+LABEL "org.opencontainers.image.vendor"="Modisch Fabrications"
 LABEL "org.opencontainers.image.source"="https://github.com/ModischFabrications/CutSolver/"
 LABEL "org.opencontainers.image.licenses"="LGPL-3.0"
 
