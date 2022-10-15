@@ -1,39 +1,44 @@
 # CutSolver
 
-[![GitHub Pipenv locked dependency version](https://img.shields.io/github/pipenv/locked/dependency-version/modischfabrications/cutsolver/fastapi)]((https://github.com/tiangolo/fastapi))
-[![Travis Build Status](https://travis-ci.org/ModischFabrications/CutSolver.svg?branch=master)](https://travis-ci.org/ModischFabrications/cutsolver)
 [![Docker Image Version](https://img.shields.io/docker/v/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
 [![Docker Image Size](https://img.shields.io/docker/image-size/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/11d689cd44b0407fac23d537ca0f239f)](https://app.codacy.com/app/ModischFabrications/CutSolver)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 ![Rating](https://img.shields.io/badge/rating-awesome-brightgreen.svg)
 
 This API can be used to solve the common problem of finding the perfect placement of cuts for specified lengths.
-It seems like no other free service tackles this specific problem in an easy to use format, so this is my attempt.
+It seems like no other free service tackles this specific problem in an easy-to-use format, so this is my attempt.
+
+You are very welcome to share how you use this tool!
 
 ![cutsolver](https://user-images.githubusercontent.com/25404728/53304884-fb9c4980-387a-11e9-9a49-330369befc44.png)
 
-This Solver is using ints exclusively, as there is no need for arbitrary precision yet.
-It also has no concept of units so you can use whatever you want.
-Try using mm instead of cm if you have fractions.
+This Solver is using integers exclusively, as there is no need for arbitrary precision (yet).
+Feel free to shift your numbers a few decimals if you need fractions.
+It has no concept of units, so you can use whatever you want.
 
-*Nerd talk*: This is the 2D "Cutting Stock Problem", which is NP-hard. It can be reduced to the Bin-Packing-Problem (BPP).
-No efficient algorithm exists to calculate a perfect solution in an acceptable timeframe, therefore brute force (perfect solution)
+*Nerd talk*: This is the 2D "Cutting Stock Problem", which is NP-hard. It can be reduced to the Bin-Packing-Problem (
+BPP).
+No efficient algorithm exists to calculate a perfect solution in an acceptable timeframe, therefore brute force (perfect
+solution)
 is used for small jobs and a heuristic (fast solution) für larger ones. Don't be surprised if you get different results,
 many combinations have equal trimmings and are therefore seen as equally good.
 
 ## Usage
-*This is a backend, see [CutSolverFrontend](https://github.com/ModischFabrications/CutSolverFrontend) for a human usable version.*
 
-Send POST-Requests to `[localhost]/solve`, see `/docs` for further informations.
+*This is a backend, see [CutSolverFrontend](https://github.com/ModischFabrications/CutSolverFrontend) for a human usable
+version.*
+
+Send POST-Requests to `[localhost]/solve`, see `/docs` for further information.
+Bruteforce guarantees the best solution, but is very expensive. FFD is a lot fast and works for large sets, but won't
+guarantee quality results.
 
 The easiest (and advised) way to deploy this is by using Docker.
 
 ### Docker Hub
+
 **Now with 100% more Multiarchitecture!**
 Both `linux/amd64` and `linux/arm/v7` are currently supported, message me if you use another platform.
 
-You don't need to checkout this repository, I am building images and pushing them to Docker Hub.
+You don't need to check out this repository, I am building images and pushing them to Docker Hub.
 
 Download and start this container by using the provided docker-compose file or running:
 `docker run [--rm -it] -p80:80 modischfabrications/cutsolver:latest`.
