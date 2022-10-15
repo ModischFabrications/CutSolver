@@ -1,13 +1,13 @@
 # this size should be irrelevant
 FROM python:3.9 as build
-# exporting here is a lot safer than depending on the dev, it's worth the additional minute
+# exporting here is a lot safer than depending on the dev environment. Pipenv is kept out of the container by design.
 COPY ./Pipfile /Pipfile
 RUN pip install pipenv
-RUN pipenv lock -r > requirements.txt
+RUN pipenv lock && pipenv requirements > dev-requirements.txt
 
 # caches are useless in containers, user needed to make installation portable
 # httpie allows healthchecks with tiny installation size (#37)
-RUN pip install --user --no-cache-dir --no-warn-script-location -r requirements.txt httpie
+RUN pip install --user --no-cache-dir --no-warn-script-location -r dev-requirements.txt httpie
 
 FROM python:3.9-slim
 # https://github.com/opencontainers/image-spec/blob/master/annotations.md
