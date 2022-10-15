@@ -91,12 +91,13 @@ Build and push the new multi-arch image with the following steps (add version, e
 
 ```
 docker login -u modischfabrications
-docker buildx build --platform linux/amd64,linux/arm/v7 \
+docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64 \
     -t modischfabrications/cutsolver:<VERSION> \
     -t modischfabrications/cutsolver:latest --push .
 ```
 
-Wait a while for every dependency to build (~1000s) and all layers to be pushed (~400s).
+Wait a while for every dependency to build (~1000s) and all layers to be pushed (~400s). Feel free to drink some water
+and be bored, that's healthy from time to time.
 
 Check [Docker Hub](https://hub.docker.com/repository/docker/modischfabrications/cutsolver) to see results.
 
