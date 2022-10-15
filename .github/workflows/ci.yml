@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [ "3.9", "3.10" ]
+        python-version: [ "3.9" ]   # pipenv will always install the same version, making proper matrix difficult
 
     steps:
       - uses: actions/checkout@v3
