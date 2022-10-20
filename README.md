@@ -7,9 +7,9 @@
 This API can be used to solve the common problem of finding the perfect placement of cuts for specified lengths.
 It seems like no other free service tackles this specific problem in an easy-to-use format, so this is my attempt.
 
-You are very welcome to share how you use this tool!
+*You are very welcome to share how you use this tool!*
 
-![cutsolver](docs/cutsolver.svg)
+![cutsolver](./docs/cutsolver.svg)
 
 This Solver is using integers exclusively, as there is no need for arbitrary precision (yet).
 Feel free to shift your numbers a few decimals if you need fractions.
@@ -23,7 +23,7 @@ is used for small jobs (<13 entries) and FFD (fast solution) für larger ones. D
 results,
 many combinations have equal trimmings and are therefore seen as equally good.
 
-## Usage
+## Usage/Hosting
 
 *This is a backend, see [CutSolverFrontend](https://github.com/ModischFabrications/CutSolverFrontend) for a human usable
 version.*
@@ -99,11 +99,11 @@ docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64 \
 Wait a while for every dependency to build (~1000s) and all layers to be pushed (~400s). Feel free to drink some water
 and be bored, that's healthy from time to time.
 
-Check [Docker Hub](https://hub.docker.com/repository/docker/modischfabrications/cutsolver) to see results.
+Check [Docker Hub](https://hub.docker.com/r/modischfabrications/cutsolver) to see results.
 
 ## Dependencies
 
-*Everything should be handled by Docker and/or pipenv*
+*Everything should be handled by Docker and/or pipenv.*
 
 This project uses:
 
