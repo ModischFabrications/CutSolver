@@ -3,14 +3,13 @@
 [![CI/CD](https://github.com/ModischFabrications/CutSolver/actions/workflows/ci.yml/badge.svg)](https://github.com/ModischFabrications/CutSolver/actions/workflows/ci.yml)
 [![Docker Image Version](https://img.shields.io/docker/v/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
 [![Docker Image Size](https://img.shields.io/docker/image-size/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
-![Rating](https://img.shields.io/badge/rating-awesome-brightgreen.svg)
 
 This API can be used to solve the common problem of finding the perfect placement of cuts for specified lengths.
 It seems like no other free service tackles this specific problem in an easy-to-use format, so this is my attempt.
 
 You are very welcome to share how you use this tool!
 
-![cutsolver](https://user-images.githubusercontent.com/25404728/53304884-fb9c4980-387a-11e9-9a49-330369befc44.png)
+![cutsolver](docs/cutsolver.svg)
 
 This Solver is using integers exclusively, as there is no need for arbitrary precision (yet).
 Feel free to shift your numbers a few decimals if you need fractions.

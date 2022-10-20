@@ -24,7 +24,8 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
 
       - name: Set up Python ⚙️
         uses: actions/setup-python@v4
@@ -72,20 +73,20 @@ jobs:
       - name: Report Buildx platforms 🖊️
         run: echo ${{ steps.buildx.outputs.platforms }}
 
-      - name: Login to GHCR 🛎️
+      - name: Login to GHCR 👤
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to DH 🛎️
+      - name: Login to DH 👤
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push DH 📤
+      - name: Build and push DH 📦
         uses: docker/build-push-action@v4
         with:
           context: .
