@@ -72,6 +72,7 @@ jobs:
             modischfabrications/cutsolver
             ghcr.io/${{ github.repository_owner }}/cutsolver
           tags: |
+            type=ref,event=branch
             type=semver,pattern={{version}}
 
       # https://github.com/docker/setup-qemu-action

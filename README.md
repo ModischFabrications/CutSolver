@@ -61,8 +61,10 @@ Multiple cores won't speed up job time, but will enable efficient solving of par
 Feel free to contact me or make a pull-request if you want to participate.
 
 Install pre-commit with `pre-commit install && pre-commit install -t pre-push`.
+You might need to replace `#!/bin/sh` with `#!/usr/bin/env sh` in the resulting *.legacy file on Windows.
 
-This should be checked and or fixed by pre-commit, execute `pre-commit run --all-files --hook-stage push` to run
+All obvious errors should be checked and or fixed by pre-commit, execute `pre-commit run --all-files --hook-stage push`
+to run
 manually.
 
 Change version number in main.py:version for newer releases, git tags will be created automatically.
