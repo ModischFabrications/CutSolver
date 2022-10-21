@@ -1,8 +1,12 @@
-name: CI/CD
+name: Build, Test, Deploy
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches:
+      - 'master'
+      - 'main'
+    tags:
+      - 'v*'
   pull_request:
   workflow_dispatch:
 
@@ -18,7 +22,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest, windows-latest ]   # windows takes ~3x longer, not worth the cost for larger projects
+        os: [ ubuntu-latest ] #, windows-latest ]   # windows takes ~3x longer, not worth the cost for larger projects
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
@@ -50,16 +54,25 @@ jobs:
 
   build-and-push-docker:
     needs: build-and-test
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
 
-    # WIP!
-    if: false && github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
-      # https://github.com/actions-ecosystem/action-get-latest-tag
-      - uses: actions-ecosystem/action-get-latest-tag@v1
-        id: get-latest-tag
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      # https://github.com/docker/metadata-action
+      - name: Export Metadata for Docker 🖊️
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            modischfabrications/cutsolver
+            ghcr.io/${{ github.repository_owner }}/cutsolver
+          tags: |
+            type=semver,pattern={{version}}
 
       # https://github.com/docker/setup-qemu-action
       - name: Set up QEMU ⚙
@@ -73,6 +86,12 @@ jobs:
       - name: Report Buildx platforms 🖊️
         run: echo ${{ steps.buildx.outputs.platforms }}
 
+      - name: Login to DH 👤
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Login to GHCR 👤
         uses: docker/login-action@v2
         with:
@@ -80,18 +99,15 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to DH 👤
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push DH 📦
-        uses: docker/build-push-action@v4
+      # https://github.com/docker/build-push-action
+      - name: Build and push to DH & GHCR 📦
+        uses: docker/build-push-action@v3
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
-          tags: modischfabrications/cutsolver:${{ steps.get-latest-tag.outputs.tag }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Update DH description 🖊️
         uses: peter-evans/dockerhub-description@v3
