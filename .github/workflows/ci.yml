@@ -12,8 +12,8 @@ on:
 
 permissions:
   contents: read
+  packages: write      ## Github container registry
 #  deployments: write   ## Github Pages
-#  packages: write      ## Github container registry
 
 concurrency: ci-${{ github.ref }}
 
