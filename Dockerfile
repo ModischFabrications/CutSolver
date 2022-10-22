@@ -3,7 +3,7 @@ FROM python:3.9 as build
 # exporting here is a lot safer than depending on the dev environment. Pipenv is kept out of the container by design.
 COPY ./Pipfile /Pipfile
 RUN pip install pipenv
-RUN pipenv lock -q && pipenv requirements > dev-requirements.txt
+RUN pipenv lock && pipenv requirements > dev-requirements.txt
 
 # caches are useless in containers, user needed to make installation portable
 # certifi+httpie allows healthchecks with tiny installation size (#37)
