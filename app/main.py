@@ -11,12 +11,22 @@ from app.solver.data.Job import Job
 from app.solver.data.Result import Result
 from app.solver.solver import distribute
 
-version = "v0.5.1"
+version = "v0.5.2"
 
 app = FastAPI(
     title="CutSolverBackend",
     version=version
 )
+
+
+@app.on_event("startup")
+async def on_startup():
+    print(f"Starting CutSolver v{version}...")
+
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    print(f"Shutting down CutSolver...")
 
 
 # needs to be before CORS!
