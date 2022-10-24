@@ -77,9 +77,11 @@ Remember to test your changes using `pytest [--durations=5]`.
 2. wait a while for dependencies to build... (1000s)
 3. Hope that everything works
 
+` docker run --rm -it -p 8000:80 $(docker build -q .)` is also useful to start a temporary container for testing.
+
 ### Push Production Docker Images
 
-Docker Hub Images should be updated automatically, but that doesn't work at the moment (see #44).
+Docker Hub Images should be updated automatically, but feel free to build yourself should everything else fail.
 Thankfully, local builds are easy with the modern `buildx` workflow.
 
 Installation of a multibuilder (once):
