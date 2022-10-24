@@ -82,6 +82,7 @@ Remember to test your changes using `pytest [--durations=5]`.
 ### Push Production Docker Images
 
 Docker Hub Images should be updated automatically, but feel free to build yourself should everything else fail.
+Adding "[skip ci]" to the commit message will prevent any ci builds should the need arise.
 Thankfully, local builds are easy with the modern `buildx` workflow.
 
 Installation of a multibuilder (once):
