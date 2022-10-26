@@ -90,9 +90,9 @@ def get_debug():
 def get_root():
     static_answer = (
         f"<h2>Hello from CutSolver {version}!</h2>"
-        '<h3>Have a look at the documentation at <a href="/docs">/docs</a> for usage hints.</h3>'
+        '<h3>Have a look at the documentation at <a href="./docs">/docs</a> for usage hints.</h3>'
         'Visit <a href="https://github.com/ModischFabrications/CutSolver">the repository</a> for further information. '
-        'Debug stuff is available at <a href="/debug">/debug</a>. '
+        'Debug stuff is available at <a href="./debug">/debug</a>. '
     )
 
     return static_answer

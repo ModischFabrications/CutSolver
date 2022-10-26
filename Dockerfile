@@ -33,4 +33,4 @@ EXPOSE 80
 HEALTHCHECK --interval=1m --timeout=5s CMD curl --fail http://localhost:80/ || exit 1
 
 # This could be python3 app/main.py, a choice was made against it to keep dev and prod ports different.
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80", "--proxy-headers"]
