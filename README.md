@@ -1,15 +1,18 @@
-# CutSolver
+# ![logo](https://github.com/ModischFabrications/CutSolverFrontend/raw/master/src/assets/logo.svg) CutSolver
 
 [![CI/CD](https://github.com/ModischFabrications/CutSolver/actions/workflows/ci.yml/badge.svg)](https://github.com/ModischFabrications/CutSolver/actions/workflows/ci.yml)
-[![Docker Image Version](https://img.shields.io/docker/v/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
-[![Docker Image Size](https://img.shields.io/docker/image-size/modischfabrications/cutsolver.svg)](https://hub.docker.com/repository/docker/modischfabrications/cutsolver)
+[![Docker Image Version](https://img.shields.io/docker/v/modischfabrications/cutsolver?sort=semver)](https://hub.docker.com/r/modischfabrications/cutsolver)
+[![Pulls from DockerHub](https://img.shields.io/docker/pulls/modischfabrications/cutsolver)](https://hub.docker.com/r/modischfabrications/cutsolver)
+
+*This is a backend, see [CutSolverFrontend](https://github.com/ModischFabrications/CutSolverFrontend) for a human usable
+version.*
 
 This API can be used to solve the common problem of finding the perfect placement of cuts for specified lengths.
 It seems like no other free service tackles this specific problem in an easy-to-use format, so this is my attempt.
 
 *You are very welcome to share how you use this tool!*
 
-![cutsolver](./docs/cutsolver.svg)
+![cutsolver](https://github.com/ModischFabrications/CutSolver/raw/master/docs/cutsolver.svg)
 
 This Solver is using integers exclusively, as there is no need for arbitrary precision (yet).
 Feel free to shift your numbers a few decimals if you need fractions.
@@ -24,9 +27,6 @@ results,
 many combinations have equal trimmings and are therefore seen as equally good.
 
 ## Usage/Hosting
-
-*This is a backend, see [CutSolverFrontend](https://github.com/ModischFabrications/CutSolverFrontend) for a human usable
-version.*
 
 Feel free to run manually, but the easiest (and advised) way to deploy this is by using Docker and pulling an up-to-date
 image.
