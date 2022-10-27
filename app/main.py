@@ -5,13 +5,12 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, PlainTextResponse
 
+from app.constants import version, n_max_precise, n_max
 # don't mark /app as a sources root or pycharm will delete the "app." prefix
 # that's needed for pytest to work correctly
 from app.solver.data.Job import Job
 from app.solver.data.Result import Result
 from app.solver.solver import distribute
-
-version = "v0.5.2"
 
 app = FastAPI(
     title="CutSolverBackend",
@@ -21,7 +20,7 @@ app = FastAPI(
 
 @app.on_event("startup")
 async def on_startup():
-    print(f"Starting CutSolver v{version}...")
+    print(f"Starting CutSolver {version}...")
 
 
 @app.on_event("shutdown")
@@ -85,6 +84,18 @@ def get_debug():
     return static_answer
 
 
+@app.get("/constants", response_class=HTMLResponse)
+def get_debug():
+    static_answer = (
+        "Constants:"
+        "<ul>"
+        f"<li>n_max_precise: {n_max_precise}</li>"
+        f"<li>n_max: {n_max}</li>"
+    )
+
+    return static_answer
+
+
 # content_type results in browser pretty printing
 @app.get("/", response_class=HTMLResponse)
 def get_root():
@@ -92,6 +103,7 @@ def get_root():
         f"<h2>Hello from CutSolver {version}!</h2>"
         '<h3>Have a look at the documentation at <a href="./docs">/docs</a> for usage hints.</h3>'
         'Visit <a href="https://github.com/ModischFabrications/CutSolver">the repository</a> for further information. '
+        'Constants are shown at <a href="./constants">/constants</a>. '
         'Debug stuff is available at <a href="./debug">/debug</a>. '
     )
 

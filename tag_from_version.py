@@ -8,7 +8,7 @@ from sys import stderr
 
 from git import Repo
 
-from app import main
+from app import constants
 
 
 def compare_versions(left: str, right: str):
@@ -35,7 +35,7 @@ def process():
     repo = Repo(Path("."))
     assert not repo.bare
 
-    version = main.version
+    version = constants.version
 
     version_tags_only = tuple(filter(lambda tag: tag.name[0] == "v", repo.tags))
     newest_tag = version_tags_only[-1]
@@ -49,7 +49,7 @@ def process():
 
     if compare_versions(newest_git_version, version) > 0:
         print("Git was updated without updating the code version!", file=stderr)
-        # TODO: edit code (this is very dangerous!)
+        # won't edit code, it's too dangerous
         return 1
 
     if compare_versions(newest_git_version, version) < 0:

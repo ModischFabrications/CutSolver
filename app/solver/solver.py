@@ -4,13 +4,9 @@ from itertools import permutations
 from time import perf_counter
 from typing import Collection, Tuple, List
 
+from app.constants import n_max_precise, n_max
 from app.solver.data.Job import Job
 from app.solver.data.Result import SolverType, Result
-
-# backend parameter
-n_max_precise = 9  # 10 takes 30s on a beefy desktop, 9 only 1.2s
-n_max_good = 100
-n_max = 500  # around 1 million with n^2
 
 
 def distribute(job: Job) -> Result:
@@ -22,12 +18,9 @@ def distribute(job: Job) -> Result:
     if len(job) <= n_max_precise:
         lengths = _solve_bruteforce(job)
         solver_type = SolverType.bruteforce
-    elif len(job) <= n_max_good:
+    elif len(job) <= n_max:
         lengths = _solve_FFD(job)
         solver_type = SolverType.FFD
-    elif len(job) <= n_max:
-        lengths = _solve_gapfill(job)
-        solver_type = SolverType.gapfill
     else:
         raise OverflowError("Input too large")
 
@@ -91,8 +84,7 @@ def _split_combination(combination: Tuple[int], max_length: int, cut_width: int)
     return stocks, trimmings
 
 
-# TODO: check if time varies with len(TargetSize) or TargetSize.quantity
-# this might actually be worse than FFD (both in runtime and solution)
+# this might actually be worse than FFD (both in runtime and solution), disabled for now
 # O(n^2) ??
 def _solve_gapfill(job: Job) -> List[List[int]]:
     # 1. Sort by magnitude (largest first)
@@ -146,7 +138,7 @@ def _solve_gapfill(job: Job) -> List[List[int]]:
     return stocks
 
 
-# textbook solution, guaranteed to need at most double
+# textbook solution, guaranteed to need <= double of perfect solution
 # TODO this has ridiculous execution times, check why
 def _solve_FFD(job: Job) -> List[List[int]]:
     # iterate over list of stocks
@@ -157,7 +149,7 @@ def _solve_FFD(job: Job) -> List[List[int]]:
     # 3. try smaller as long as possible
     # 4. create new bar
 
-    # TODO: rewrite to use native map instead
+    # TODO: rewrite to use native map instead?
     mutable_sizes = copy.deepcopy(job.sizes_as_list())
     sizes = sorted(mutable_sizes, reverse=True)
 
