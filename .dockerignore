@@ -1,7 +1,18 @@
+# huge and useless for newly build images
+node_modules
+dist
+docs
+workflows
+
+# random stuff
 *.idea
 .git
 *__pycache__
 *.pytest_cache
+LICENSE
+README.md
 
 # don't copy docker-interactions into docker
 docker_*.sh
+Dockerfile
+docker_*
