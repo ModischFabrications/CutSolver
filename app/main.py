@@ -76,7 +76,9 @@ def get_debug():
         "<ul>"
         f"<li>Node: {platform.node()}</li>"
         f"<li>System: {platform.system()}</li>"
-        f"<li>Architecture: {platform.machine()}</li>"
+        f"<li>Machine: {platform.machine()}</li>"
+        f"<li>Processor: {platform.processor()}</li>"
+        f"<li>Architecture: {platform.architecture()}</li>"
         f"<li>Python Version: {platform.python_version()}</li>"
         f"<li>Python Impl: {platform.python_implementation()}</li>"
     )
@@ -89,8 +91,8 @@ def get_debug():
     static_answer = (
         "Constants:"
         "<ul>"
-        f"<li>n_max_precise: {n_max_precise}</li>"
-        f"<li>n_max: {n_max}</li>"
+        f"<li>Max Entries for perfect results: {n_max_precise}</li>"
+        f"<li>Max Entries for any result: {n_max}</li>"
     )
 
     return static_answer
@@ -104,7 +106,7 @@ def get_root():
         '<h3>Have a look at the documentation at <a href="./docs">/docs</a> for usage hints.</h3>'
         'Visit <a href="https://github.com/ModischFabrications/CutSolver">the repository</a> for further information. '
         'Constants are shown at <a href="./constants">/constants</a>. '
-        'Debug stuff is available at <a href="./debug">/debug</a>. '
+        'Debugging log are available at <a href="./debug">/debug</a>. '
     )
 
     return static_answer
