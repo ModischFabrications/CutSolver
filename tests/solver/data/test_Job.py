@@ -1,6 +1,7 @@
 import pytest
 
 from app.solver.data.Job import Job
+from app.solver.data.Job import TargetSize
 from tests.test_utils import generate_testjob
 
 
@@ -11,7 +12,14 @@ def test_iterator():
     for length in job.iterate_sizes():
         resulting_list.append(length)
 
-    assert resulting_list == [500, 500, 200, 200, 200, 200]
+    assert resulting_list == [
+        (500, "Part1"),
+        (500, "Part1"),
+        (200, "Part2"),
+        (200, "Part2"),
+        (200, "Part2"),
+        (200, "Part2"),
+    ]
 
 
 def test_job_equal():
@@ -48,6 +56,8 @@ def test_invalid():
 
 def test_too_long():
     job = generate_testjob()
-    job.target_sizes[job.max_length + 1] = 4
+    job.target_sizes.append(
+        TargetSize(**{"length": job.max_length + 1, "quantity": 4, "name": "too long"})
+    )
     with pytest.raises(ValueError):
         job.assert_valid()
