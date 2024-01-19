@@ -12,8 +12,10 @@ def load_json(json_path: Path):
 
 
 def generate_testjob():
-    return Job.parse_raw(load_json(Path("./tests/res/in/testjob.json")))
+    return Job.model_validate_json(load_json(Path("./tests/res/in/testjob.json")))
 
 
 def generate_testresult():
-    return Result.parse_raw(load_json(Path("./tests/res/out/testresult.json")))
+    return Result.model_validate_json(
+        load_json(Path("./tests/res/out/testresult.json"))
+    )
