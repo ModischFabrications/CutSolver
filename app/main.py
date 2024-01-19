@@ -1,4 +1,5 @@
 import platform
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
@@ -6,26 +7,22 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse, PlainTextResponse
 
 from app.constants import version, n_max_precise, n_max
+
 # don't mark /app as a sources root or pycharm will delete the "app." prefix
 # that's needed for pytest to work correctly
 from app.solver.data.Job import Job
 from app.solver.data.Result import Result
 from app.solver.solver import distribute
 
-app = FastAPI(
-    title="CutSolverBackend",
-    version=version
-)
 
-
-@app.on_event("startup")
-async def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     print(f"Starting CutSolver {version}...")
+    yield
+    print("Shutting down CutSolver...")
 
 
-@app.on_event("shutdown")
-async def on_shutdown():
-    print(f"Shutting down CutSolver...")
+app = FastAPI(title="CutSolverBackend", version=version, lifespan=lifespan)
 
 
 # needs to be before CORS!
