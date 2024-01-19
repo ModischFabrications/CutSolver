@@ -26,8 +26,7 @@ def test_get_debug():
 
 
 def test_full():
-    reply = client.post("/solve", generate_testjob().json())
+    reply = client.post("/solve", json=generate_testjob().model_dump())
     assert reply.status_code == 200
     json_result = reply.json()
-
-    assert Result.parse_obj(json_result) == generate_testresult()
+    assert Result.model_validate(json_result) == generate_testresult()
