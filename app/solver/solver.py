@@ -31,7 +31,7 @@ def distribute(job: Job) -> Result:
 
 # CPU-bound
 # O(n!)
-def _solve_bruteforce(job: Job) -> List[List[Tuple[int, str]]]:
+def _solve_bruteforce(job: Job) -> List[List[Tuple[int, str | None]]]:
     # failsafe
     if len(job) > 12:
         raise OverflowError("Input too large")
@@ -42,7 +42,7 @@ def _solve_bruteforce(job: Job) -> List[List[Tuple[int, str]]]:
 
     # "infinity"
     minimal_trimmings = len(job) * job.max_length
-    best_stock: List[List[Tuple[int, str]]] = []
+    best_stock: List[List[Tuple[int, str | None]]] = []
 
     # possible improvement: Distribute combinations to multiprocessing worker threads
     for combination in all_orderings:
@@ -57,7 +57,7 @@ def _solve_bruteforce(job: Job) -> List[List[Tuple[int, str]]]:
 
 
 def _split_combination(
-    combination: Tuple[Tuple[int, str]], max_length: int, cut_width: int
+    combination: Tuple[Tuple[int, str | None]], max_length: int, cut_width: int
 ):
     """
     Collects sizes until length is reached, then starts another stock
@@ -66,18 +66,18 @@ def _split_combination(
     :param cut_width:
     :return:
     """
-    stocks: List[List[Tuple[int, str]]] = []
+    stocks: List[List[Tuple[int, str | None]]] = []
     trimmings = 0
 
     current_size = 0
-    current_stock: List[Tuple[int, str]] = []
+    current_stock: List[Tuple[int, str | None]] = []
     for size, name in combination:
         if (current_size + size + cut_width) > max_length:
             # start next stock
             stocks.append(current_stock)
             trimmings += _get_trimming(max_length, current_stock, cut_width)
             current_size = 0
-            current_stock: List[Tuple[int, str]] = []
+            current_stock: List[Tuple[int, str | None]] = []
 
         current_size += size + cut_width
         current_stock.append((size, name))
@@ -90,7 +90,7 @@ def _split_combination(
 
 # this might actually be worse than FFD (both in runtime and solution), disabled for now
 # O(n^2) ??
-def _solve_gapfill(job: Job) -> List[List[Tuple[int, str]]]:
+def _solve_gapfill(job: Job) -> List[List[Tuple[int, str | None]]]:
     # 1. Sort by magnitude (largest first)
     # 2. stack until limit is reached
     # 3. try smaller as long as possible
@@ -104,7 +104,7 @@ def _solve_gapfill(job: Job) -> List[List[Tuple[int, str]]]:
     stocks = []
 
     current_size = 0
-    current_stock: List[Tuple[int, str]] = []
+    current_stock: List[Tuple[int, str | None]] = []
 
     i_target = 0
     while len(targets) > 0:
@@ -142,8 +142,8 @@ def _solve_gapfill(job: Job) -> List[List[Tuple[int, str]]]:
 
 
 # textbook solution, guaranteed to need <= double of perfect solution
-# TODO this has ridiculous execution times, check why
-def _solve_FFD(job: Job) -> List[List[Tuple[int, str]]]:
+# TODO: this has ridiculous execution times, check why
+def _solve_FFD(job: Job) -> List[List[Tuple[int, str | None]]]:
     # iterate over list of stocks
     # put into first stock that it fits into
 
@@ -156,23 +156,24 @@ def _solve_FFD(job: Job) -> List[List[Tuple[int, str]]]:
     mutable_sizes = copy.deepcopy(job.sizes_as_list())
     sizes = sorted(mutable_sizes, reverse=True)
 
-    stocks: List[List[int]] = [[]]
+    stocks: List[List[Tuple[int, str | None]]] = [[]]
 
     i_target = 0
 
     while i_target < len(sizes):
         current_size = sizes[i_target]
-
-        for i, stock in enumerate(stocks):
+        for stock in stocks:
             # calculate current stock length
-            stock_length = sum(stock) + (len(stock) - 1) * job.cut_width
+            stock_length = (
+                sum([size[0] for size in stock]) + (len(stock) - 1) * job.cut_width
+            )
             # step through existing stocks until current size fits
             if (job.max_length - stock_length) > current_size.length:
                 # add size
-                stock.append(current_size.length)
+                stock.append((current_size.length, current_size.name))
                 break
         else:  # nothing fit, opening next bin
-            stocks.append([current_size.length])
+            stocks.append([(current_size.length, current_size.name)])
 
         # decrease/get next
         if current_size.quantity <= 1:
@@ -184,7 +185,7 @@ def _solve_FFD(job: Job) -> List[List[Tuple[int, str]]]:
 
 
 def _get_trimming(
-    max_length: int, lengths: Collection[Tuple[int, str]], cut_width: int
+    max_length: int, lengths: Collection[Tuple[int, str | None]], cut_width: int
 ) -> int:
     sum_lengths = sum([length[0] for length in lengths])
     sum_cuts = len(lengths) * cut_width
