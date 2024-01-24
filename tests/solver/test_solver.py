@@ -62,7 +62,11 @@ def test_FFD():
     orig_job = job.model_copy(deep=True)
     solved = _solve_FFD(job)
 
-    assert solved == [[500, 500, 200, 200], [200, 200]]
+    # assert solved == [[500, 500, 200, 200], [200, 200]]
+    assert solved == [
+        [(500, "Part1"), (500, "Part1"), (200, "Part2"), (200, "Part2")],
+        [(200, "Part2"), (200, "Part2")],
+    ]
     assert orig_job == job
 
 
