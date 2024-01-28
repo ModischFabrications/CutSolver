@@ -1,5 +1,5 @@
 # this size should be irrelevant
-FROM python:3.12 as build
+FROM python:3.11 as build
 # exporting here is a lot safer than depending on the dev environment. Pipenv is kept out of the container by design.
 COPY ./Pipfile /Pipfile
 RUN pip install pipenv
@@ -9,7 +9,7 @@ RUN pipenv lock && pipenv requirements > dev-requirements.txt
 # certifi+httpie allows healthchecks with tiny installation size (#37)
 RUN pip install --user --no-cache-dir --no-warn-script-location -r dev-requirements.txt
 
-FROM python:3.12-slim
+FROM python:3.11-slim
 # https://github.com/opencontainers/image-spec/blob/master/annotations.md
 LABEL "org.opencontainers.image.title"="CutSolver"
 LABEL "org.opencontainers.image.vendor"="Modisch Fabrications"
