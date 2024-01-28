@@ -39,7 +39,7 @@ jobs:
       - name: Set up Python ⚙️
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9"   # keep in sync with pipfile
+          python-version: "3.11"   # keep in sync with pipfile
 
       - name: Install dependencies ⚙️
         run: |
