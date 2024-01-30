@@ -1,4 +1,4 @@
-version = "v0.5.3"
+version = "v1.0.0"
 
 # solver parameter
 n_max_precise = 9  # 10 takes 30s on a beefy desktop, 9 only 1.2s
