@@ -113,7 +113,7 @@ jobs:
           cache-to: type=inline
 
       - name: Update DH description 🖊️
-        uses: peter-evans/dockerhub-description@v5
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
