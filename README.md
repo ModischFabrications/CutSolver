@@ -1,4 +1,4 @@
-# ![logo](https://github.com/ModischFabrications/CutSolverFrontend/raw/master/src/assets/logo.svg) CutSolver
+# ![logo](https://media.githubusercontent.com/media/ModischFabrications/CutSolverFrontend/main/src/assets/logo.svg) CutSolver
 
 [![CI/CD](https://github.com/ModischFabrications/CutSolver/actions/workflows/ci.yml/badge.svg)](https://github.com/ModischFabrications/CutSolver/actions/workflows/ci.yml)
 [![Docker Image Version](https://img.shields.io/docker/v/modischfabrications/cutsolver?sort=semver)](https://hub.docker.com/r/modischfabrications/cutsolver)
