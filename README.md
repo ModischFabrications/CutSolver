@@ -12,7 +12,7 @@ It seems like no other free service tackles this specific problem in an easy-to-
 
 *You are very welcome to share how you use this tool!*
 
-![cutsolver](https://github.com/ModischFabrications/CutSolver/raw/master/docs/cutsolver.svg)
+![cutsolver](https://github.com/ModischFabrications/CutSolver/raw/main/docs/cutsolver.svg)
 
 This Solver is using integers exclusively, as there is no need for arbitrary precision (yet).
 Feel free to shift your numbers a few decimals if you need fractions.
