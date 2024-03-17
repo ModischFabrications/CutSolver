@@ -1,9 +1,18 @@
 {
-  "cut_width": 2,
-  "max_length": 1500,
-  "target_sizes": {
-    "500": 6,
-    "300": 4,
-    "100": 4
-  }
+  "cut_width": 5,
+  "max_length": 1000,
+  "target_sizes": [
+    {
+      "length": 500,
+      "quantity": 4
+    },
+    {
+      "length": 300,
+      "quantity": 3
+    },
+    {
+      "length": 100,
+      "quantity": 1
+    }
+  ]
 }

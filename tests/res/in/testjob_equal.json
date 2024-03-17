@@ -1,0 +1,10 @@
+{
+  "cut_width": 10,
+  "max_length": 1000,
+  "target_sizes": [
+    {
+      "length": 1000,
+      "quantity": 4
+    }
+  ]
+}

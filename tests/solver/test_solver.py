@@ -1,9 +1,3 @@
-from pathlib import Path
-
-import pytest
-
-from app.solver.data.Job import Job
-from app.solver.data.Result import Result
 from app.solver.solver import (
     _get_trimming,
     _solve_bruteforce,
@@ -11,7 +5,7 @@ from app.solver.solver import (
     _solve_FFD,
     distribute,
 )
-from tests.test_utils import generate_testjob
+from tests.test_fixtures import *
 
 
 def test_trimmings():
@@ -30,51 +24,45 @@ def test_trimmings_raise():
         _get_trimming(1500, ((300, ""), (400, ""), (600, ""), (200, "")), 2)
 
 
-def test_bruteforce():
-    job = generate_testjob()
-
-    orig_job = job.model_copy(deep=True)
-    solved = _solve_bruteforce(job)
+def test_bruteforce(testjob_s):
+    orig_job = testjob_s.model_copy(deep=True)
+    solved = _solve_bruteforce(testjob_s)
 
     assert solved == [
         [(500, "Part1"), (500, "Part1"), (200, "Part2"), (200, "Part2")],
         [(200, "Part2"), (200, "Part2")],
     ]
-    assert orig_job == job
+    assert orig_job == testjob_s
 
 
-def test_gapfill():
-    job = generate_testjob()
-
-    orig_job = job.model_copy(deep=True)
-    solved = _solve_gapfill(job)
+def test_gapfill(testjob_s):
+    orig_job = testjob_s.model_copy(deep=True)
+    solved = _solve_gapfill(testjob_s)
 
     assert solved == [
         [(500, "Part1"), (500, "Part1"), (200, "Part2"), (200, "Part2")],
         [(200, "Part2"), (200, "Part2")],
     ]
-    assert orig_job == job
+    assert orig_job == testjob_s
 
 
-def test_FFD():
-    job = generate_testjob()
-
-    orig_job = job.model_copy(deep=True)
-    solved = _solve_FFD(job)
+def test_FFD(testjob_s):
+    orig_job = testjob_s.model_copy(deep=True)
+    solved = _solve_FFD(testjob_s)
 
     # assert solved == [[500, 500, 200, 200], [200, 200]]
     assert solved == [
         [(500, "Part1"), (500, "Part1"), (200, "Part2"), (200, "Part2")],
         [(200, "Part2"), (200, "Part2")],
     ]
-    assert orig_job == job
+    assert orig_job == testjob_s
 
 
 def test_full_model():
-    json_job = Path("./tests/res/in/testjob.json")
+    json_job = Path("./tests/res/in/testjob_s.json")
     assert json_job.exists()
 
-    json_result = Path("./tests/res/out/testresult.json")
+    json_result = Path("./tests/res/out/testresult_s.json")
 
     with open(json_job, "r") as encoded_job:
         job = Job.model_validate_json(encoded_job.read())

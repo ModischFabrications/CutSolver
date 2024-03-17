@@ -1,11 +1,11 @@
 import pytest
 
 from app.solver.data.Result import Result, SolverType
-from tests.test_utils import generate_testjob
+from tests.test_fixtures import testjob_s
 
 
-def test_constructor():
-    job = generate_testjob()
+def test_constructor(testjob_s):
+    job = testjob_s
     result = Result(
         job=job,
         solver_type=SolverType.FFD,
@@ -26,8 +26,8 @@ def test_constructor():
     assert result
 
 
-def test_valid():
-    job = generate_testjob()
+def test_valid(testjob_s):
+    job = testjob_s
     result = Result(
         job=job,
         solver_type=SolverType.FFD,
@@ -48,8 +48,8 @@ def test_valid():
     result.assert_valid()
 
 
-def test_invalid():
-    job = generate_testjob()
+def test_invalid(testjob_s):
+    job = testjob_s
     invalid_result = Result(
         job=job,
         solver_type=SolverType.FFD,
@@ -71,8 +71,8 @@ def test_invalid():
         invalid_result.assert_valid()
 
 
-def test_equal():
-    job = generate_testjob()
+def test_equal(testjob_s):
+    job = testjob_s
     result1 = Result(
         job=job,
         solver_type=SolverType.FFD,
@@ -110,8 +110,8 @@ def test_equal():
     assert result1 == result2
 
 
-def test_exactly():
-    job = generate_testjob()
+def test_exactly(testjob_s):
+    job = testjob_s
     result1 = Result(
         job=job,
         solver_type=SolverType.FFD,

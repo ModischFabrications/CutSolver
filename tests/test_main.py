@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.solver.data.Result import Result
-from tests.test_utils import generate_testjob, generate_testresult
+from tests.test_fixtures import testjob_s, testresult_s
 
 client: TestClient = TestClient(app)
 
@@ -25,8 +25,8 @@ def test_get_debug():
     assert response.status_code == 200
 
 
-def test_full():
-    reply = client.post("/solve", json=generate_testjob().model_dump())
+def test_full(testjob_s, testresult_s):
+    reply = client.post("/solve", json=testjob_s.model_dump())
     assert reply.status_code == 200
     json_result = reply.json()
-    assert Result.model_validate(json_result) == generate_testresult()
+    assert Result.model_validate(json_result) == testresult_s

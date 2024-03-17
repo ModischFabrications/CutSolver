@@ -20,7 +20,7 @@ def test_to_json():
 
 
 def test_from_json():
-    json_file = Path("./tests/res/in/testjob.json")
+    json_file = Path("./tests/res/in/testjob_s.json")
     assert json_file.exists()
 
     with open(json_file, "r") as encoded_job:
