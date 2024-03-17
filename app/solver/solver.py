@@ -53,11 +53,11 @@ def _solve_bruteforce(job: Job) -> List[List[Tuple[int, str | None]]]:
             best_stock = stocks
             minimal_trimmings = trimmings
 
-    return best_stock
+    return _sorted(best_stock)
 
 
 def _split_combination(
-    combination: Tuple[Tuple[int, str | None]], max_length: int, cut_width: int
+        combination: Tuple[Tuple[int, str | None]], max_length: int, cut_width: int
 ):
     """
     Collects sizes until length is reached, then starts another stock
@@ -138,11 +138,10 @@ def _solve_gapfill(job: Job) -> List[List[Tuple[int, str | None]]]:
         stocks.append(current_stock)
 
     # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return stocks
+    return _sorted(stocks)
 
 
-# textbook solution, guaranteed to need <= double of perfect solution
-# TODO: this has ridiculous execution times, check why
+# textbook solution, guaranteed to get at most double trimmings of perfect solution
 def _solve_FFD(job: Job) -> List[List[Tuple[int, str | None]]]:
     # iterate over list of stocks
     # put into first stock that it fits into
@@ -165,7 +164,7 @@ def _solve_FFD(job: Job) -> List[List[Tuple[int, str | None]]]:
         for stock in stocks:
             # calculate current stock length
             stock_length = (
-                sum([size[0] for size in stock]) + (len(stock) - 1) * job.cut_width
+                    sum([size[0] for size in stock]) + (len(stock) - 1) * job.cut_width
             )
             # step through existing stocks until current size fits
             if (job.max_length - stock_length) > current_size.length:
@@ -181,11 +180,11 @@ def _solve_FFD(job: Job) -> List[List[Tuple[int, str | None]]]:
         else:
             current_size.quantity -= 1
 
-    return stocks
+    return _sorted(stocks)
 
 
 def _get_trimming(
-    max_length: int, lengths: Collection[Tuple[int, str | None]], cut_width: int
+        max_length: int, lengths: Collection[Tuple[int, str | None]], cut_width: int
 ) -> int:
     sum_lengths = sum([length[0] for length in lengths])
     sum_cuts = len(lengths) * cut_width
@@ -196,3 +195,9 @@ def _get_trimming(
         raise OverflowError
 
     return trimmings
+
+
+def _sorted(lengths: List[List[Tuple[int, str | None]]]) -> List[List[Tuple[int, str | None]]]:
+    # keep most cuts at the top, getting simpler towards the end
+    # this could also sort by trimmings but that is more work
+    return sorted(lengths, key=len, reverse=True)
