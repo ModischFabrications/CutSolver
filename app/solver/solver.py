@@ -36,18 +36,23 @@ def _solve_bruteforce(job: Job) -> List[List[Tuple[int, str | None]]]:
     if len(job) > 12:
         raise OverflowError("Input too large")
 
+    mutable_job = job.model_copy(deep=True)
+    # allow "overflowing" cut at the end
+    mutable_job.max_length += mutable_job.cut_width
+
     # find every possible ordering (n! elements)
     all_orderings = permutations(job.iterate_sizes())
     # TODO: remove duplicates (due to "quantity")
+    all_orderings = permutations(mutable_job.iterate_sizes())
 
     # "infinity"
-    minimal_trimmings = len(job) * job.max_length
+    minimal_trimmings = len(mutable_job) * mutable_job.max_length
     best_stock: List[List[Tuple[int, str | None]]] = []
 
     # possible improvement: Distribute combinations to multiprocessing worker threads
     for combination in all_orderings:
         stocks, trimmings = _split_combination(
-            combination, job.max_length, job.cut_width
+            combination, mutable_job.max_length, mutable_job.cut_width
         )
         if trimmings < minimal_trimmings:
             best_stock = stocks
