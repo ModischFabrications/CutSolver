@@ -202,6 +202,11 @@ def _get_trimming(
     return trimmings
 
 
+def _get_trimmings(
+        max_length: int, lengths: Collection[Collection[Tuple[int, str | None]]], cut_width: int
+) -> int:
+    return sum(_get_trimming(max_length, x, cut_width) for x in lengths)
+
 def _sorted(lengths: List[List[Tuple[int, str | None]]]) -> List[List[Tuple[int, str | None]]]:
     # keep most cuts at the top, getting simpler towards the end
     # this could also sort by trimmings but that is more work

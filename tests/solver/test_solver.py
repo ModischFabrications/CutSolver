@@ -1,5 +1,6 @@
 from app.solver.solver import (
     _get_trimming,
+    _get_trimmings,
     _solve_bruteforce,
     _solve_gapfill,
     _solve_FFD,
@@ -8,25 +9,45 @@ from app.solver.solver import (
 from tests.test_fixtures import *
 
 
-def test_trimmings():
+def test_trimming():
     trimming = _get_trimming(
         max_length=1500,
-        lengths=((300, ""), (400, ""), (600, ""), (100, "")),
-        cut_width=2,
+        lengths=((500, ""), (500, ""), (400, "")),
+        cut_width=10,
     )
 
-    assert trimming == 92
+    assert trimming == 70
 
 
-def test_trimmings_raise():
+def test_trimming_raise():
     # raises Error if more stock was used than available
     with pytest.raises(OverflowError):
         _get_trimming(1500, ((300, ""), (400, ""), (600, ""), (200, "")), 2)
 
 
-def test_bruteforce(testjob_s):
+def test_trimmings():
+    trimming = _get_trimmings(
+        max_length=1500,
+        lengths=(((500, ""), (500, ""), (400, "")), ((500, ""), (500, ""), (400, ""))),
+        cut_width=10,
+    )
+
+    assert trimming == 140
+
+
+@pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
+def test_solver_is_optimal(testjob_s, solver):
     orig_job = testjob_s.model_copy(deep=True)
-    solved = _solve_bruteforce(testjob_s)
+    solved = solver(testjob_s)
+
+    assert _get_trimmings(orig_job.max_length, solved, orig_job.cut_width) == 1188
+    assert orig_job == testjob_s
+
+
+@pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
+def test_solver_is_exactly(testjob_s, solver):
+    orig_job = testjob_s.model_copy(deep=True)
+    solved = solver(testjob_s)
 
     assert solved == [
         [(500, "Part1"), (500, "Part1"), (200, "Part2"), (200, "Part2")],
@@ -35,30 +56,7 @@ def test_bruteforce(testjob_s):
     assert orig_job == testjob_s
 
 
-def test_gapfill(testjob_s):
-    orig_job = testjob_s.model_copy(deep=True)
-    solved = _solve_gapfill(testjob_s)
-
-    assert solved == [
-        [(500, "Part1"), (500, "Part1"), (200, "Part2"), (200, "Part2")],
-        [(200, "Part2"), (200, "Part2")],
-    ]
-    assert orig_job == testjob_s
-
-
-def test_FFD(testjob_s):
-    orig_job = testjob_s.model_copy(deep=True)
-    solved = _solve_FFD(testjob_s)
-
-    # assert solved == [[500, 500, 200, 200], [200, 200]]
-    assert solved == [
-        [(500, "Part1"), (500, "Part1"), (200, "Part2"), (200, "Part2")],
-        [(200, "Part2"), (200, "Part2")],
-    ]
-    assert orig_job == testjob_s
-
-
-def test_full_model():
+def test_full_solver():
     json_job = Path("./tests/res/in/testjob_s.json")
     assert json_job.exists()
 
