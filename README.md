@@ -41,7 +41,7 @@ Download and start this container by using the provided docker-compose file or
 with `docker run [--rm -it] -p80:80 modischfabrications/cutsolver:latest`.
 
 Note: Replace `latest` with a version number if you depend on this interface, I can guarantee you that the interface
-will change randomly. It's not like I know what I'm doing, expect a learning curve.
+will change randomly. It's more or less stable since the 1.0 release, but be ready for the unexpected.
 
 Both `linux/amd64` and `linux/arm/v7` are currently supported, more will be build whenever I get around to it, message
 me if you need another architecture.
@@ -128,7 +128,7 @@ Also used for development is:
 * [pytest](https://pytest.org): A lot nicer unit tests
 * [flake8](https://flake8.pycqa.org/): Linting
 * [requests](https://requests.readthedocs.io/): simple HTTP requests
-* [black](https://github.com/psf/black): uncompromising code formatter
+* [black](https://github.com/psf/black): uncompromising code formatter; currently unused
 
 ## External links
 
