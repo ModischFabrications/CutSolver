@@ -49,7 +49,7 @@ jobs:
 
       - name: Test with pytest 🔍
         run: |
-          pipenv run pytest --durations=5
+          pipenv run python -m pytest --durations=10
 
   build-and-push-docker:
     needs: build-and-test
