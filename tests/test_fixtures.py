@@ -23,28 +23,3 @@ def testresult_s():
     return Result.model_validate_json(
         load_json(Path("./tests/res/out/testresult_s.json"))
     )
-
-
-@pytest.fixture
-def testjob_m():
-    return Job.model_validate_json(load_json(Path("./tests/res/in/testjob_m.json")))
-
-
-@pytest.fixture
-def testjob_l():
-    return Job.model_validate_json(load_json(Path("./tests/res/in/testjob_l.json")))
-
-
-@pytest.fixture
-def testjob_cuts():
-    return Job.model_validate_json(load_json(Path("./tests/res/in/testjob_cuts.json")))
-
-
-@pytest.fixture
-def testjob_zero_cuts():
-    return Job.model_validate_json(load_json(Path("./tests/res/in/testjob_zero_cuts.json")))
-
-
-@pytest.fixture
-def testjob_equal():
-    return Job.model_validate_json(load_json(Path("./tests/res/in/testjob_equal.json")))

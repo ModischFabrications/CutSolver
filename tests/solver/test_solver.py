@@ -19,6 +19,16 @@ def test_trimming():
     assert trimming == 70
 
 
+def test_trimming_zero():
+    trimming = _get_trimming(
+        max_length=1500,
+        lengths=((500, ""), (500, ""), (480, "")),
+        cut_width=10,
+    )
+
+    assert trimming == 0
+
+
 def test_trimming_raise():
     # raises Error if more stock was used than available
     with pytest.raises(OverflowError):
@@ -49,10 +59,10 @@ def test_solver_is_exactly(testjob_s, solver):
     orig_job = testjob_s.model_copy(deep=True)
     solved = solver(testjob_s)
 
-    assert solved == [
-        [(500, "Part1"), (500, "Part1"), (200, "Part2"), (200, "Part2")],
-        [(200, "Part2"), (200, "Part2")],
-    ]
+    assert solved == (
+        ((500, "Part1"), (500, "Part1"), (200, "Part2"), (200, "Part2")),
+        ((200, "Part2"), (200, "Part2")),
+    )
     assert orig_job == testjob_s
 
 
