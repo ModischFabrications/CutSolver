@@ -6,8 +6,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, PlainTextResponse
 
-from app.constants import version, n_max_precise, n_max
-
+from app.constants import version, solverSettings
 # don't mark /app as a sources root or pycharm will delete the "app." prefix
 # that's needed for pytest to work correctly
 from app.solver.data.Job import Job
@@ -84,15 +83,9 @@ def get_debug():
 
 
 @app.get("/constants", response_class=HTMLResponse)
-def get_debug():
-    static_answer = (
-        "Constants:"
-        "<ul>"
-        f"<li>Max Entries for perfect results: {n_max_precise}</li>"
-        f"<li>Max Entries for any result: {n_max}</li>"
-    )
-
-    return static_answer
+@app.get("/settings", response_class=HTMLResponse)
+def get_settings():
+    return solverSettings
 
 
 # content_type results in browser pretty printing

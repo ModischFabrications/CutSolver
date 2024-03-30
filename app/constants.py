@@ -1,5 +1,19 @@
-version = "v1.0.0"
+from pydantic import BaseModel
 
-# solver parameter
-n_max_precise = 9  # 10 takes 30s on a beefy desktop, 9 only 1.2s
-n_max = 500  # around 1 million with n^2
+# used for git tags
+version = "v1.0.1"
+
+
+class SolverSettings(BaseModel):
+    bruteforce_max_combinations: int
+    n_max: int
+
+
+# TODO should be startup parameter
+solverSettings = SolverSettings(
+    # Desktop with Ryzen 2700X:
+    # (4, 3, 2)=1260 => 0.1s, (4, 3, 3)=4200 => 0.8s, (5, 3, 3)=9240 => 8s
+    bruteforce_max_combinations=5000,
+    # that is already unusable x100, but the solver takes it easily
+    n_max=2000
+)
