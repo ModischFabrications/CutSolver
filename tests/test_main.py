@@ -12,6 +12,7 @@ client: TestClient = TestClient(app)
 def test_get_root():
     response = client.get("/")
     assert response.status_code == 200
+    assert any(response.text)
 
 
 def test_get_version():
@@ -23,6 +24,7 @@ def test_get_version():
 def test_get_debug():
     response = client.get("/debug")
     assert response.status_code == 200
+    assert any(response.text)
 
 
 def test_full(testjob_s, testresult_s):

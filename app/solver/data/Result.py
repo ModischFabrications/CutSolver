@@ -1,7 +1,7 @@
 from enum import unique, Enum
-from typing import List, Tuple, Optional
+from typing import Optional, TypeAlias
 
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt, model_validator
 
 from app.solver.data.Job import Job
 
@@ -13,12 +13,15 @@ class SolverType(str, Enum):  # str as base enables Pydantic-Schemas
     FFD = "FFD"
 
 
+ResultLength: TypeAlias = tuple[tuple[PositiveInt, str | None], ...]
+ResultLengths: TypeAlias = tuple[ResultLength, ...]
+
+
 class Result(BaseModel):
-    # allow IDs to skip redundant transmission for future versions
     job: Job
     solver_type: SolverType
-    time_us: Optional[int] = -1
-    lengths: List[List[Tuple[int, str]]]
+    time_us: Optional[int] = None
+    lengths: ResultLengths
 
     # no trimmings as they can be inferred from difference to job
 
@@ -38,11 +41,11 @@ class Result(BaseModel):
                 and self.lengths == other.lengths
         )
 
+    @model_validator(mode='after')
     def assert_valid(self):
         self.job.assert_valid()
         if self.solver_type not in SolverType:
             raise ValueError(f"Result has invalid solver_type {self.solver_type}")
-        if self.time_us < 0:
-            raise ValueError(f"Result has invalid time_us {self.time_us}")
         if len(self.lengths) <= 0:
             raise ValueError("Result is missing lengths")
+        return self

@@ -50,25 +50,42 @@ def test_valid(testjob_s):
 
 def test_invalid(testjob_s):
     job = testjob_s
-    invalid_result = Result(
-        job=job,
-        solver_type=SolverType.FFD,
-        time_us=-1,
-        lengths=[
-            [
-                (100, "Part1"),
-                (100, "Part1"),
-                (100, "Part1"),
-            ],
-            [
-                (200, "Part2"),
-                (200, "Part2"),
-                (200, "Part2"),
-            ],
-        ],
-    )
+
     with pytest.raises(ValueError):
-        invalid_result.assert_valid()
+        no_job = Result(
+            solver_type=SolverType.FFD,
+            time_us=-1,
+            lengths=[
+                [
+                    (100, "Part1"),
+                    (100, "Part1"),
+                    (100, "Part1"),
+                ],
+                [
+                    (200, "Part2"),
+                    (200, "Part2"),
+                    (200, "Part2"),
+                ],
+            ],
+        )
+
+    with pytest.raises(ValueError):
+        no_solve = Result(
+            job=job,
+            time_us=-1,
+            lengths=[
+                [
+                    (100, "Part1"),
+                    (100, "Part1"),
+                    (100, "Part1"),
+                ],
+                [
+                    (200, "Part2"),
+                    (200, "Part2"),
+                    (200, "Part2"),
+                ],
+            ],
+        )
 
 
 def test_equal(testjob_s):
