@@ -11,6 +11,7 @@ GitPython = "==3.1.41"
 flake8 = "==7.0.0"
 httpx = "==0.26.0"
 black = "==24.3.0"
+pytest-cov = "==5.0.0"
 
 [packages]
 fastapi = "==0.109.1"

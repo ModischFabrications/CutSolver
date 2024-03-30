@@ -75,7 +75,14 @@ to run manually.
 
 Change version number in main.py:version for newer releases, git tags will be created automatically.
 
-Remember to test your changes using `pytest [--durations=5]`.
+### Testing
+
+Remember to test your changes using `pytest`. This will happen automatically both in pre-commit and in CI/CD, but manual
+tests will reduce iteration times.
+
+Code coverage and runtimes can be checked
+using `pipenv run python -m pytest --durations=5 --cov=app/ --cov-report term-missing`.
+Make sure that all critical parts of the code are covered, at v1.0.1 it is at 94%.
 
 ### Development Docker Images
 
