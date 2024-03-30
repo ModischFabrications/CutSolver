@@ -126,6 +126,7 @@ Also used for development is:
 * [pipenv](https://github.com/pypa/pipenv): library management
 * [httpie](https://github.com/jakubroztocil/httpie): simpler `curl` for docker healthchecks
 * [pytest](https://pytest.org): A lot nicer unit tests
+* [flake8](https://flake8.pycqa.org/): Linting
 * [requests](https://requests.readthedocs.io/): simple HTTP requests
 * [black](https://github.com/psf/black): uncompromising code formatter
 

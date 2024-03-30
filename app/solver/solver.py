@@ -2,14 +2,14 @@
 import copy
 from itertools import permutations
 from time import perf_counter
-from typing import Collection
 
 from app.constants import solverSettings
 from app.solver.data.Job import Job, TargetSize
-from app.solver.data.Result import SolverType, Result, ResultLengths
+from app.solver.data.Result import ResultLengths, Result, SolverType
+from app.solver.utils import _get_trimming, _sorted
 
 
-def distribute(job: Job) -> Result:
+def solve(job: Job) -> Result:
     time: float = perf_counter()
 
     lengths: ResultLengths
@@ -189,32 +189,3 @@ def _solve_gapfill(job: Job) -> ResultLengths:
 
     # trimming could be calculated from len(stocks) * length - sum(stocks)
     return _sorted(stocks)
-
-
-def _get_trimming(
-        max_length: int, lengths: Collection[tuple[int, str | None]], cut_width: int
-) -> int:
-    sum_lengths = sum([length[0] for length in lengths])
-    sum_cuts = len(lengths) * cut_width
-
-    trimmings = max_length - (sum_lengths + sum_cuts)
-
-    # cut at the end can be omitted
-    if trimmings == -cut_width:
-        trimmings = 0
-
-    if trimmings < 0:
-        raise OverflowError("Trimmings can't ever be negative!")
-
-    return trimmings
-
-
-def _get_trimmings(max_length: int, lengths: ResultLengths, cut_width: int) -> int:
-    return sum(_get_trimming(max_length, x, cut_width) for x in lengths)
-
-
-def _sorted(lengths: Collection[Collection]) -> ResultLengths:
-    # keep most cuts at the top, getting simpler towards the end
-    # this could also sort by trimmings but that is more work
-    lengths = tuple([tuple(sorted(l, reverse=True)) for l in lengths])
-    return tuple(sorted(lengths, key=len, reverse=True))

@@ -1,48 +1,10 @@
 from app.solver.solver import (
-    _get_trimming,
-    _get_trimmings,
     _solve_bruteforce,
     _solve_gapfill,
-    _solve_FFD,
-    distribute,
+    _solve_FFD, solve,
 )
+from app.solver.utils import _get_trimmings
 from tests.test_fixtures import *
-
-
-def test_trimming():
-    trimming = _get_trimming(
-        max_length=1500,
-        lengths=((500, ""), (500, ""), (400, "")),
-        cut_width=10,
-    )
-
-    assert trimming == 70
-
-
-def test_trimming_zero():
-    trimming = _get_trimming(
-        max_length=1500,
-        lengths=((500, ""), (500, ""), (480, "")),
-        cut_width=10,
-    )
-
-    assert trimming == 0
-
-
-def test_trimming_raise():
-    # raises Error if more stock was used than available
-    with pytest.raises(OverflowError):
-        _get_trimming(1500, ((300, ""), (400, ""), (600, ""), (200, "")), 2)
-
-
-def test_trimmings():
-    trimming = _get_trimmings(
-        max_length=1500,
-        lengths=(((500, ""), (500, ""), (400, "")), ((500, ""), (500, ""), (400, ""))),
-        cut_width=10,
-    )
-
-    assert trimming == 140
 
 
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
@@ -67,20 +29,12 @@ def test_solver_is_exactly(testjob_s, solver):
 
 
 def test_full_solver():
-    json_job = Path("./tests/res/in/testjob_s.json")
-    assert json_job.exists()
+    job = Job.model_validate_json(load_json(Path("./tests/res/in/testjob_s.json")))
+    solved = solve(job)
+    encoded_solved = solved.model_dump_json()
 
-    json_result = Path("./tests/res/out/testresult_s.json")
+    assert len(encoded_solved) > 20
 
-    with open(json_job, "r") as encoded_job:
-        job = Job.model_validate_json(encoded_job.read())
+    result = Result.model_validate_json(load_json(Path("./tests/res/out/testresult_s.json")))
 
-        solved = distribute(job)
-
-        encoded_solved = solved.model_dump_json()
-        assert len(encoded_solved) > 20
-
-    with open(json_result, "r") as encoded_result:
-        result = Result.model_validate_json(encoded_result.read())
-
-        assert solved == result
+    assert solved == result

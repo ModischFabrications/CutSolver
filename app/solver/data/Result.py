@@ -1,7 +1,7 @@
 from enum import unique, Enum
 from typing import Optional, TypeAlias
 
-from pydantic import BaseModel, PositiveInt, model_validator
+from pydantic import BaseModel, PositiveInt, model_validator, ConfigDict
 
 from app.solver.data.Job import Job
 
@@ -18,9 +18,11 @@ ResultLengths: TypeAlias = tuple[ResultLength, ...]
 
 
 class Result(BaseModel):
+    model_config = ConfigDict(frozen=True, validate_assignment=True)
+
     job: Job
     solver_type: SolverType
-    time_us: Optional[int] = None
+    time_us: Optional[PositiveInt] = None
     lengths: ResultLengths
 
     # no trimmings as they can be inferred from difference to job
@@ -43,7 +45,6 @@ class Result(BaseModel):
 
     @model_validator(mode='after')
     def assert_valid(self):
-        self.job.assert_valid()
         if self.solver_type not in SolverType:
             raise ValueError(f"Result has invalid solver_type {self.solver_type}")
         if len(self.lengths) <= 0:

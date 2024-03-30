@@ -11,7 +11,7 @@ from app.constants import version, solverSettings
 # that's needed for pytest to work correctly
 from app.solver.data.Job import Job
 from app.solver.data.Result import Result
-from app.solver.solver import distribute
+from app.solver.solver import solve
 
 
 @asynccontextmanager
@@ -56,11 +56,8 @@ app.add_middleware(
 # response model ensures correct documentation
 @app.post("/solve", response_model=Result)
 def post_solve(job: Job):
-    # pydantic guarantees type safety
-    job.assert_valid()
-
-    solved: Result = distribute(job)
-    solved.assert_valid()
+    # pydantic guarantees type safety, no need to check manually
+    solved: Result = solve(job)
 
     return solved
 
@@ -82,8 +79,8 @@ def get_debug():
     return static_answer
 
 
-@app.get("/constants", response_class=HTMLResponse)
-@app.get("/settings", response_class=HTMLResponse)
+@app.get("/constants")
+@app.get("/settings")
 def get_settings():
     return solverSettings
 
