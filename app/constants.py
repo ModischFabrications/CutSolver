@@ -9,7 +9,7 @@ class SolverSettings(BaseModel):
     n_max: int
 
 
-# TODO should be startup parameter
+# TODO should be startup parameter (see #69)
 solverSettings = SolverSettings(
     # Desktop with Ryzen 2700X:
     # (4, 3, 2)=1260 => 0.1s, (4, 3, 3)=4200 => 0.8s, (5, 3, 3)=9240 => 8s

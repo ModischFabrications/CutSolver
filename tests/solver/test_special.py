@@ -18,7 +18,7 @@ def test_cuts(solver):
     )
 
 
-@pytest.mark.skip(reason="bug #59")
+# @pytest.mark.skip(reason="bug #59")
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_zero_cuts(solver):
     testjob_zero_cuts = Job(max_length=1000, cut_width=0, target_sizes=(TargetSize(length=500, quantity=4),))

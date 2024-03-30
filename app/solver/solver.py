@@ -120,11 +120,9 @@ def _solve_FFD(job: Job) -> ResultLengths:
         current_size = sizes[i_target]
         for stock in stocks:
             # calculate current stock length
-            stock_length = (
-                    sum([size[0] for size in stock]) + (len(stock) - 1) * job.cut_width
-            )
-            # step through existing stocks until current size fits
-            if (job.max_length - stock_length) > current_size.length:
+            stock_length = (sum([size[0] for size in stock]) + (len(stock) - 1) * job.cut_width)
+            # step through existing stocks until current size fits; allow for omitted trailing cut
+            if (job.max_length - stock_length) >= (current_size.length + job.cut_width):
                 # add size
                 stock.append((current_size.length, current_size.name))
                 break
