@@ -1,3 +1,4 @@
+import math
 from math import factorial, prod
 from typing import Iterator, Optional
 
@@ -45,10 +46,12 @@ class Job(BaseModel):
         """
         return sum([target.quantity for target in self.target_sizes])
 
-    def n_combinations(self) -> int:
+    def n_combinations(self) -> float | int:
         """
-        Number of possible combinations of target sizes
+        Number of possible combinations of target sizes; returns infinite if too large
         """
+        if self.n_targets() > 100:
+            return math.inf
         return int(factorial(self.n_targets()) / prod([factorial(n.quantity) for n in self.target_sizes]))
 
     @model_validator(mode='after')
