@@ -20,11 +20,10 @@ It has no concept of units, so you can use whatever you want.
 
 *Nerd talk*: This is the 2D "Cutting Stock Problem", which is NP-hard. It can be reduced to the Bin-Packing-Problem (
 BPP).
-No efficient algorithm exists to calculate a perfect solution in an acceptable timeframe, therefore brute force (perfect
-solution)
-is used for small jobs (<13 entries) and FFD (fast solution) für larger ones. Don't be surprised if you get different
-results,
-many combinations have equal trimmings and are therefore seen as equally good.
+No algorithm exists to calculate a perfect solution in polynomial time, therefore brute force (perfect
+solution) is used for small jobs (usually <12 entries) and FFD (fast solution) für larger ones.
+Don't be surprised if you get different results, many combinations have equal trimmings and are therefore seen as
+equally good.
 
 ## Usage/Hosting
 
@@ -32,6 +31,8 @@ Feel free to run manually, but the easiest (and advised) way to deploy this is b
 image.
 
 Send POST-Requests to `[localhost]/solve` to get your results, see `/docs` for further information.
+
+Also see [example job and result](/tests/res) from tests.
 
 ### Docker
 
@@ -43,8 +44,7 @@ Note: Replace `latest` with a version number if you depend on this interface, I 
 will change randomly. It's not like I know what I'm doing, expect a learning curve.
 
 Both `linux/amd64` and `linux/arm/v7` are currently supported, more will be build whenever I get around to it, message
-me if
-you need another architecture.
+me if you need another architecture.
 
 ## Performance
 
@@ -52,20 +52,26 @@ If it can run Docker it will probably be able to run CutSolver.
 1 vCPU with 500MB RAM should be fine for small workloads.
 
 Runtimes strongly depend on the single-core performance of your CPU.
-You can expect 10 entries to be solved after ~20s with `bruteforce`and <0.1s with `FFD` for generic desktops, slower on
+You can expect 12 entries to be solved after ~1s with `bruteforce`and <0.1s with `FFD` for generic desktops, slower on
 weaker machines.
 Multiple cores won't speed up job time, but will enable efficient solving of parallel jobs.
+
+The thresholds that decide which jobs are solved which way are defined in constants.py.
+This might be configurable by CLI later (TODO #69).
 
 ## Contributing
 
 Feel free to contact me or make a pull-request if you want to participate.
 
+Sponsoring and/or paid development is also very welcome, feel free to reach out.
+
+### Git
+
 Install pre-commit with `pre-commit install && pre-commit install -t pre-push`.
 You might need to replace `#!/bin/sh` with `#!/usr/bin/env sh` in the resulting *.legacy file on Windows.
 
 All obvious errors should be checked and or fixed by pre-commit, execute `pre-commit run --all-files --hook-stage push`
-to run
-manually.
+to run manually.
 
 Change version number in main.py:version for newer releases, git tags will be created automatically.
 
@@ -112,9 +118,16 @@ Check [Docker Hub](https://hub.docker.com/r/modischfabrications/cutsolver) to se
 
 This project uses:
 
+* [FastAPI](https://github.com/tiangolo/fastapi): easy API (this includes much more!)
+* [Uvicorn](https://github.com/encode/uvicorn): async web server
+
+Also used for development is:
+
 * [pipenv](https://github.com/pypa/pipenv): library management
-* [FastAPI](https://github.com/tiangolo/fastapi): easy webservice (this includes much more!)
 * [httpie](https://github.com/jakubroztocil/httpie): simpler `curl` for docker healthchecks
+* [pytest](https://pytest.org): A lot nicer unit tests
+* [requests](https://requests.readthedocs.io/): simple HTTP requests
+* [black](https://github.com/psf/black): uncompromising code formatter
 
 ## External links
 
