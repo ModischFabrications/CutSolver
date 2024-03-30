@@ -1,8 +1,8 @@
 from app.solver.data.Job import TargetSize
 from app.solver.solver import (
     _solve_bruteforce,
-    _solve_FFD, _solve_gapfill, _get_trimmings,
-)
+    _solve_FFD, _solve_gapfill, )
+from app.solver.utils import _get_trimmings
 from tests.test_fixtures import *
 
 
