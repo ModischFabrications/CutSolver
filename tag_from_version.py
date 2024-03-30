@@ -8,7 +8,7 @@ from sys import stderr
 
 from git import Repo
 
-from app import constants
+from app import settings
 
 
 def compare_versions(left: str, right: str):
@@ -35,7 +35,7 @@ def process():
     repo = Repo(Path("."))
     assert not repo.bare
 
-    version = constants.version
+    version = settings.version
 
     version_tags_only = tuple(filter(lambda tag: tag.name[0] == "v", repo.tags))
     newest_tag = version_tags_only[-1]

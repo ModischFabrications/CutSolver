@@ -6,7 +6,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, PlainTextResponse
 
-from app.constants import version, solverSettings
+from app.settings import version, solverSettings
 # don't mark /app as a sources root or pycharm will delete the "app." prefix
 # that's needed for pytest to work correctly
 from app.solver.data.Job import Job
@@ -17,6 +17,8 @@ from app.solver.solver import solve
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print(f"Starting CutSolver {version}...")
+    print(f"Settings: {solverSettings.json()}")
+    print(f"Routes: {app.routes}")
     yield
     print("Shutting down CutSolver...")
 
