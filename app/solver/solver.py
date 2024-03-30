@@ -3,7 +3,7 @@ import copy
 from itertools import permutations
 from time import perf_counter
 
-from app.constants import solverSettings
+from app.settings import solverSettings
 from app.solver.data.Job import Job, TargetSize
 from app.solver.data.Result import ResultLengths, Result, SolverType
 from app.solver.utils import _get_trimming, _sorted
@@ -18,7 +18,7 @@ def solve(job: Job) -> Result:
     if job.n_combinations() <= solverSettings.bruteforce_max_combinations:
         lengths = _solve_bruteforce(job)
         solver_type = SolverType.bruteforce
-    elif job.n_targets() <= solverSettings.n_max:
+    elif job.n_targets() <= solverSettings.solver_n_max:
         lengths = _solve_FFD(job)
         solver_type = SolverType.FFD
     else:

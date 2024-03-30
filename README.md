@@ -56,8 +56,8 @@ You can expect 12 entries to be solved after ~1s with `bruteforce`and <0.1s with
 weaker machines.
 Multiple cores won't speed up job time, but will enable efficient solving of parallel jobs.
 
-The thresholds that decide which jobs are solved which way are defined in constants.py.
-This might be configurable by CLI later (TODO #69).
+The thresholds that decide which jobs are solved which way are defined in constants.py and can be passed as env,
+see [docker-compose.yml](/docker-compose.yml) for details.
 
 ## Contributing
 
