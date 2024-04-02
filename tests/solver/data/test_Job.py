@@ -69,3 +69,18 @@ def test_too_long(testjob_s):
             cut_width=5,
             target_sizes=(TargetSize(length=101, quantity=1),)
         )
+
+
+def test_to_json():
+    job = Job(
+        max_length=1200,
+        cut_width=5,
+        target_sizes=[
+            TargetSize(length=300, quantity=4, name="Part1"),
+            TargetSize(length=200, quantity=3),
+        ],
+    )
+    assert (
+            job.model_dump_json()
+            == '{"max_length":1200,"cut_width":5,"target_sizes":[{"length":300,"quantity":4,"name":"Part1"},{"length":200,"quantity":3,"name":""}]}'
+    )

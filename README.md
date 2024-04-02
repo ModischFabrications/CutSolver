@@ -84,6 +84,8 @@ Code coverage and runtimes can be checked
 using `pipenv run python -m pytest --durations=5 --cov=app/ --cov-report term-missing`.
 Make sure that all critical parts of the code are covered, at v1.0.1 it is at 94%.
 
+Proper type usage can be checked using `pipenv run python -m mypy app`.
+
 ### Development Docker Images
 
 1. Build and start this image using `docker-compose up`
@@ -134,6 +136,7 @@ Also used for development is:
 * [httpie](https://github.com/jakubroztocil/httpie): simpler `curl` for docker healthchecks
 * [pytest](https://pytest.org): A lot nicer unit tests
 * [flake8](https://flake8.pycqa.org/): Linting
+* [Mypy](https://mypy-lang.org/): Static type checking
 * [requests](https://requests.readthedocs.io/): simple HTTP requests
 * [black](https://github.com/psf/black): uncompromising code formatter; currently unused
 
