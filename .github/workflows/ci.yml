@@ -47,8 +47,14 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           pipenv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
+      - name: Test with mypy 🔍
+        run: |
+          # stop the build if there are typing errors
+          pipenv run python -m mypy .
+
       - name: Test with pytest 🔍
         run: |
+          # stop the build if there are failed tests
           pipenv run python -m pytest --durations=10
 
   build-and-push-docker:
