@@ -1,12 +1,13 @@
 import pytest
 
-from app.solver.utils import _get_trimming, _get_trimmings
+from app.solver.data.Job import NamedSize
+from app.solver.utils import _get_trimming
 
 
 def test_trimming():
     trimming = _get_trimming(
-        max_length=1500,
-        lengths=((500, ""), (500, ""), (400, "")),
+        stock_length=1500,
+        lengths=(NamedSize(length=500), NamedSize(length=500), NamedSize(length=400)),
         cut_width=10,
     )
 
@@ -15,8 +16,8 @@ def test_trimming():
 
 def test_trimming_zero():
     trimming = _get_trimming(
-        max_length=1500,
-        lengths=((500, ""), (500, ""), (480, "")),
+        stock_length=1500,
+        lengths=(NamedSize(length=500), NamedSize(length=500), NamedSize(length=480)),
         cut_width=10,
     )
 
@@ -26,14 +27,8 @@ def test_trimming_zero():
 def test_trimming_raise():
     # raises Error if more stock was used than available
     with pytest.raises(OverflowError):
-        _get_trimming(1500, ((300, ""), (400, ""), (600, ""), (200, "")), 2)
-
-
-def test_trimmings():
-    trimming = _get_trimmings(
-        max_length=1500,
-        lengths=(((500, ""), (500, ""), (400, "")), ((500, ""), (500, ""), (400, ""))),
-        cut_width=10,
-    )
-
-    assert trimming == 140
+        _get_trimming(1500, (
+            NamedSize(length=300),
+            NamedSize(length=400),
+            NamedSize(length=600),
+            NamedSize(length=200)), 2)

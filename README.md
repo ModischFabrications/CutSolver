@@ -73,6 +73,8 @@ You might need to replace `#!/bin/sh` with `#!/usr/bin/env sh` in the resulting 
 All obvious errors should be checked and or fixed by pre-commit, execute `pre-commit run --all-files --hook-stage push`
 to run manually.
 
+use `git push --no-verify` if you really need to skip these tests, but you better have a good explanation.
+
 Change version number in main.py:version for newer releases, git tags will be created automatically.
 
 ### Testing

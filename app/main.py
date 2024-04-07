@@ -2,7 +2,7 @@ import platform
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, PlainTextResponse
 
@@ -55,8 +55,8 @@ app.add_middleware(
 )
 
 
-# response model ensures correct documentation
-@app.post("/solve", response_model=Result)
+# response model ensures correct documentation, exclude skips optional
+@app.post("/solve", response_model=Result, response_model_exclude_defaults=True)
 def post_solve(job: Job):
     # pydantic guarantees type safety, no need to check manually
     solved: Result = solve(job)

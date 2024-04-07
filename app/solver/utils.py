@@ -1,15 +1,16 @@
-from typing import Collection
+from typing import Collection, Sequence
 
-from app.solver.data.Result import ResultLengths
+from app.solver.data.Job import NamedSize, StockSize, TargetStock, TargetSize
+from app.solver.data.Result import ResultEntry
 
 
 def _get_trimming(
-        max_length: int, lengths: Collection[tuple[int, str | None]], cut_width: int
+        stock_length: int, lengths: Collection[NamedSize], cut_width: int
 ) -> int:
-    sum_lengths = sum([length[0] for length in lengths])
+    sum_lengths = sum([size.length for size in lengths])
     sum_cuts = len(lengths) * cut_width
 
-    trimmings = max_length - (sum_lengths + sum_cuts)
+    trimmings = stock_length - (sum_lengths + sum_cuts)
 
     # cut at the end can be omitted
     if trimmings == -cut_width:
@@ -21,12 +22,19 @@ def _get_trimming(
     return trimmings
 
 
-def _get_trimmings(max_length: int, lengths: ResultLengths, cut_width: int) -> int:
-    return sum(_get_trimming(max_length, x, cut_width) for x in lengths)
+def find_best_solution(solutions: Sequence):
+    # TODO evaluate which one aligns with user expectations best (see #68)
+    return sorted(solutions)[0]
 
 
-def _sorted(lengths: Collection[Collection]) -> ResultLengths:
-    # keep most cuts at the top, getting simpler towards the end
-    # this could also sort by trimmings but that is more work
-    lengths = tuple([tuple(sorted(l, reverse=True)) for l in lengths])
-    return tuple(sorted(lengths, key=len, reverse=True))
+def create_result_entry(stock: TargetStock | StockSize, cuts: list[NamedSize | TargetSize],
+                        cut_width: int) -> ResultEntry:
+    return ResultEntry(
+        stock=stock,
+        cuts=tuple(sorted(cuts, reverse=True)),
+        trimming=_get_trimming(stock.length, cuts, cut_width)
+    )
+
+
+def sort_entries(result_entries: list[ResultEntry]) -> tuple[ResultEntry, ...]:
+    return tuple(sorted(result_entries, reverse=True))
