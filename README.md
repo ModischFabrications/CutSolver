@@ -131,6 +131,7 @@ This project uses:
 
 * [FastAPI](https://github.com/tiangolo/fastapi): easy API (this includes much more!)
 * [Uvicorn](https://github.com/encode/uvicorn): async web server
+* [more-itertools](https://github.com/more-itertools/more-itertools): higher performance iterations
 
 Also used for development is:
 
