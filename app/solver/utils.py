@@ -1,11 +1,11 @@
 from typing import Collection, Sequence
 
-from app.solver.data.Job import NamedSize, StockSize, TargetStock, TargetSize
+from app.solver.data.Job import NS, StockSize, ResultStock, TS
 from app.solver.data.Result import ResultEntry
 
 
 def _get_trimming(
-        stock_length: int, lengths: Collection[NamedSize], cut_width: int
+        stock_length: int, lengths: Collection[NS], cut_width: int
 ) -> int:
     sum_lengths = sum([size.length for size in lengths])
     sum_cuts = len(lengths) * cut_width
@@ -24,10 +24,11 @@ def _get_trimming(
 
 def find_best_solution(solutions: Sequence):
     # TODO evaluate which one aligns with user expectations best (see #68)
-    return sorted(solutions)[0]
+    # always sort for determinism!
+    return sorted(solutions, reverse=True)[0]
 
 
-def create_result_entry(stock: TargetStock | StockSize, cuts: list[NamedSize | TargetSize],
+def create_result_entry(stock: ResultStock | StockSize, cuts: list[NS | TS],
                         cut_width: int) -> ResultEntry:
     return ResultEntry(
         stock=stock,
@@ -37,4 +38,4 @@ def create_result_entry(stock: TargetStock | StockSize, cuts: list[NamedSize | T
 
 
 def sort_entries(result_entries: list[ResultEntry]) -> tuple[ResultEntry, ...]:
-    return tuple(sorted(result_entries, reverse=True))
+    return tuple(sorted(result_entries))

@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, PositiveInt, model_validator, ConfigDict, NonNegativeInt
 
-from app.solver.data.Job import Job, NamedSize, TargetStock
+from app.solver.data.Job import Job, NS, ResultStock
 
 
 @unique
@@ -16,13 +16,19 @@ class SolverType(str, Enum):  # str as base enables Pydantic-Schemas
 class ResultEntry(BaseModel):
     model_config = ConfigDict(frozen=True, validate_assignment=True)
 
-    stock: TargetStock
-    cuts: tuple[NamedSize, ...]
+    stock: ResultStock
+    cuts: tuple[NS, ...]
     trimming: NonNegativeInt
 
     def __lt__(self, other):
-        # this could also sort by trimmings, not sure if that is better
-        return len(self.cuts)
+        """
+        length, trimmings, cut count
+        """
+        if self.stock.length != other.stock.length:
+            return self.stock.length < other.stock.length
+        if self.trimming != other.trimming:
+            return self.trimming < other.trimming
+        return len(self.cuts) < len(other.cuts)
 
 
 class Result(BaseModel):
@@ -31,7 +37,7 @@ class Result(BaseModel):
     job: Job
     solver_type: SolverType
     time_us: Optional[PositiveInt] = None
-    # keep most cuts at the top, getting simpler towards the end
+    # Ordering: length, trimmings, cut count
     layout: tuple[ResultEntry, ...]
 
     def trimmings(self):
@@ -57,7 +63,7 @@ class Result(BaseModel):
         )
 
     @model_validator(mode='after')
-    def assert_valid(self):
+    def assert_valid(self) -> 'Result':
         # basic assertion are done at field level
         if len(self.layout) <= 0:
             raise ValueError("Result is missing lengths")

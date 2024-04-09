@@ -8,19 +8,19 @@
     {
       "name": "close",
       "length": 450,
-      "quantity": 2
+      "quantity": 1
     },
     {
       "name": "perfect",
       "length": 390,
-      "quantity": 4
+      "quantity": 1
     }
   ],
   "required": [
     {
       "name": "Part1",
       "length": 390,
-      "quantity": 8
+      "quantity": 4
     }
   ]
 }

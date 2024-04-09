@@ -9,19 +9,19 @@
       {
         "name": "close",
         "length": 450,
-        "quantity": 2
+        "quantity": 1
       },
       {
         "name": "perfect",
         "length": 390,
-        "quantity": 4
+        "quantity": 1
       }
     ],
     "required": [
       {
         "name": "Part1",
         "length": 390,
-        "quantity": 8
+        "quantity": 4
       }
     ]
   },
@@ -30,20 +30,16 @@
   "layout": [
     {
       "stock": {
-        "name": "infinite",
-        "length": 1000
+        "name": "perfect",
+        "length": 390
       },
       "cuts": [
         {
           "name": "Part1",
           "length": 390
-        },
-        {
-          "name": "Part1",
-          "length": 390
         }
       ],
-      "trimming": 210
+      "trimming": 0
     },
     {
       "stock": {
@@ -60,16 +56,20 @@
     },
     {
       "stock": {
-        "name": "perfect",
-        "length": 390
+        "name": "infinite",
+        "length": 1000
       },
       "cuts": [
         {
           "name": "Part1",
           "length": 390
+        },
+        {
+          "name": "Part1",
+          "length": 390
         }
       ],
-      "trimming": 0
+      "trimming": 210
     }
   ]
 }

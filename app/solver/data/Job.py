@@ -5,7 +5,10 @@ from typing import Iterator, Optional
 from pydantic import BaseModel, ConfigDict, PositiveInt, NonNegativeInt, model_validator
 
 
-class NamedSize(BaseModel):
+class NS(BaseModel):
+    """
+    "named size", wraps length + name
+    """
     # frozen might be nice, but that would make reuse in solvers worse
     model_config = ConfigDict(validate_assignment=True)
 
@@ -25,33 +28,35 @@ class NamedSize(BaseModel):
         return f"{self.name}: l={self.length}"
 
 
-class TargetStock(NamedSize):
+# TODO this should probably be inlined
+class ResultStock(NS):
     pass
 
 
-class TargetSize(NamedSize):
+class TS(NS):
+    """
+    "target size", adds quantity
+    """
     quantity: PositiveInt
 
     def __str__(self):
         return f"{self.name}: l={self.length}, n={self.quantity}"
 
-    def as_base(self) -> NamedSize:
-        return NamedSize(length=self.length, name=self.name)
+    def as_base(self) -> NS:
+        return NS(length=self.length, name=self.name)
 
 
-class StockSize(TargetStock):
-    quantity: PositiveInt = 999  # more or less equal to infinite
+class StockSize(ResultStock):
+    """
+    "stock size", adds optional quantity (can be infinite)
+    """
+    quantity: Optional[PositiveInt] = -1  # more or less equal to infinite
 
-    def iterate_sizes(self) -> Iterator[TargetStock]:
-        """
-        yields all lengths times amount, sorted descending
-        """
+    def as_base(self) -> ResultStock:
+        return ResultStock(length=self.length, name=self.name)
 
-        for _ in range(self.quantity):
-            yield TargetStock(length=self.length, name=self.name)
-
-    def as_base(self) -> TargetStock:
-        return TargetStock(length=self.length, name=self.name)
+    def safe_quantity(self):
+        return self.quantity if self.quantity > 0 else 999
 
 
 class Job(BaseModel):
@@ -59,16 +64,30 @@ class Job(BaseModel):
 
     cut_width: NonNegativeInt = 0
     stocks: tuple[StockSize, ...]
-    required: tuple[TargetSize, ...]
+    required: tuple[TS, ...]
 
-    def iterate_sizes(self) -> Iterator[NamedSize]:
+    def iterate_required(self) -> Iterator[NS]:
         """
         yields all lengths times amount, sorted descending
         """
 
         # sort descending to favor combining larger sizes first
-        for target in sorted(self.required, key=lambda x: x.length, reverse=True):
+        for target in sorted(self.required, reverse=True):
             for _ in range(target.quantity):
+                yield target.as_base()
+
+    def iterate_stocks(self) -> Iterator[ResultStock]:
+        """
+        yields all lengths times amount (including unwrapped infinite stocks);
+        sorted descending
+        """
+
+        # sort descending to favor combining larger sizes first
+        for target in sorted(self.stocks, reverse=True):
+            # if this overflows your solution is probably shit; add +1 if unsure
+            iterations = target.quantity if target.quantity != -1 else math.ceil(
+                self.sum_of_required() / target.length)
+            for _ in range(iterations):
                 yield target.as_base()
 
     def n_targets(self) -> int:
@@ -83,6 +102,7 @@ class Job(BaseModel):
         """
         if self.n_targets() > 100:
             return math.inf
+        # TODO extend with multiplication by stock permutations
         return int(factorial(self.n_targets()) / prod([factorial(n.quantity) for n in self.required]))
 
     @model_validator(mode='after')
@@ -95,7 +115,18 @@ class Job(BaseModel):
 
         if any(all(target.length > stock.length for stock in self.stocks) for target in self.required):
             raise ValueError("Job has target sizes longer than the stock")
+
+        # this isn't perfect and requires additional calculations for cuts
+        if (
+                self.sum_of_required() >
+                sum([stock.length for stock in self.iterate_stocks()])
+        ):
+            raise ValueError("Job has more targets than the stock available")
+
         return self
+
+    def sum_of_required(self):
+        return sum([target.length * target.quantity for target in self.required])
 
     def __eq__(self, other):
         return (
