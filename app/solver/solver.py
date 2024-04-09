@@ -50,7 +50,7 @@ def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
         for required_ordering in all_orderings:
             result = _group_into_lengths(stock_ordering, required_ordering, mutable_job.cut_width)
             if result is None:
-                print(".", end="")
+                # seems like we were able to short-circuit
                 continue
             trimmings = sum(l.trimming for l in result)
             if trimmings < minimal_trimmings:
@@ -137,7 +137,8 @@ def _solve_FFD(job: Job) -> tuple[ResultEntry, ...]:
         else:
             current_size.quantity -= 1
 
-    return sort_entries([create_result_entry(job.stocks[0], r, job.cut_width) for r in stocks])
+    # TODO use right stock
+    return sort_entries([create_result_entry(job.stocks[0].as_base(), r, job.cut_width) for r in stocks])
 
 
 # even faster than FFD, seems like equal results; selfmade and less proven!
@@ -191,5 +192,6 @@ def _solve_gapfill(job: Job) -> tuple[ResultEntry, ...]:
     if current_stock:
         stocks.append(current_stock)
 
+    # TODO use right stock
     # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return sort_entries([create_result_entry(job.stocks[0], r, job.cut_width) for r in stocks])
+    return sort_entries([create_result_entry(job.stocks[0].as_base(), r, job.cut_width) for r in stocks])

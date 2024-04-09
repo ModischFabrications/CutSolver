@@ -4,7 +4,7 @@ from app.solver.data.Job import NS
 from app.solver.data.Result import ResultEntry
 
 
-def _get_trimming(stock_length: int, lengths: Collection[NS], cut_width: int) -> int:
+def calc_trimming(stock_length: int, lengths: Collection[NS], cut_width: int) -> int:
     sum_lengths = sum([size.length for size in lengths])
     sum_cuts = len(lengths) * cut_width
 
@@ -30,7 +30,7 @@ def create_result_entry(stock: NS, cuts: list[NS], cut_width: int) -> ResultEntr
     return ResultEntry(
         stock=stock,
         cuts=tuple(sorted(cuts, reverse=True)),
-        trimming=_get_trimming(stock.length, cuts, cut_width)
+        trimming=calc_trimming(stock.length, cuts, cut_width)
     )
 
 

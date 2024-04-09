@@ -1,50 +1,69 @@
 {
   "job": {
     "cut_width": 2,
-    "max_length": 1500,
-    "target_sizes": [
+    "stocks": [
+      {
+        "length": 1500,
+        "name": "infinite"
+      }
+    ],
+    "required": [
       {
         "length": 500,
-        "quantity": 2,
-        "name": "Part1"
+        "name": "Part1",
+        "quantity": 2
       },
       {
         "length": 200,
-        "quantity": 4,
-        "name": "Part2"
+        "name": "Part2",
+        "quantity": 4
       }
     ]
   },
   "solver_type": "bruteforce",
-  "time_us": 10000,
-  "lengths": [
-    [
-      [
-        500,
-        "Part1"
+  "time_us": 1868,
+  "layout": [
+    {
+      "stock": {
+        "length": 1500,
+        "name": "infinite"
+      },
+      "cuts": [
+        {
+          "length": 500,
+          "name": "Part1"
+        },
+        {
+          "length": 200,
+          "name": "Part2"
+        },
+        {
+          "length": 200,
+          "name": "Part2"
+        },
+        {
+          "length": 200,
+          "name": "Part2"
+        }
       ],
-      [
-        500,
-        "Part1"
+      "trimming": 392
+    },
+    {
+      "stock": {
+        "length": 1500,
+        "name": "infinite"
+      },
+      "cuts": [
+        {
+          "length": 500,
+          "name": "Part1"
+        },
+        {
+          "length": 200,
+          "name": "Part2"
+        }
       ],
-      [
-        200,
-        "Part2"
-      ],
-      [
-        200,
-        "Part2"
-      ]
-    ],
-    [
-      [
-        200,
-        "Part2"
-      ],
-      [
-        200,
-        "Part2"
-      ]
-    ]
+      "trimming": 796
+    }
   ]
 }

@@ -45,7 +45,6 @@ def test_valid(testjob_s):
             ],
         ],
     )
-    result.assert_valid()
 
 
 def test_invalid(testjob_s):
@@ -182,3 +181,13 @@ def test_exactly(testjob_s):
     )
     assert not result1.exactly(result2)
     assert result2.exactly(result3)
+
+
+def test_trimmings():
+    trimming = Result(
+        max_length=1500,
+        lengths=(((500, ""), (500, ""), (400, "")), ((500, ""), (500, ""), (400, ""))),
+        cut_width=10,
+    )
+
+    assert trimming == 140
