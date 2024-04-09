@@ -1,12 +1,10 @@
 from typing import Collection, Sequence
 
-from app.solver.data.Job import NS, StockSize, ResultStock, TS
+from app.solver.data.Job import NS
 from app.solver.data.Result import ResultEntry
 
 
-def _get_trimming(
-        stock_length: int, lengths: Collection[NS], cut_width: int
-) -> int:
+def _get_trimming(stock_length: int, lengths: Collection[NS], cut_width: int) -> int:
     sum_lengths = sum([size.length for size in lengths])
     sum_cuts = len(lengths) * cut_width
 
@@ -28,8 +26,7 @@ def find_best_solution(solutions: Sequence):
     return sorted(solutions, reverse=True)[0]
 
 
-def create_result_entry(stock: ResultStock | StockSize, cuts: list[NS | TS],
-                        cut_width: int) -> ResultEntry:
+def create_result_entry(stock: NS, cuts: list[NS], cut_width: int) -> ResultEntry:
     return ResultEntry(
         stock=stock,
         cuts=tuple(sorted(cuts, reverse=True)),

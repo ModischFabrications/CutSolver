@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, PositiveInt, model_validator, ConfigDict, NonNegativeInt
 
-from app.solver.data.Job import Job, NS, ResultStock
+from app.solver.data.Job import Job, NS
 
 
 @unique
@@ -16,7 +16,7 @@ class SolverType(str, Enum):  # str as base enables Pydantic-Schemas
 class ResultEntry(BaseModel):
     model_config = ConfigDict(frozen=True, validate_assignment=True)
 
-    stock: ResultStock
+    stock: NS
     cuts: tuple[NS, ...]
     trimming: NonNegativeInt
 

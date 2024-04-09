@@ -28,14 +28,9 @@ class NS(BaseModel):
         return f"{self.name}: l={self.length}"
 
 
-# TODO this should probably be inlined
-class ResultStock(NS):
-    pass
-
-
-class TS(NS):
+class QNS(NS):
     """
-    "target size", adds quantity
+    "quantity + named size", adds quantity
     """
     quantity: PositiveInt
 
@@ -46,14 +41,14 @@ class TS(NS):
         return NS(length=self.length, name=self.name)
 
 
-class StockSize(ResultStock):
+class INS(NS):
     """
-    "stock size", adds optional quantity (can be infinite)
+    "(infinite) quantity + named size", adds optional quantity (can be infinite)
     """
     quantity: Optional[PositiveInt] = -1  # more or less equal to infinite
 
-    def as_base(self) -> ResultStock:
-        return ResultStock(length=self.length, name=self.name)
+    def as_base(self) -> NS:
+        return NS(length=self.length, name=self.name)
 
     def safe_quantity(self):
         return self.quantity if self.quantity > 0 else 999
@@ -63,8 +58,8 @@ class Job(BaseModel):
     model_config = ConfigDict(frozen=True, validate_assignment=True)
 
     cut_width: NonNegativeInt = 0
-    stocks: tuple[StockSize, ...]
-    required: tuple[TS, ...]
+    stocks: tuple[INS, ...]
+    required: tuple[QNS, ...]
 
     def iterate_required(self) -> Iterator[NS]:
         """
@@ -76,7 +71,7 @@ class Job(BaseModel):
             for _ in range(target.quantity):
                 yield target.as_base()
 
-    def iterate_stocks(self) -> Iterator[ResultStock]:
+    def iterate_stocks(self) -> Iterator[NS]:
         """
         yields all lengths times amount (including unwrapped infinite stocks);
         sorted descending

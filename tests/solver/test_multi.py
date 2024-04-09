@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from app.solver.data.Job import Job, TS, StockSize, NS
+from app.solver.data.Job import Job, QNS, INS, NS
 from app.solver.data.Result import Result, ResultEntry
 from app.solver.solver import _solve_bruteforce, _solve_FFD, _solve_gapfill
 from tests.test_fixtures import load_json
@@ -33,7 +33,7 @@ def test_job_to_result_json(solver):
 
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_solver_single(solver):
-    job = Job(stocks=(StockSize(length=1010),), cut_width=10, required=(TS(length=500, quantity=4),))
+    job = Job(stocks=(INS(length=1010),), cut_width=10, required=(QNS(length=500, quantity=4),))
     solved = solver(job)
 
     assert solved == (
@@ -45,8 +45,8 @@ def test_solver_single(solver):
 # @pytest.mark.skip(reason="bug #52")
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_solver_multi(solver):
-    job = Job(stocks=(StockSize(length=1100), StockSize(length=500, quantity=2)), cut_width=10,
-              required=(TS(length=500, quantity=4),))
+    job = Job(stocks=(INS(length=1100), INS(length=500, quantity=2)), cut_width=10,
+              required=(QNS(length=500, quantity=4),))
     solved = solver(job)
 
     assert solved == (

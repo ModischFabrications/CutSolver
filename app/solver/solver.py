@@ -6,7 +6,7 @@ from typing import Iterable
 from more_itertools import distinct_permutations
 
 from app.settings import solverSettings
-from app.solver.data.Job import Job, TS, NS, ResultStock
+from app.solver.data.Job import Job, QNS, NS
 from app.solver.data.Result import Result, SolverType, ResultEntry
 from app.solver.utils import create_result_entry, sort_entries, find_best_solution
 
@@ -65,7 +65,7 @@ def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
 
 
 def _group_into_lengths(
-        stocks: tuple[ResultStock, ...], sizes: Iterable[NS], cut_width: int
+        stocks: tuple[NS, ...], sizes: Iterable[NS], cut_width: int
 ) -> tuple[ResultEntry, ...] | None:
     """
     Collects sizes until length is reached, then starts another stock
@@ -170,7 +170,7 @@ def _solve_gapfill(job: Job) -> tuple[ResultEntry, ...]:
             current_size = 0
             i_target = 0
 
-        current_target: TS = targets[i_target]
+        current_target: QNS = targets[i_target]
         # target fits inside current stock, transfer to results
         if (current_size + current_target.length) <= max_length:
             current_stock.append(current_target.as_base())
