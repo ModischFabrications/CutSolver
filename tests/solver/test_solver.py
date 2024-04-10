@@ -17,14 +17,14 @@ def test_solver_is_optimal(testjob_s, solver):
     orig_job = testjob_s.model_copy(deep=True)
     solved = solver(testjob_s)
 
-    assert sum(l.trimming for l in solved) == 1188
+    assert sum(lt.trimming for lt in solved) == 1188
     assert orig_job == testjob_s
 
 
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_solver_is_exactly(testjob_s, solver):
     orig_job = testjob_s.model_copy(deep=True)
-    solved = solver(testjob_s)
+    _ = solver(testjob_s)
 
     assert orig_job == testjob_s
 
@@ -32,7 +32,7 @@ def test_solver_is_exactly(testjob_s, solver):
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_solver_no_side_effects(testjob_s, solver):
     orig_job = testjob_s.model_copy(deep=True)
-    solved = solver(testjob_s)
+    _ = solver(testjob_s)
 
     assert orig_job == testjob_s
 
@@ -55,7 +55,7 @@ def test_distribute_too_large():
         QNS(length=250, quantity=2000), QNS(length=500, quantity=500)))
 
     with pytest.raises(OverflowError):
-        not_solved = solve(testjob)
+        _ = solve(testjob)
 
 
 def test_full_solver():

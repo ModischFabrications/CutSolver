@@ -5,7 +5,7 @@ from app.solver.data.Job import QNS
 from tests.test_fixtures import testjob_s
 
 
-def test_constructor(testjob_s):
+def test_constructor():
     job = Job(stocks=(INS(length=1010),), cut_width=10, required=(QNS(length=500, quantity=4),))
     assert job
 
@@ -51,10 +51,6 @@ def test_equal_hash(testjob_s):
     assert hash(job1) == hash(job2)
 
 
-def test_valid(testjob_s):
-    job = testjob_s
-
-
 def test_invalid(testjob_s):
     invalid_job = testjob_s
 
@@ -67,7 +63,7 @@ def test_invalid(testjob_s):
 
 def test_too_long(testjob_s):
     with pytest.raises(ValueError):
-        job = Job(
+        _ = Job(
             max_length=100,
             cut_width=5,
             required=(QNS(length=101, quantity=1),)
@@ -76,13 +72,13 @@ def test_too_long(testjob_s):
 
 def test_solver_multi_overflow():
     with pytest.raises(ValueError):
-        invalid = Job(stocks=(INS(length=1100, quantity=1), INS(length=500, quantity=1)), cut_width=10,
-                      required=(QNS(length=500, quantity=2), QNS(length=1000, quantity=2)))
+        _ = Job(stocks=(INS(length=1100, quantity=1), INS(length=500, quantity=1)), cut_width=10,
+                required=(QNS(length=500, quantity=2), QNS(length=1000, quantity=2)))
 
 
 def test_to_json():
     job = Job(
-        max_length=1200,
+        stocks=(INS(length=1200),),
         cut_width=5,
         required=[
             QNS(length=300, quantity=4, name="Part1"),
@@ -90,6 +86,7 @@ def test_to_json():
         ],
     )
     assert (
-            job.model_dump_json()
-            == '{"max_length":1200,"cut_width":5,"required":[{"length":300,"quantity":4,"name":"Part1"},{"length":200,"quantity":3,"name":""}]}'
+            job.model_dump_json(exclude_defaults=True)
+            == '{"cut_width":5,"stocks":[{"length":1200}],"required":[{"length":300,"name":"Part1","quantity":4},'
+               '{"length":200,"quantity":3}]}'
     )

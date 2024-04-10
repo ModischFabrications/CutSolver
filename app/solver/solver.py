@@ -52,7 +52,7 @@ def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
             if result is None:
                 # seems like we were able to short-circuit
                 continue
-            trimmings = sum(l.trimming for l in result)
+            trimmings = sum(lt.trimming for lt in result)
             if trimmings < minimal_trimmings:
                 minimal_trimmings = trimmings
                 best_results.clear()

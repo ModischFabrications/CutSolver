@@ -60,7 +60,7 @@ def test_xl(solver):
 
     solved = solver(testjob)
 
-    assert sum(l.trimming for l in solved) == 2520
+    assert sum(lt.trimming for lt in solved) == 2520
 
 
 @pytest.mark.parametrize("solver", [_solve_FFD, _solve_gapfill])
@@ -74,4 +74,4 @@ def test_xxl(solver):
 
     solved = solver(testjob)
 
-    assert sum(l.trimming for l in solved) == 3250
+    assert sum(lt.trimming for lt in solved) == 3250

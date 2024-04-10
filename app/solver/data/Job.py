@@ -104,7 +104,7 @@ class Job(BaseModel):
     def assert_valid(self) -> 'Job':
         # basic assertion are done at field level
         if len(self.stocks) <= 0:
-            raise ValueError(f"Job is missing stocks")
+            raise ValueError("Job is missing stocks")
         if len(self.required) <= 0:
             raise ValueError("Job is missing required")
 
