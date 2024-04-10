@@ -5,7 +5,7 @@ import pytest
 from app.solver.data.Job import Job, QNS, INS, NS
 from app.solver.data.Result import Result, ResultEntry
 from app.solver.solver import _solve_bruteforce, _solve_FFD, _solve_gapfill
-from tests.test_fixtures import load_json
+from tests.conftest import load_json
 
 
 def test_job_from_json():

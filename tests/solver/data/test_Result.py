@@ -2,7 +2,6 @@ import pytest
 
 from app.solver.data.Job import NS
 from app.solver.data.Result import Result, SolverType, ResultEntry
-from tests.test_fixtures import testjob_s
 
 
 def test_constructor(testjob_s):

@@ -2,7 +2,6 @@ import pytest
 
 from app.solver.data.Job import Job, INS, NS
 from app.solver.data.Job import QNS
-from tests.test_fixtures import testjob_s
 
 
 def test_constructor():

@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.solver.data.Result import Result
-from tests.test_fixtures import testjob_s, testresult_s
 
 client: TestClient = TestClient(app)
 

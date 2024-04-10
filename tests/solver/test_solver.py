@@ -9,7 +9,7 @@ from app.solver.solver import (
     _solve_gapfill,
     _solve_FFD, solve,
 )
-from tests.test_fixtures import load_json, testjob_s
+from tests.conftest import load_json
 
 
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
