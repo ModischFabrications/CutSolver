@@ -45,13 +45,10 @@ class INS(NS):
     """
     "(infinite) quantity + named size", adds optional quantity (can be infinite)
     """
-    quantity: Optional[PositiveInt] = -1  # more or less equal to infinite
+    quantity: Optional[int] = -1  # more or less equal to infinite
 
     def as_base(self) -> NS:
         return NS(length=self.length, name=self.name)
-
-    def safe_quantity(self):
-        return self.quantity if self.quantity > 0 else 999
 
 
 class Job(BaseModel):

@@ -142,6 +142,7 @@ Also used for development is:
 * [flake8](https://flake8.pycqa.org/): Linting
 * [mypy](https://mypy-lang.org/): Static type checking
 * [requests](https://requests.readthedocs.io/): simple HTTP requests
+* [httpx](https://www.python-httpx.org/): requirement of TestClient
 * [black](https://github.com/psf/black): uncompromising code formatter; currently unused
 
 ## External links
