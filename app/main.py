@@ -7,8 +7,6 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse, PlainTextResponse
 
 from app.settings import version, solverSettings
-# don't mark /app as a sources root or pycharm will delete the "app." prefix
-# that's needed for pytest to work correctly
 from app.solver.data.Job import Job
 from app.solver.data.Result import Result
 from app.solver.solver import solve
@@ -58,7 +56,7 @@ app.add_middleware(
 # response model ensures correct documentation, exclude skips optional
 @app.post("/solve", response_model=Result, response_model_exclude_defaults=True)
 def post_solve(job: Job):
-    # pydantic guarantees type safety, no need to check manually
+    # pydantic guarantees type safety, no need to check inputs
     solved: Result = solve(job)
 
     return solved
