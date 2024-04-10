@@ -34,7 +34,7 @@ class ResultEntry(BaseModel):
     def assert_valid(self) -> 'ResultEntry':
         # this could be a contuple, but there is no such thing
         if len(self.cuts) <= 0:
-            raise ValueError("Job is missing cuts")
+            raise ValueError("ResultEntry has no cuts")
 
         return self
 
@@ -74,5 +74,5 @@ class Result(BaseModel):
     def assert_valid(self) -> 'Result':
         # basic assertion are done at field level
         if len(self.layout) <= 0:
-            raise ValueError("Result is missing lengths")
+            raise ValueError("Result has no layouts")
         return self

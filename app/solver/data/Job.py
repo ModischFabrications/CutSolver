@@ -89,6 +89,9 @@ class Job(BaseModel):
             for _ in range(iterations):
                 yield target.as_base()
 
+    def sum_of_required(self):
+        return sum([target.length * target.quantity for target in self.required])
+
     def n_targets(self) -> int:
         """
         Number of possible combinations of target sizes
@@ -108,9 +111,9 @@ class Job(BaseModel):
     def assert_valid(self) -> 'Job':
         # basic assertion are done at field level
         if len(self.stocks) <= 0:
-            raise ValueError("Job is missing stocks")
+            raise ValueError("Job has no stocks")
         if len(self.required) <= 0:
-            raise ValueError("Job is missing required")
+            raise ValueError("Job has no required")
 
         if any(all(target.length > stock.length for stock in self.stocks) for target in self.required):
             raise ValueError("Job has target sizes longer than the stock")
@@ -123,9 +126,6 @@ class Job(BaseModel):
             raise ValueError("Job has more targets than the stock available")
 
         return self
-
-    def sum_of_required(self):
-        return sum([target.length * target.quantity for target in self.required])
 
     def __eq__(self, other):
         return (

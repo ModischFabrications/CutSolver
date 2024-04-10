@@ -11,11 +11,11 @@ def calc_trimming(stock_length: int, lengths: Collection[NS], cut_width: int) ->
     trimmings = stock_length - (sum_lengths + sum_cuts)
 
     # cut at the end can be omitted
-    if trimmings == -cut_width:
+    if trimmings < 0 and -trimmings <= cut_width:
         trimmings = 0
 
     if trimmings < 0:
-        raise OverflowError("Trimmings can't ever be negative!")
+        raise OverflowError("Trimmings can't be negative!")
 
     return trimmings
 
