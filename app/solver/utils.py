@@ -21,6 +21,9 @@ def calc_trimming(stock_length: int, lengths: Collection[NS], cut_width: int) ->
 
 
 def find_best_solution(solutions: Sequence):
+    if len(solutions) <= 0:
+        raise ValueError("no solution to search")
+
     # TODO evaluate which one aligns with user expectations best (see #68)
     # always sort for determinism!
     return sorted(solutions, reverse=True)[0]
@@ -35,4 +38,6 @@ def create_result_entry(stock: NS, cuts: list[NS], cut_width: int) -> ResultEntr
 
 
 def sort_entries(result_entries: list[ResultEntry]) -> tuple[ResultEntry, ...]:
+    if len(result_entries) <= 0:
+        raise ValueError("no entries to sort")
     return tuple(sorted(result_entries))

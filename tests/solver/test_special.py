@@ -32,6 +32,37 @@ def test_zero_cuts(solver):
     )
 
 
+@pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
+def test_infinite_stocks(solver):
+    testjob_q = Job(stocks=(INS(length=100, quantity=10),), cut_width=5, required=(QNS(length=100, quantity=2),))
+    testjob_i = Job(stocks=(INS(length=100),), cut_width=5, required=(QNS(length=100, quantity=2),))
+
+    solved_q = solver(testjob_q)
+    solved_i = solver(testjob_i)
+
+    assert solved_q == solved_i
+    assert solved_q == (ResultEntry(stock=NS(length=100), cuts=(NS(length=100),), trimming=0),
+                        ResultEntry(stock=NS(length=100), cuts=(NS(length=100),), trimming=0))
+
+
+@pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
+def test_ignore_stocks(solver):
+    testjob_m = Job(
+        stocks=(INS(length=1000), INS(length=100, quantity=1)),
+        cut_width=5,
+        required=(QNS(length=500, quantity=4), QNS(length=100, quantity=2))
+    )
+
+    solved = solver(testjob_m)
+
+    assert solved == (
+        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500), NS(length=100), NS(length=100)), trimming=285),
+        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500),), trimming=495),
+        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500),), trimming=495),
+        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500),), trimming=495)
+    )
+
+
 # @pytest.mark.skip(reason="bug #64")
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_equal(solver):

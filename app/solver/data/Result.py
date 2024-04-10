@@ -30,6 +30,14 @@ class ResultEntry(BaseModel):
             return self.trimming < other.trimming
         return len(self.cuts) < len(other.cuts)
 
+    @model_validator(mode='after')
+    def assert_valid(self) -> 'ResultEntry':
+        # this could be a contuple, but there is no such thing
+        if len(self.cuts) <= 0:
+            raise ValueError("Job is missing cuts")
+
+        return self
+
 
 class Result(BaseModel):
     model_config = ConfigDict(frozen=True, validate_assignment=True)

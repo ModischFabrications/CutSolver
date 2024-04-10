@@ -38,7 +38,8 @@ def test_solver_no_side_effects(testjob_s, solver):
 
 
 def test_distribute():
-    testjob = Job(stocks=(INS(length=1010),), cut_width=10, required=(QNS(length=500, quantity=4),))
+    testjob = Job(stocks=(INS(length=1010),), cut_width=10,
+                  required=(QNS(length=500, quantity=8), QNS(length=500, quantity=4)))
     solved = solve(testjob)
 
     assert solved.solver_type == SolverType.bruteforce

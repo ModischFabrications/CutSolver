@@ -1,12 +1,12 @@
 import pytest
 
 from app.solver.data.Job import QNS, INS, NS, Job
+from app.solver.data.Result import ResultEntry
 from app.solver.solver import (
     _solve_bruteforce,
     _solve_FFD, _solve_gapfill, )
 
 
-# close to the max for bruteforce!
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_m(solver):
     testjob_m = Job(stocks=(INS(length=1000),), cut_width=5, required=(
@@ -22,6 +22,27 @@ def test_m(solver):
         (NS(length=500), NS(length=300)),
         (NS(length=500),)
     ])
+
+
+# close to the max for bruteforce!
+@pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
+def test_m_multi(solver):
+    testjob_m = Job(stocks=(INS(length=1000), INS(length=500, quantity=2), INS(length=100, quantity=1)),
+                    cut_width=5,
+                    required=(
+                        QNS(length=500, quantity=4), QNS(length=300, quantity=3),
+                        QNS(length=100, quantity=2))
+                    )
+
+    solved = solver(testjob_m)
+
+    assert solved == (
+        ResultEntry(stock=NS(length=500), cuts=(NS(length=500),), trimming=0),
+        ResultEntry(stock=NS(length=500), cuts=(NS(length=300),), trimming=195),
+        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500), NS(length=300), NS(length=100)), trimming=85),
+        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500), NS(length=300), NS(length=100)), trimming=85),
+        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500),), trimming=495)
+    )
 
 
 @pytest.mark.parametrize("solver", [_solve_FFD, _solve_gapfill])

@@ -25,7 +25,14 @@ class NS(BaseModel):
         return hash((self.length, self.name))
 
     def __str__(self):
-        return f"{self.name}: l={self.length}"
+        if self.name:
+            return f"{self.name}: l={self.length}"
+        return f"l={self.length}"
+
+    def __repr__(self):
+        if self.name:
+            return f"NS(length={self.length}, name={self.name})"
+        return f"NS(length={self.length})"
 
 
 class QNS(NS):
@@ -76,8 +83,8 @@ class Job(BaseModel):
 
         # sort descending to favor combining larger sizes first
         for target in sorted(self.stocks, reverse=True):
-            # if this overflows your solution is probably shit; add +1 if unsure
-            iterations = target.quantity if target.quantity != -1 else math.ceil(
+            # if this overflows your solution is probably shit; TODO remove +1 once bruteforce short-circuits
+            iterations = target.quantity if target.quantity != -1 else 1 + math.ceil(
                 self.sum_of_required() / target.length)
             for _ in range(iterations):
                 yield target.as_base()

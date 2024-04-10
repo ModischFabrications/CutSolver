@@ -60,13 +60,12 @@ def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
             elif trimmings == minimal_trimmings:
                 best_results.append(result)
 
+    assert len(best_results) > 0
     ideal_result = find_best_solution(best_results)
     return sort_entries([r for r in ideal_result])
 
 
-def _group_into_lengths(
-        stocks: tuple[NS, ...], sizes: Iterable[NS], cut_width: int
-) -> tuple[ResultEntry, ...] | None:
+def _group_into_lengths(stocks: tuple[NS, ...], sizes: Iterable[NS], cut_width: int) -> tuple[ResultEntry, ...] | None:
     """
     Collects sizes until length is reached, then starts another stock
     Returns none for orderings that exceed ideal conditions
@@ -80,11 +79,13 @@ def _group_into_lengths(
     for size in sizes:
         if (current_size + size.length) > current_stock.length:
             # start next stock
-            result.append(create_result_entry(current_stock, current_cuts, cut_width))
+            if len(current_cuts) > 0:
+                result.append(create_result_entry(current_stock, current_cuts, cut_width))
             current_size = 0
             current_cuts = []
             if len(available) <= 0:
                 return None
+            # TODO this is obsolete at the end, we could short-circuit here and remove +1 in iterate_stocks
             current_stock = available.pop()
 
         current_size += size.length + cut_width
@@ -94,6 +95,7 @@ def _group_into_lengths(
     if current_cuts:
         result.append(create_result_entry(current_stock, current_cuts, cut_width))
 
+    assert len(result) > 0
     return tuple(result)
 
 
@@ -111,50 +113,53 @@ def _solve_FFD(job: Job) -> tuple[ResultEntry, ...]:
 
     mutable_sizes = copy.deepcopy(job.required)
     sizes = sorted(mutable_sizes, reverse=True)
+    stocks = sorted(mutable_sizes, reverse=True)
     # TODO this a simple workaround for singular stocks, remove later
     max_length = job.stocks[0].length
 
-    stocks: list[list[NS]] = [[]]
+    layout: list[list[NS]] = [[]]
 
-    i_target = 0
+    i_size = 0
 
-    while i_target < len(sizes):
-        current_size = sizes[i_target]
-        for stock in stocks:
+    while i_size < len(sizes):
+        current_size = sizes[i_size]
+        for stock in layout:
             # calculate current stock length
             stock_length = (sum([size.length for size in stock]) + (len(stock) - 1) * job.cut_width)
             # step through existing stocks until current size fits; allow for omitted trailing cut
-            if (max_length - stock_length) >= (current_size.length + job.cut_width):
-                # add size
+            if (current_size.length + stock_length + job.cut_width) <= max_length:
                 stock.append(current_size.as_base())
                 break
         else:  # nothing fit, opening next bin
-            stocks.append([current_size.as_base()])
+            layout.append([current_size.as_base()])
 
         # decrease/get next
         if current_size.quantity <= 1:
-            i_target += 1
+            i_size += 1
         else:
             current_size.quantity -= 1
 
     # TODO use right stock
-    return sort_entries([create_result_entry(job.stocks[0].as_base(), r, job.cut_width) for r in stocks])
+    return sort_entries([create_result_entry(job.stocks[0].as_base(), r, job.cut_width) for r in layout])
 
 
 # even faster than FFD, seems like equal results; selfmade and less proven!
 def _solve_gapfill(job: Job) -> tuple[ResultEntry, ...]:
-    # 1. Sort by magnitude (largest first)
-    # 2. stack until limit is reached
-    # 3. try smaller as long as possible
-    # 4. create new bar
+    """
+    1. Sort by magnitude (largest first)
+    2. stack until limit is reached
+    3. try smaller as long as possible
+    4. create new bar
+    """
 
     # we are writing around in target sizes, prevent leaking changes to job
     mutable_sizes = copy.deepcopy(job.required)
     targets = sorted(mutable_sizes, reverse=True)
     # TODO this a simple workaround for singular stocks, remove later
     max_length = job.stocks[0].length
+    stocks = sorted(job.iterate_stocks(), reverse=True)
 
-    stocks = []
+    cuts = []
 
     current_size = 0
     current_stock: list[NS] = []
@@ -164,7 +169,7 @@ def _solve_gapfill(job: Job) -> tuple[ResultEntry, ...]:
         # nothing fit, next stock
         if i_target >= len(targets):
             # add local result
-            stocks.append(current_stock)
+            cuts.append(current_stock)
 
             # reset
             current_stock = []
@@ -190,8 +195,8 @@ def _solve_gapfill(job: Job) -> tuple[ResultEntry, ...]:
 
     # apply last "forgotten" stock
     if current_stock:
-        stocks.append(current_stock)
+        cuts.append(current_stock)
 
     # TODO use right stock
     # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return sort_entries([create_result_entry(job.stocks[0].as_base(), r, job.cut_width) for r in stocks])
+    return sort_entries([create_result_entry(job.stocks[0].as_base(), r, job.cut_width) for r in cuts])
