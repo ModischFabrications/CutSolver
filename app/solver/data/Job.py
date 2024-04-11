@@ -44,6 +44,11 @@ class QNS(NS):
     def __str__(self):
         return f"{self.name}: l={self.length}, n={self.quantity}"
 
+    def __repr__(self):
+        if self.name:
+            return f"QNS(length={self.length}, name={self.name}, quantity={self.quantity})"
+        return f"QNS(length={self.length}, quantity={self.quantity})"
+
     def as_base(self) -> NS:
         return NS(length=self.length, name=self.name)
 
@@ -52,7 +57,7 @@ class INS(NS):
     """
     "(infinite) quantity + named size", adds optional quantity (can be infinite)
     """
-    quantity: Optional[int] = -1  # more or less equal to infinite
+    quantity: Optional[PositiveInt] = None  # more or less equal to infinite
 
     def as_base(self) -> NS:
         return NS(length=self.length, name=self.name)
@@ -91,13 +96,15 @@ class Job(BaseModel):
 
             # if this overflows your solution is probably shit
             # TODO this could be limited even further, see iterations of test_big_small
-            iterations = target.quantity if target.quantity != -1 else math.ceil(
+            # TODO also too small, see test_infinite_count
+            iterations = target.quantity if target.quantity else math.ceil(
                 self.sum_of_required() / target.length)
             for _ in range(iterations):
                 yield target.as_base()
 
     def sum_of_required(self):
-        return sum([target.length * target.quantity for target in self.required])
+        # TODO won't account for everything! easy to trick
+        return sum([(target.length + self.cut_width) * target.quantity for target in self.required])
 
     def n_targets(self) -> int:
         """

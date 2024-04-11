@@ -86,7 +86,17 @@ def test_solver_skip_too_short():
     job = Job(stocks=(INS(length=100, quantity=10), INS(length=1000)), cut_width=10,
               required=(QNS(length=500, quantity=2), QNS(length=1000, quantity=2)))
 
-    assert list(job.iterate_stocks()) == [NS(length=1000), NS(length=1000), NS(length=1000)]
+    assert list(job.iterate_stocks()) == [NS(length=1000)] * 4
+
+
+def test_infinite_count():
+    job = Job(
+        stocks=(INS(length=100),),
+        cut_width=1,
+        required=(QNS(length=50, quantity=6),)
+    )
+
+    assert list(job.iterate_stocks()) == [NS(length=100)] * 6
 
 
 def test_to_json():
