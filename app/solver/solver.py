@@ -69,33 +69,41 @@ def _group_into_lengths(stocks: tuple[NS, ...], sizes: tuple[NS, ...], cut_width
     Collects sizes until length is reached, then starts another stock
     Returns none for orderings that exceed ideal conditions
     """
-    result: list[ResultEntry] = []
     available = list(reversed(stocks))
+    required = list(reversed(sizes))
 
-    current_size = 0
+    result: list[ResultEntry] = []
+
     current_cuts: list[NS] = []
+    cut_sum = 0  # could be calculated, but I think this is faster
+
     current_stock = available.pop()
-    for size in sizes:
-        if (current_size + size.length) > current_stock.length:
-            # start next stock
-            if len(current_cuts) > 0:
+    size = required.pop()
+    for _ in range(999):
+        while (cut_sum + size.length) <= current_stock.length:
+            cut_sum += size.length + cut_width
+            current_cuts.append(size)
+
+            if len(required) <= 0:
+                # we are done here
                 result.append(create_result_entry(current_stock, current_cuts, cut_width))
-            current_size = 0
-            current_cuts = []
-            if len(available) <= 0:
-                return None
-            # TODO this is obsolete at the end, we could short-circuit here and remove +1 in iterate_stocks
-            current_stock = available.pop()
+                return tuple(result)
 
-        current_size += size.length + cut_width
-        current_cuts.append(size)
+            size = required.pop()
+            continue
 
-    # catch leftovers
-    if current_cuts:
-        result.append(create_result_entry(current_stock, current_cuts, cut_width))
+        # short stocks will simply be skipped
+        if len(current_cuts) > 0:
+            result.append(create_result_entry(current_stock, current_cuts, cut_width))
+            cut_sum = 0
+            current_cuts.clear()
 
-    assert len(result) > 0
-    return tuple(result)
+        if len(available) <= 0:
+            # our solution is shit, we can cancel
+            return None
+        current_stock = available.pop()
+
+    raise OverflowError("_group_into_lengths had an infinite loop, cancelling...")
 
 
 # textbook solution, guaranteed to get at most double trimmings of perfect solution; possibly O(n^2)?
