@@ -1,7 +1,6 @@
 #!python3
 import copy
 from time import perf_counter
-from typing import Iterable
 
 from more_itertools import distinct_permutations
 
@@ -34,15 +33,14 @@ def solve(job: Job) -> Result:
 # slowest, but perfect solver; originally O(n!), now much faster (see Job.n_combinations())
 def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
     mutable_job = job.model_copy(deep=True)
-    mutable_job.model_config["frozen"] = False
 
     # find every possible ordering (`factorial(sum(sizes))` elements) and reduce to unique
     # equal to set(permutations(...)), but much more efficient
     all_orderings = distinct_permutations(mutable_job.iterate_required())
     all_stocks = distinct_permutations(mutable_job.iterate_stocks())
 
-    # start at "all of it"
-    minimal_trimmings: int = sum([stock.length for stock in mutable_job.iterate_stocks()])
+    # would be int max if we had an upper boundary
+    minimal_trimmings: int | None = None
     best_results: list[tuple[ResultEntry, ...]] = []
 
     # could distribute to multiprocessing, but web worker is parallel anyway
@@ -53,7 +51,7 @@ def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
                 # seems like we were able to short-circuit
                 continue
             trimmings = sum(lt.trimming for lt in result)
-            if trimmings < minimal_trimmings:
+            if minimal_trimmings is None or trimmings < minimal_trimmings:
                 minimal_trimmings = trimmings
                 best_results.clear()
                 best_results.append(result)
@@ -65,7 +63,8 @@ def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
     return sort_entries([r for r in ideal_result])
 
 
-def _group_into_lengths(stocks: tuple[NS, ...], sizes: Iterable[NS], cut_width: int) -> tuple[ResultEntry, ...] | None:
+def _group_into_lengths(stocks: tuple[NS, ...], sizes: tuple[NS, ...], cut_width: int) \
+        -> tuple[ResultEntry, ...] | None:
     """
     Collects sizes until length is reached, then starts another stock
     Returns none for orderings that exceed ideal conditions

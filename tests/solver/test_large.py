@@ -27,8 +27,8 @@ def test_m(solver):
 # close to the max for bruteforce!
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_m_multi(solver):
-    testjob_m = Job(stocks=(INS(length=1000), INS(length=500, quantity=2), INS(length=100, quantity=1)),
-                    cut_width=5,
+    testjob_m = Job(stocks=(INS(length=900), INS(length=500, quantity=2), INS(length=100, quantity=1)),
+                    cut_width=10,
                     required=(
                         QNS(length=500, quantity=4), QNS(length=300, quantity=3),
                         QNS(length=100, quantity=2))
@@ -38,11 +38,10 @@ def test_m_multi(solver):
 
     assert solved == (
         ResultEntry(stock=NS(length=500), cuts=(NS(length=500),), trimming=0),
-        ResultEntry(stock=NS(length=500), cuts=(NS(length=300),), trimming=195),
-        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500), NS(length=300), NS(length=100)), trimming=85),
-        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500), NS(length=300), NS(length=100)), trimming=85),
-        ResultEntry(stock=NS(length=1000), cuts=(NS(length=500),), trimming=495)
-    )
+        ResultEntry(stock=NS(length=500), cuts=(NS(length=300),), trimming=190),
+        ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=300)), trimming=80),
+        ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=300)), trimming=80),
+        ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=100), NS(length=100)), trimming=170))
 
 
 @pytest.mark.parametrize("solver", [_solve_FFD, _solve_gapfill])

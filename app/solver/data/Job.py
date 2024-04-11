@@ -79,12 +79,19 @@ class Job(BaseModel):
         """
         yields all lengths times amount (including unwrapped infinite stocks);
         sorted descending
+        skips irrelevant entries
         """
 
         # sort descending to favor combining larger sizes first
         for target in sorted(self.stocks, reverse=True):
-            # if this overflows your solution is probably shit; TODO remove +1 once bruteforce short-circuits
-            iterations = target.quantity if target.quantity != -1 else 1 + math.ceil(
+            # removal could happen during validation, but we want frozen, immutable jobs
+            if all(req.length > target.length for req in self.required):
+                # print(f"Skipping {target}, too short for requirements")
+                continue
+
+            # if this overflows your solution is probably shit
+            # TODO this could be limited even further, see iterations of test_big_small
+            iterations = target.quantity if target.quantity != -1 else math.ceil(
                 self.sum_of_required() / target.length)
             for _ in range(iterations):
                 yield target.as_base()

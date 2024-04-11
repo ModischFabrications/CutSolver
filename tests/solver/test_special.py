@@ -93,6 +93,22 @@ def test_ignore_stocks(solver):
 
 
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
+def test_big_and_small(solver):
+    testjob = Job(
+        stocks=(INS(length=1000), INS(length=100)),
+        cut_width=10,
+        required=(QNS(length=100, quantity=2), QNS(length=1000, quantity=1))
+    )
+
+    solved = solver(testjob)
+
+    assert solved == (
+        ResultEntry(stock=NS(length=100), cuts=(NS(length=100),), trimming=0),
+        ResultEntry(stock=NS(length=100), cuts=(NS(length=100),), trimming=0),
+        ResultEntry(stock=NS(length=1000), cuts=(NS(length=1000),), trimming=0))
+
+
+@pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_close_stocks(solver):
     testjob = Job(
         stocks=(INS(length=500), INS(length=100)),
