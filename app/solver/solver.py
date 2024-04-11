@@ -32,48 +32,37 @@ def solve(job: Job) -> Result:
 
 # slowest, but perfect solver; originally O(n!), now much faster (see Job.n_combinations())
 def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
-    mutable_job = job.model_copy(deep=True)
+    minimal_trimmings = float('inf')
+    best_results = []
 
-    # find every possible ordering (`factorial(sum(sizes))` elements) and reduce to unique
-    # equal to set(permutations(...)), but much more efficient
-    all_orderings = distinct_permutations(mutable_job.iterate_required())
-    all_stocks = distinct_permutations(mutable_job.iterate_stocks())
-
-    # would be int max if we had an upper boundary
-    minimal_trimmings: int | None = None
-    best_results: list[tuple[ResultEntry, ...]] = []
-
-    # could distribute to multiprocessing, but web worker is parallel anyway
-    for stock_ordering in all_stocks:
-        for required_ordering in all_orderings:
-            result = _group_into_lengths(stock_ordering, required_ordering, mutable_job.cut_width)
+    required_orderings = distinct_permutations(job.iterate_required())
+    for stock_ordering in distinct_permutations(job.iterate_stocks()):
+        for required_ordering in required_orderings:
+            result = _group_into_lengths(stock_ordering, required_ordering, job.cut_width)
             if result is None:
-                # seems like we were able to short-circuit
+                # Short-circuit if bad solution
                 continue
             trimmings = sum(lt.trimming for lt in result)
-            if minimal_trimmings is None or trimmings < minimal_trimmings:
+            if trimmings < minimal_trimmings:
                 minimal_trimmings = trimmings
-                best_results.clear()
-                best_results.append(result)
+                best_results = [result]
             elif trimmings == minimal_trimmings:
                 best_results.append(result)
 
-    assert len(best_results) > 0
-    ideal_result = find_best_solution(best_results)
-    return sort_entries([r for r in ideal_result])
+    assert best_results, "No valid solution found"
+    return sort_entries(find_best_solution(best_results))
 
 
 def _group_into_lengths(stocks: tuple[NS, ...], sizes: tuple[NS, ...], cut_width: int) \
         -> tuple[ResultEntry, ...] | None:
     """
     Collects sizes until length is reached, then starts another stock
-    Returns none for orderings that exceed ideal conditions
+    Returns None for orderings that exceed ideal conditions
     """
     available = list(reversed(stocks))
     required = list(reversed(sizes))
 
     result: list[ResultEntry] = []
-
     current_cuts: list[NS] = []
     cut_sum = 0  # could be calculated, but I think this is faster
 
@@ -150,7 +139,7 @@ def _solve_FFD(job: Job) -> tuple[ResultEntry, ...]:
     return sort_entries([create_result_entry(job.stocks[0].as_base(), r, job.cut_width) for r in layout])
 
 
-# even faster than FFD, seems like equal results; selfmade and less proven!
+# even faster than FFD, seems like equal results; self-made and less proven!
 def _solve_gapfill(job: Job) -> tuple[ResultEntry, ...]:
     """
     1. Sort by magnitude (largest first)
