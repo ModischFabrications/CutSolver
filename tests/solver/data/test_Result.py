@@ -34,7 +34,7 @@ def test_constructor(testjob_s):
 def test_invalid(testjob_s):
     job = testjob_s
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='greater than 0'):
         _ = Result(
             job=job,
             solver_type=SolverType.FFD,
@@ -49,7 +49,7 @@ def test_invalid(testjob_s):
                                 trimming=1000
                                 ),))
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='Field required'):
         _ = Result(
             job=job,
             # no solver
@@ -63,7 +63,7 @@ def test_invalid(testjob_s):
                                 trimming=1000
                                 ),))
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='no cuts'):
         _ = Result(
             job=job,
             solver_type=SolverType.FFD,

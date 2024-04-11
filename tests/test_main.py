@@ -39,7 +39,7 @@ def test_invalid(testjob_s, testresult_s):
     reply = client.post("/solve", json=testdict)
     assert reply.status_code != 200
     json_result = reply.json()
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='Field required'):
         assert Result.model_validate(json_result) == testresult_s
 
 
