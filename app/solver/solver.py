@@ -19,7 +19,7 @@ def solve(job: Job) -> Result:
     if job.n_combinations() <= solverSettings.bruteforce_max_combinations:
         layout = _solve_bruteforce(job)
         solver_type = SolverType.bruteforce
-    elif job.n_targets() <= solverSettings.solver_n_max:
+    elif job.n_entries() <= solverSettings.solver_n_max:
         layout = _solve_FFD(job)
         solver_type = SolverType.FFD
     else:

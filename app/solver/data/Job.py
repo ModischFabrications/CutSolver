@@ -106,7 +106,7 @@ class Job(BaseModel):
         # won't account for layouts! easy to trick
         return sum([(target.length + self.cut_width) * target.quantity for target in self.required])
 
-    def n_targets(self) -> int:
+    def n_entries(self) -> int:
         """
         Number of possible combinations of target sizes
         """
@@ -114,12 +114,26 @@ class Job(BaseModel):
 
     def n_combinations(self) -> float | int:
         """
+        Number of possible combinations for job; returns infinite if too large
+        """
+        return self.n_combinations_required() * self.n_combinations_stocks()
+
+    def n_combinations_required(self) -> float | int:
+        n_targets = sum([target.quantity for target in self.required])
+        if n_targets > 100:
+            return math.inf
+        return int(factorial(n_targets) / prod([factorial(n.quantity) for n in self.required]))
+
+    def n_combinations_stocks(self) -> float | int:
+        """
         Number of possible combinations of target sizes; returns infinite if too large
         """
-        if self.n_targets() > 100:
+        n_stocks = len([target for target in self.iterate_stocks()])
+        if n_stocks > 100:
             return math.inf
-        # TODO extend with multiplication by stock permutations
-        return int(factorial(self.n_targets()) / prod([factorial(n.quantity) for n in self.required]))
+        # TODO combine this infinite extension with the one above
+        return int(factorial(n_stocks) / prod([factorial(n.quantity if n.quantity else math.ceil(
+            (self.sum_of_required() * 2) / n.length)) for n in self.stocks]))
 
     @model_validator(mode='after')
     def assert_valid(self) -> 'Job':

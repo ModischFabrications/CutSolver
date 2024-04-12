@@ -35,13 +35,69 @@ def test_job_equal(testjob_s):
 def test_job_length(testjob_s):
     job = testjob_s
 
-    assert job.n_targets() == 6
+    assert job.n_entries() == 6
 
 
-def test_job_combinations(testjob_s):
-    job = testjob_s
+def test_combinations_required():
+    # check with len(list(distinct_permutations(job.iterate_required())))
+    # TODO maybe generate a whole list of jobs to check against automatically?
 
-    assert job.n_combinations() == 15
+    job = Job(stocks=(INS(length=1000),), cut_width=10, required=(
+        QNS(length=88, quantity=1),))
+    assert job.n_combinations_required() == 1
+
+    job = Job(stocks=(INS(length=1000),), cut_width=10, required=(
+        QNS(length=88, quantity=2), QNS(length=77, quantity=1)))
+    assert job.n_combinations_required() == 3
+
+    job = Job(stocks=(INS(length=1000),), cut_width=10, required=(
+        QNS(length=99, quantity=3), QNS(length=88, quantity=2), QNS(length=77, quantity=1)))
+    assert job.n_combinations_required() == 60
+
+
+def test_combinations_stocks():
+    job = Job(stocks=(INS(length=1000, quantity=1),), cut_width=10, required=(
+        QNS(length=88, quantity=1),))
+    assert job.n_combinations_stocks() == 1
+
+    job = Job(stocks=(INS(length=1000, quantity=2), INS(length=900, quantity=1)), cut_width=10, required=(
+        QNS(length=88, quantity=2),))
+    assert job.n_combinations_stocks() == 3
+
+
+def test_combinations():
+    # infinites can't really be tested, but are always larger than needed anyway
+    job = Job(stocks=(INS(length=1000, quantity=2),), cut_width=10, required=(QNS(length=99, quantity=4),))
+    assert job.n_combinations() == 1
+
+    job = Job(stocks=(INS(length=1000, quantity=2), INS(length=100, quantity=2)), cut_width=10, required=(
+        QNS(length=500, quantity=2), QNS(length=300, quantity=1), QNS(length=100, quantity=1))
+              )
+    assert job.n_combinations() == 72
+
+    # TODO test combined
+
+
+@pytest.mark.skip(reason="bug #73")
+def test_group_required():
+    job = Job(stocks=(INS(length=1000),), cut_width=10, required=(
+        QNS(length=88, quantity=2), QNS(length=88, quantity=1), QNS(length=88, quantity=1))
+              )
+    assert job.n_combinations_required() == 1
+
+
+@pytest.mark.skip(reason="bug #73")
+def test_group_stocks():
+    job = Job(stocks=(INS(length=1000, quantity=2), INS(length=1000, quantity=2)), cut_width=10,
+              required=(QNS(length=100, quantity=2),))
+    assert job.n_combinations_stocks() == 1
+
+
+@pytest.mark.skip(reason="bug #73")
+def test_group_stocks_infinite():
+    job = Job(stocks=(INS(length=1000, quantity=2), INS(length=1000)), cut_width=10,
+              required=(QNS(length=100, quantity=2),))
+    assert job.n_combinations_stocks() == 1
 
 
 def test_equal_hash(testjob_s):
