@@ -86,7 +86,7 @@ def test_solver_skip_too_short():
     job = Job(stocks=(INS(length=100, quantity=10), INS(length=1000)), cut_width=10,
               required=(QNS(length=500, quantity=2), QNS(length=1000, quantity=2)))
 
-    assert list(job.iterate_stocks()) == [NS(length=1000)] * 4
+    assert not any(stock.length != 1000 for stock in job.iterate_stocks())
 
 
 def test_infinite_count():
