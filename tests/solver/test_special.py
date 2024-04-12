@@ -77,7 +77,7 @@ def test_infinite_stocks(solver):
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_ignore_stocks(solver):
     testjob = Job(
-        stocks=(INS(length=1000), INS(length=99, quantity=1)),
+        stocks=(INS(length=1000), INS(length=99, quantity=5)),
         cut_width=5,
         required=(QNS(length=500, quantity=4), QNS(length=100, quantity=2))
     )

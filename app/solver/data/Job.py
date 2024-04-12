@@ -95,15 +95,15 @@ class Job(BaseModel):
                 continue
 
             # if this overflows your solution is probably shit
-            # TODO this could be limited even further, see iterations of test_big_small
-            # TODO also too small, see test_infinite_count
+            # x2 because the worst layout possible is a duplicate a tiny bit over
+            # TODO this could be reduced further
             iterations = target.quantity if target.quantity else math.ceil(
-                self.sum_of_required() / target.length)
+                (self.sum_of_required() * 2) / target.length)
             for _ in range(iterations):
                 yield target.as_base()
 
     def sum_of_required(self):
-        # TODO won't account for everything! easy to trick
+        # won't account for layouts! easy to trick
         return sum([(target.length + self.cut_width) * target.quantity for target in self.required])
 
     def n_targets(self) -> int:
