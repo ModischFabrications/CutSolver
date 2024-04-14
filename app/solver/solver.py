@@ -107,9 +107,9 @@ def _solve_FFD(job: Job) -> tuple[ResultEntry, ...]:
     4. create new bar
     """
 
-    mutable_sizes = copy.deepcopy(job.required)
-    sizes = sorted(mutable_sizes, reverse=True)
+    # we are writing around in target sizes, prevent leaking changes to job
     stocks = sorted(job.iterate_stocks(), reverse=True)
+    sizes = sorted(copy.deepcopy(job.required), reverse=True)
     i_size = 0
 
     layout: list[tuple[NS, list[NS]]] = []
@@ -134,11 +134,11 @@ def _solve_FFD(job: Job) -> tuple[ResultEntry, ...]:
         else:
             current_size.quantity -= 1
 
-    layout = [(stock, cuts) for stock, cuts in layout if len(cuts) > 0]
-    return sort_entries([create_result_entry(stock, cuts, job.cut_width) for stock, cuts in layout])
+    return sort_entries([create_result_entry(stock, cuts, job.cut_width) for stock, cuts in layout if len(cuts) > 0])
 
 
 # even faster than FFD, seems like equal results; self-made and less proven!
+# might just be a more pythonic version of FFD
 def _solve_gapfill(job: Job) -> tuple[ResultEntry, ...]:
     """
     1. Sort by magnitude (largest first)
@@ -148,50 +148,47 @@ def _solve_gapfill(job: Job) -> tuple[ResultEntry, ...]:
     """
 
     # we are writing around in target sizes, prevent leaking changes to job
-    mutable_sizes = copy.deepcopy(job.required)
-    targets = sorted(mutable_sizes, reverse=True)
-    # TODO this a simple workaround for singular stocks, remove later
-    max_length = job.stocks[0].length
     stocks = sorted(job.iterate_stocks(), reverse=True)
+    sizes = sorted(copy.deepcopy(job.required), reverse=True)
+    i_size = 0
 
-    cuts = []
+    layout: list[tuple[NS, list[NS]]] = []
 
     current_size = 0
-    current_stock: list[NS] = []
+    current_cuts: list[NS] = []
+    current_stock: NS = stocks.pop()
 
-    i_target = 0
-    while len(targets) > 0:
+    while len(sizes) > 0:
         # nothing fit, next stock
-        if i_target >= len(targets):
+        if i_size >= len(sizes):
             # add local result
-            cuts.append(current_stock)
+            layout.append((current_stock, current_cuts))
 
             # reset
-            current_stock = []
+            current_stock = stocks.pop()
+            current_cuts = []
             current_size = 0
-            i_target = 0
+            i_size = 0
 
-        current_target: QNS = targets[i_target]
+        current_target: QNS = sizes[i_size]
         # target fits inside current stock, transfer to results
-        if (current_size + current_target.length) <= max_length:
-            current_stock.append(current_target.as_base())
+        if (current_size + current_target.length) <= current_stock.length:
+            current_cuts.append(current_target.as_base())
             current_size += current_target.length
-            if current_size < max_length:
+            if current_size < current_stock.length:
                 current_size += job.cut_width
 
             # remove empty entries
             if current_target.quantity <= 1:
-                targets.remove(current_target)
+                sizes.remove(current_target)
             else:
                 current_target.quantity -= 1
         # try smaller
         else:
-            i_target += 1
+            i_size += 1
 
     # apply last "forgotten" stock
-    if current_stock:
-        cuts.append(current_stock)
+    if current_cuts:
+        layout.append((current_stock, current_cuts))
 
-    # TODO use right stock
-    # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return sort_entries([create_result_entry(job.stocks[0].as_base(), r, job.cut_width) for r in cuts])
+    return sort_entries([create_result_entry(stock, cuts, job.cut_width) for stock, cuts in layout if len(cuts) > 0])
