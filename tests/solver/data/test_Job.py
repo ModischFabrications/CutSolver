@@ -75,10 +75,10 @@ def test_combinations():
               )
     assert job.n_combinations() == 72
 
-    # TODO test combined
+    # TODO test combined once grouping works
 
 
-@pytest.mark.skip(reason="bug #73")
+@pytest.mark.xfail(reason="bug #73")
 def test_group_required():
     job = Job(stocks=(INS(length=1000),), cut_width=10, required=(
         QNS(length=88, quantity=2), QNS(length=88, quantity=1), QNS(length=88, quantity=1))
@@ -86,14 +86,14 @@ def test_group_required():
     assert job.n_combinations_required() == 1
 
 
-@pytest.mark.skip(reason="bug #73")
+@pytest.mark.xfail(reason="bug #73")
 def test_group_stocks():
     job = Job(stocks=(INS(length=1000, quantity=2), INS(length=1000, quantity=2)), cut_width=10,
               required=(QNS(length=100, quantity=2),))
     assert job.n_combinations_stocks() == 1
 
 
-@pytest.mark.skip(reason="bug #73")
+@pytest.mark.xfail(reason="bug #73")
 def test_group_stocks_infinite():
     job = Job(stocks=(INS(length=1000, quantity=2), INS(length=1000)), cut_width=10,
               required=(QNS(length=100, quantity=2),))

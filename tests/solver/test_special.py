@@ -8,7 +8,7 @@ from app.solver.solver import (
 )
 
 
-# @pytest.mark.skip(reason="bug #63")
+# @pytest.mark.xfail(reason="bug #63")
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_cuts(solver):
     testjob_cuts = Job(stocks=(INS(length=1010),), cut_width=10, required=(QNS(length=500, quantity=4),))
@@ -20,7 +20,7 @@ def test_cuts(solver):
     )
 
 
-# @pytest.mark.skip(reason="bug #59")
+# @pytest.mark.xfail(reason="bug #59")
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_zero_width_cuts(solver):
     testjob_zero_cuts = Job(stocks=(INS(length=1000),), cut_width=0, required=(QNS(length=500, quantity=4),))
@@ -47,7 +47,7 @@ def test_smaller_cuts(solver):
         ResultEntry(stock=NS(length=100), cuts=(NS(length=95),), trimming=0))
 
 
-# @pytest.mark.skip(reason="bug #64")
+# @pytest.mark.xfail(reason="bug #64")
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_no_cuts(solver):
     testjob_equal = Job(stocks=(INS(length=1000),), cut_width=10, required=(QNS(length=1000, quantity=4),))

@@ -42,7 +42,7 @@ def test_solver_single(solver):
     )
 
 
-# @pytest.mark.skip(reason="bug #52")
+# @pytest.mark.xfail(reason="bug #52")
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_solver_multi(solver):
     job = Job(stocks=(INS(length=1100), INS(length=500, quantity=2)), cut_width=10,

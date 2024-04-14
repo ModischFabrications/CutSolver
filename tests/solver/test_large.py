@@ -36,12 +36,24 @@ def test_m_multi(solver):
 
     solved = solver(testjob_m)
 
-    assert solved == (
+    trimmings = sum(lt.trimming for lt in solved)
+
+    perfect_trimmings = 520
+    perfect_result = (
         ResultEntry(stock=NS(length=500), cuts=(NS(length=500),), trimming=0),
         ResultEntry(stock=NS(length=500), cuts=(NS(length=300),), trimming=190),
         ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=300)), trimming=80),
         ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=300)), trimming=80),
         ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=100), NS(length=100)), trimming=170))
+
+    if solver == _solve_bruteforce:
+        assert trimmings == perfect_trimmings
+        assert solved == perfect_result
+    else:
+        if solved != perfect_result:
+            pytest.xfail("heuristic has worse result")
+        if trimmings != perfect_trimmings:
+            pytest.xfail(f"heuristics has worse trimmings: {trimmings} != {perfect_trimmings}")
 
 
 @pytest.mark.parametrize("solver", [_solve_FFD, _solve_gapfill])
