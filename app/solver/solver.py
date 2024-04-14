@@ -109,25 +109,24 @@ def _solve_FFD(job: Job) -> tuple[ResultEntry, ...]:
 
     mutable_sizes = copy.deepcopy(job.required)
     sizes = sorted(mutable_sizes, reverse=True)
-    stocks = sorted(mutable_sizes, reverse=True)
-    # TODO this a simple workaround for singular stocks, remove later
-    max_length = job.stocks[0].length
-
-    layout: list[list[NS]] = [[]]
-
+    stocks = sorted(job.iterate_stocks(), reverse=True)
     i_size = 0
+
+    layout: list[tuple[NS, list[NS]]] = []
 
     while i_size < len(sizes):
         current_size = sizes[i_size]
-        for stock in layout:
+        for stock, cuts in layout:
             # calculate current stock length
-            stock_length = (sum([size.length for size in stock]) + (len(stock) - 1) * job.cut_width)
+            cuts_length = (sum([size.length for size in cuts]) + (len(cuts) - 1) * job.cut_width)
             # step through existing stocks until current size fits; allow for omitted trailing cut
-            if (current_size.length + stock_length + job.cut_width) <= max_length:
-                stock.append(current_size.as_base())
+            if (current_size.length + cuts_length + job.cut_width) <= stock.length:
+                cuts.append(current_size.as_base())
                 break
-        else:  # nothing fit, opening next bin
-            layout.append([current_size.as_base()])
+        else:  # nothing fit, using next bin
+            while stocks[-1].length < current_size.length:
+                layout.append((stocks.pop(), []))
+            layout.append((stocks.pop(), [current_size.as_base()]))
 
         # decrease/get next
         if current_size.quantity <= 1:
@@ -135,8 +134,8 @@ def _solve_FFD(job: Job) -> tuple[ResultEntry, ...]:
         else:
             current_size.quantity -= 1
 
-    # TODO use right stock
-    return sort_entries([create_result_entry(job.stocks[0].as_base(), r, job.cut_width) for r in layout])
+    layout = [(stock, cuts) for stock, cuts in layout if len(cuts) > 0]
+    return sort_entries([create_result_entry(stock, cuts, job.cut_width) for stock, cuts in layout])
 
 
 # even faster than FFD, seems like equal results; self-made and less proven!

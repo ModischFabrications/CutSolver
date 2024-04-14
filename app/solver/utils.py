@@ -15,7 +15,7 @@ def calc_trimming(stock_length: int, lengths: Collection[NS], cut_width: int) ->
         trimmings = 0
 
     if trimmings < 0:
-        raise OverflowError("Trimmings can't be negative!")
+        raise OverflowError(f"Trimmings can't be negative! ({trimmings})")
 
     return trimmings
 
