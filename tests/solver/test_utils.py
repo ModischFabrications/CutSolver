@@ -1,12 +1,13 @@
 import pytest
 
-from app.solver.utils import _get_trimming, _get_trimmings
+from app.solver.data.Job import NS
+from app.solver.utils import calc_trimming
 
 
 def test_trimming():
-    trimming = _get_trimming(
-        max_length=1500,
-        lengths=((500, ""), (500, ""), (400, "")),
+    trimming = calc_trimming(
+        stock_length=1500,
+        lengths=(NS(length=500), NS(length=500), NS(length=400)),
         cut_width=10,
     )
 
@@ -14,9 +15,9 @@ def test_trimming():
 
 
 def test_trimming_zero():
-    trimming = _get_trimming(
-        max_length=1500,
-        lengths=((500, ""), (500, ""), (480, "")),
+    trimming = calc_trimming(
+        stock_length=1500,
+        lengths=(NS(length=500), NS(length=500), NS(length=480)),
         cut_width=10,
     )
 
@@ -26,14 +27,8 @@ def test_trimming_zero():
 def test_trimming_raise():
     # raises Error if more stock was used than available
     with pytest.raises(OverflowError):
-        _get_trimming(1500, ((300, ""), (400, ""), (600, ""), (200, "")), 2)
-
-
-def test_trimmings():
-    trimming = _get_trimmings(
-        max_length=1500,
-        lengths=(((500, ""), (500, ""), (400, "")), ((500, ""), (500, ""), (400, ""))),
-        cut_width=10,
-    )
-
-    assert trimming == 140
+        calc_trimming(1500, (
+            NS(length=300),
+            NS(length=400),
+            NS(length=600),
+            NS(length=200)), 2)

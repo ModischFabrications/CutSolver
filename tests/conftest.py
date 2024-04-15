@@ -6,6 +6,8 @@ from app.solver.data.Job import Job
 from app.solver.data.Result import Result
 
 
+# conftest.py is a magic pytest file for fixtures that is imported automatically
+
 def load_json(json_path: Path):
     assert json_path.exists()
 

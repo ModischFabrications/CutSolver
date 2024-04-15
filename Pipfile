@@ -12,11 +12,13 @@ flake8 = "==7.0.0"
 httpx = "==0.26.0"
 black = "==24.3.0"
 pytest-cov = "==5.0.0"
+mypy = "==1.9.0"
 
 [packages]
 fastapi = "==0.109.1"
 uvicorn = "==0.26.0"
 pydantic-settings = "==2.2.1"
+more-itertools = "10.2.0"
 
 [requires]
 python_version = "3.11"

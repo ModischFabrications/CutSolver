@@ -1,32 +1,43 @@
-from typing import Collection
+from typing import Collection, Sequence
 
-from app.solver.data.Result import ResultLengths
+from app.solver.data.Job import NS
+from app.solver.data.Result import ResultEntry
 
 
-def _get_trimming(
-        max_length: int, lengths: Collection[tuple[int, str | None]], cut_width: int
-) -> int:
-    sum_lengths = sum([length[0] for length in lengths])
+def calc_trimming(stock_length: int, lengths: Collection[NS], cut_width: int) -> int:
+    sum_lengths = sum([size.length for size in lengths])
     sum_cuts = len(lengths) * cut_width
 
-    trimmings = max_length - (sum_lengths + sum_cuts)
+    trimmings = stock_length - (sum_lengths + sum_cuts)
 
     # cut at the end can be omitted
-    if trimmings == -cut_width:
+    if trimmings < 0 and -trimmings <= cut_width:
         trimmings = 0
 
     if trimmings < 0:
-        raise OverflowError("Trimmings can't ever be negative!")
+        raise OverflowError(f"Trimmings can't be negative! ({trimmings})")
 
     return trimmings
 
 
-def _get_trimmings(max_length: int, lengths: ResultLengths, cut_width: int) -> int:
-    return sum(_get_trimming(max_length, x, cut_width) for x in lengths)
+def find_best_solution(solutions: Sequence):
+    if len(solutions) <= 0:
+        raise ValueError("no solution to search")
+
+    # TODO evaluate which one aligns with user expectations best (see #68)
+    # always sort for determinism!
+    return sorted(solutions, reverse=True)[0]
 
 
-def _sorted(lengths: Collection[Collection]) -> ResultLengths:
-    # keep most cuts at the top, getting simpler towards the end
-    # this could also sort by trimmings but that is more work
-    lengths = tuple([tuple(sorted(l, reverse=True)) for l in lengths])
-    return tuple(sorted(lengths, key=len, reverse=True))
+def create_result_entry(stock: NS, cuts: list[NS], cut_width: int) -> ResultEntry:
+    return ResultEntry(
+        stock=stock,
+        cuts=tuple(sorted(cuts, reverse=True)),
+        trimming=calc_trimming(stock.length, cuts, cut_width)
+    )
+
+
+def sort_entries(result_entries: list[ResultEntry]) -> tuple[ResultEntry, ...]:
+    if len(result_entries) <= 0:
+        raise ValueError("no entries to sort")
+    return tuple(sorted(result_entries))

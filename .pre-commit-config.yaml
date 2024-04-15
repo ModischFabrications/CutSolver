@@ -6,7 +6,7 @@ default_language_version:
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.4.0
+    rev: v4.5.0
     hooks:
       # https://blog.mphomphego.co.za/blog/2019/10/03/Why-you-need-to-stop-using-Git-Hooks.html
       - id: check-ast
@@ -49,8 +49,16 @@ repos:
       - id: requirements-txt-fixer
         name: requirements-txt-fixer
         description: Sorts entries in requirements.txt
+      - id: check-json
+        name: check-json
+        description: Attempts to load all json files to verify syntax.
 
-      #bandit, vulture?
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.9.0
+    hooks:
+      - id: mypy
+        name: mypy
+        description: Check typing
 
   - repo: local
     hooks:
@@ -63,9 +71,9 @@ repos:
         language: system
         # git version check only needed if version could have changed
         files: main.py
-        types: [python]
+        types: [ python ]
         # TODO: use post-commit
-        stages: [push]
+        stages: [ push ]
 
       - id: tests
         name: run tests
@@ -74,5 +82,5 @@ repos:
         pass_filenames: false
         entry: pipenv run python -m pytest -sv
         language: system
-        types: [python]
-        stages: [push]
+        types: [ python ]
+        stages: [ push ]

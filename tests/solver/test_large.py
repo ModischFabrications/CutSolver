@@ -1,68 +1,109 @@
-from app.solver.data.Job import TargetSize
+import pytest
+
+from app.solver.data.Job import QNS, INS, NS, Job
+from app.solver.data.Result import ResultEntry
 from app.solver.solver import (
     _solve_bruteforce,
     _solve_FFD, _solve_gapfill, )
-from app.solver.utils import _get_trimmings
-from tests.test_fixtures import *
+
+
+@pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
+def test_m(solver):
+    testjob_m = Job(stocks=(INS(length=1000),), cut_width=5, required=(
+        QNS(length=500, quantity=4), QNS(length=300, quantity=3),
+        QNS(length=100, quantity=2)))
+
+    solved = solver(testjob_m)
+
+    # I don't care about ordering here
+    assert sorted([r.cuts for r in solved]) == sorted([
+        (NS(length=500), NS(length=300), NS(length=100)),
+        (NS(length=500), NS(length=300), NS(length=100)),
+        (NS(length=500), NS(length=300)),
+        (NS(length=500),)
+    ])
 
 
 # close to the max for bruteforce!
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
-def test_m(solver):
-    testjob_m = Job(max_length=1000, cut_width=5, target_sizes=(
-        TargetSize(length=500, quantity=4), TargetSize(length=300, quantity=3),
-        TargetSize(length=100, quantity=2)))
+def test_m_multi(solver):
+    testjob_m = Job(stocks=(INS(length=900), INS(length=500, quantity=2), INS(length=100, quantity=1)),
+                    cut_width=10,
+                    required=(
+                        QNS(length=500, quantity=4), QNS(length=300, quantity=3),
+                        QNS(length=100, quantity=2))
+                    )
 
     solved = solver(testjob_m)
 
-    assert solved == (
-        ((500, ''), (300, ''), (100, '')),
-        ((500, ''), (300, ''), (100, '')),
-        ((500, ''), (300, '')),
-        ((500, ''),))
+    trimmings = sum(lt.trimming for lt in solved)
+
+    perfect_trimmings = 520
+    perfect_result = (
+        ResultEntry(stock=NS(length=500), cuts=(NS(length=500),), trimming=0),
+        ResultEntry(stock=NS(length=500), cuts=(NS(length=300),), trimming=190),
+        ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=300)), trimming=80),
+        ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=300)), trimming=80),
+        ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=100), NS(length=100)), trimming=170))
+
+    if solver == _solve_bruteforce:
+        assert trimmings == perfect_trimmings
+        assert solved == perfect_result
+    else:
+        if solved != perfect_result:
+            pytest.xfail("heuristic has worse result")
+        if trimmings != perfect_trimmings:
+            pytest.xfail(f"heuristics has worse trimmings: {trimmings} != {perfect_trimmings}")
 
 
 @pytest.mark.parametrize("solver", [_solve_FFD, _solve_gapfill])
 def test_l(solver):
-    testjob_l = Job(max_length=2000, cut_width=5, target_sizes=(
-        TargetSize(length=750, quantity=5), TargetSize(length=500, quantity=5),
-        TargetSize(length=300, quantity=10), TargetSize(length=100, quantity=15)))
+    testjob_l = Job(stocks=(INS(length=2000),), cut_width=5, required=(
+        QNS(length=750, quantity=5), QNS(length=500, quantity=5),
+        QNS(length=300, quantity=10), QNS(length=100, quantity=15)))
 
     solved = solver(testjob_l)
 
-    assert solved == (
-        ((300, ''), (100, ''), (100, ''), (100, ''), (100, ''), (100, ''), (100, ''), (100, ''), (100, ''), (100, '')),
-        ((300, ''), (300, ''), (300, ''), (300, ''), (300, ''), (300, ''), (100, '')),
-        ((750, ''), (500, ''), (500, ''), (100, ''), (100, '')),
-        ((500, ''), (500, ''), (500, ''), (300, ''), (100, '')),
-        ((750, ''), (750, ''), (300, ''), (100, '')),
-        ((750, ''), (750, ''), (300, ''), (100, '')))
+    # I don't care about ordering here
+    assert sorted([r.cuts for r in solved]) == sorted([
+        (NS(length=300), NS(length=100), NS(length=100), NS(length=100),
+         NS(length=100), NS(length=100), NS(length=100), NS(length=100),
+         NS(length=100), NS(length=100)),
+        (NS(length=300), NS(length=300), NS(length=300), NS(length=300),
+         NS(length=300), NS(length=300), NS(length=100)),
+        (NS(length=750), NS(length=500), NS(length=500), NS(length=100),
+         NS(length=100)),
+        (NS(length=500), NS(length=500), NS(length=500), NS(length=300),
+         NS(length=100)),
+        (NS(length=750), NS(length=750), NS(length=300), NS(length=100)),
+        (NS(length=750), NS(length=750), NS(length=300), NS(length=100))
+    ])
 
 
 # tests after here are only benchmarking and shouldn't ever be relevant
 
 @pytest.mark.parametrize("solver", [_solve_FFD, _solve_gapfill])
 def test_xl(solver):
-    testjob = Job(max_length=2000, cut_width=10, target_sizes=(
-        TargetSize(length=2000, quantity=5), TargetSize(length=1500, quantity=10),
-        TargetSize(length=750, quantity=25), TargetSize(length=500, quantity=50),
-        TargetSize(length=300, quantity=100), TargetSize(length=50, quantity=250),
+    testjob = Job(stocks=(INS(length=2000),), cut_width=10, required=(
+        QNS(length=2000, quantity=5), QNS(length=1500, quantity=10),
+        QNS(length=750, quantity=25), QNS(length=500, quantity=50),
+        QNS(length=300, quantity=100), QNS(length=50, quantity=250),
     ))
 
     solved = solver(testjob)
 
-    assert _get_trimmings(testjob.max_length, solved, testjob.cut_width) == 2520
+    assert sum(lt.trimming for lt in solved) == 2520
 
 
 @pytest.mark.parametrize("solver", [_solve_FFD, _solve_gapfill])
 def test_xxl(solver):
-    testjob = Job(max_length=2000, cut_width=10, target_sizes=(
-        TargetSize(length=1750, quantity=5), TargetSize(length=1500, quantity=10),
-        TargetSize(length=750, quantity=25), TargetSize(length=500, quantity=50),
-        TargetSize(length=300, quantity=100), TargetSize(length=200, quantity=150),
-        TargetSize(length=150, quantity=250), TargetSize(length=50, quantity=500),
+    testjob = Job(stocks=(INS(length=2000),), cut_width=10, required=(
+        QNS(length=1750, quantity=5), QNS(length=1500, quantity=10),
+        QNS(length=750, quantity=25), QNS(length=500, quantity=50),
+        QNS(length=300, quantity=100), QNS(length=200, quantity=150),
+        QNS(length=150, quantity=250), QNS(length=50, quantity=500),
     ))
 
     solved = solver(testjob)
 
-    assert _get_trimmings(testjob.max_length, solved, testjob.cut_width) == 3250
+    assert sum(lt.trimming for lt in solved) == 3250

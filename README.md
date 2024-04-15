@@ -18,8 +18,7 @@ This Solver is using integers exclusively, as there is no need for arbitrary pre
 Feel free to shift your numbers a few decimals if you need fractions.
 It has no concept of units, so you can use whatever you want.
 
-*Nerd talk*: This is the 2D "Cutting Stock Problem", which is NP-hard. It can be reduced to the Bin-Packing-Problem (
-BPP).
+*Nerd talk*: This is the 2D "Cutting Stock Problem", which is NP-hard.
 No algorithm exists to calculate a perfect solution in polynomial time, therefore brute force (perfect
 solution) is used for small jobs (usually <12 entries) and FFD (fast solution) für larger ones.
 Don't be surprised if you get different results, many combinations have equal trimmings and are therefore seen as
@@ -73,6 +72,8 @@ You might need to replace `#!/bin/sh` with `#!/usr/bin/env sh` in the resulting 
 All obvious errors should be checked and or fixed by pre-commit, execute `pre-commit run --all-files --hook-stage push`
 to run manually.
 
+use `git push --no-verify` if you really need to skip these tests, but you better have a good explanation.
+
 Change version number in main.py:version for newer releases, git tags will be created automatically.
 
 ### Testing
@@ -80,9 +81,13 @@ Change version number in main.py:version for newer releases, git tags will be cr
 Remember to test your changes using `pytest`. This will happen automatically both in pre-commit and in CI/CD, but manual
 tests will reduce iteration times.
 
+Make sure your changes keep app.* imports or pytest will crash and burn due to missing import settings.
+
 Code coverage and runtimes can be checked
 using `pipenv run python -m pytest --durations=5 --cov=app/ --cov-report term-missing`.
 Make sure that all critical parts of the code are covered, at v1.0.1 it is at 94%.
+
+Proper type usage can be checked using `pipenv run python -m mypy app`.
 
 ### Development Docker Images
 
@@ -127,6 +132,7 @@ This project uses:
 
 * [FastAPI](https://github.com/tiangolo/fastapi): easy API (this includes much more!)
 * [Uvicorn](https://github.com/encode/uvicorn): async web server
+* [more-itertools](https://github.com/more-itertools/more-itertools): higher performance permutations
 
 Also used for development is:
 
@@ -134,7 +140,9 @@ Also used for development is:
 * [httpie](https://github.com/jakubroztocil/httpie): simpler `curl` for docker healthchecks
 * [pytest](https://pytest.org): A lot nicer unit tests
 * [flake8](https://flake8.pycqa.org/): Linting
+* [mypy](https://mypy-lang.org/): Static type checking
 * [requests](https://requests.readthedocs.io/): simple HTTP requests
+* [httpx](https://www.python-httpx.org/): requirement of TestClient
 * [black](https://github.com/psf/black): uncompromising code formatter; currently unused
 
 ## External links

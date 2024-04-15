@@ -1,191 +1,194 @@
 #!python3
 import copy
-from itertools import permutations
 from time import perf_counter
 
+from more_itertools import distinct_permutations
+
 from app.settings import solverSettings
-from app.solver.data.Job import Job, TargetSize
-from app.solver.data.Result import ResultLengths, Result, SolverType
-from app.solver.utils import _get_trimming, _sorted
+from app.solver.data.Job import Job, QNS, NS
+from app.solver.data.Result import Result, SolverType, ResultEntry
+from app.solver.utils import create_result_entry, sort_entries, find_best_solution
 
 
 def solve(job: Job) -> Result:
     time: float = perf_counter()
 
-    lengths: ResultLengths
+    layout: tuple[ResultEntry, ...]
     solver_type: SolverType
 
     if job.n_combinations() <= solverSettings.bruteforce_max_combinations:
-        lengths = _solve_bruteforce(job)
+        layout = _solve_bruteforce(job)
         solver_type = SolverType.bruteforce
-    elif job.n_targets() <= solverSettings.solver_n_max:
-        lengths = _solve_FFD(job)
+    elif job.n_entries() <= solverSettings.solver_n_max:
+        layout = _solve_FFD(job)
         solver_type = SolverType.FFD
     else:
         raise OverflowError("Input too large")
 
     time_us = int((perf_counter() - time) * 1000 * 1000)
 
-    return Result(job=job, solver_type=solver_type, time_us=time_us, lengths=lengths)
+    return Result(job=job, solver_type=solver_type, time_us=time_us, layout=layout)
 
 
 # slowest, but perfect solver; originally O(n!), now much faster (see Job.n_combinations())
-def _solve_bruteforce(job: Job) -> ResultLengths:
-    mutable_job = job.model_copy(deep=True)
-    mutable_job.model_config["frozen"] = False
+def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
+    minimal_trimmings = float('inf')
+    best_results = []
 
-    # allow "overflowing" cut at the end
-    mutable_job.max_length += mutable_job.cut_width
+    required_orderings = distinct_permutations(job.iterate_required())
+    for stock_ordering in distinct_permutations(job.iterate_stocks()):
+        for required_ordering in required_orderings:
+            result = _group_into_lengths(stock_ordering, required_ordering, job.cut_width)
+            if result is None:
+                # Short-circuit if bad solution
+                continue
+            trimmings = sum(lt.trimming for lt in result)
+            if trimmings < minimal_trimmings:
+                minimal_trimmings = trimmings
+                best_results = [result]
+            elif trimmings == minimal_trimmings:
+                best_results.append(result)
 
-    # find every possible ordering (`factorial(sum(sizes))` elements) and reduce to unique
-    all_orderings = set(permutations(mutable_job.iterate_sizes()))
-
-    # start at "all of it"
-    minimal_trimmings = mutable_job.n_targets() * mutable_job.max_length
-    best_results: list[list[list[tuple[int, str | None]]]] = []
-
-    # could distribute to multiprocessing, but web worker is parallel anyway
-    for combination in all_orderings:
-        lengths, trimmings = _group_into_lengths(
-            combination, mutable_job.max_length, mutable_job.cut_width
-        )
-        if trimmings < minimal_trimmings:
-            best_stock = lengths
-            minimal_trimmings = trimmings
-            best_results.clear()
-            best_results.append(best_stock)
-        elif trimmings == minimal_trimmings:
-            best_results.append(lengths)
-
-    # set creates random order of perfect results due to missing sorting, so sort for determinism
-    ordered = (sorted(
-        set([tuple(sorted(
-            [tuple(sorted(y, reverse=True)) for y in x], reverse=True)
-        ) for x in best_results]), reverse=True
-    ))
-    # TODO evaluate which result aligns with user expectations best
-    return _sorted(ordered[0])
+    assert best_results, "No valid solution found"
+    return sort_entries(find_best_solution(best_results))
 
 
-def _group_into_lengths(
-        combination: tuple[tuple[int, str | None], ...], max_length: int, cut_width: int
-):
+def _group_into_lengths(stocks: tuple[NS, ...], sizes: tuple[NS, ...], cut_width: int) \
+        -> tuple[ResultEntry, ...] | None:
     """
     Collects sizes until length is reached, then starts another stock
-    :param combination:
-    :param max_length:
-    :param cut_width:
-    :return:
+    Returns None for orderings that exceed ideal conditions
     """
-    stocks: list[list[tuple[int, str | None]]] = []
-    trimmings = 0
+    available = list(reversed(stocks))
+    required = list(reversed(sizes))
 
-    current_size = 0
-    current_stock: list[tuple[int, str | None]] = []
-    for size, name in combination:
-        if (current_size + size + cut_width) > max_length:
-            # start next stock
-            stocks.append(current_stock)
-            trimmings += _get_trimming(max_length, current_stock, cut_width)
-            current_size = 0
-            current_stock = []
+    result: list[ResultEntry] = []
+    current_cuts: list[NS] = []
+    cut_sum = 0  # could be calculated, but I think this is faster
 
-        current_size += size + cut_width
-        current_stock.append((size, name))
-    # catch leftovers
-    if current_stock:
-        stocks.append(current_stock)
-        trimmings += _get_trimming(max_length, current_stock, cut_width)
-    return stocks, trimmings
+    current_stock = available.pop()
+    size = required.pop()
+    for _ in range(999):
+        while (cut_sum + size.length) <= current_stock.length:
+            cut_sum += size.length + cut_width
+            current_cuts.append(size)
+
+            if len(required) <= 0:
+                # we are done here
+                result.append(create_result_entry(current_stock, current_cuts, cut_width))
+                return tuple(result)
+
+            size = required.pop()
+            continue
+
+        # short stocks will simply be skipped
+        if len(current_cuts) > 0:
+            result.append(create_result_entry(current_stock, current_cuts, cut_width))
+            cut_sum = 0
+            current_cuts.clear()
+
+        if len(available) <= 0:
+            # our solution is shit, we can cancel
+            return None
+        current_stock = available.pop()
+
+    raise OverflowError("_group_into_lengths had an infinite loop, cancelling...")
 
 
 # textbook solution, guaranteed to get at most double trimmings of perfect solution; possibly O(n^2)?
-def _solve_FFD(job: Job) -> ResultLengths:
-    # iterate over list of stocks
-    # put into first stock that it fits into
+def _solve_FFD(job: Job) -> tuple[ResultEntry, ...]:
+    """
+    iterate over list of stocks
+    put into first stock that it fits into
 
-    # 1. Sort by magnitude (largest first)
-    # 2. stack until limit is reached
-    # 3. try smaller as long as possible
-    # 4. create new bar
+    1. Sort by magnitude (largest first)
+    2. stack until limit is reached
+    3. try smaller as long as possible
+    4. create new bar
+    """
 
-    mutable_sizes = copy.deepcopy(job.target_sizes)
-    sizes = sorted(mutable_sizes, reverse=True)
+    # we are writing around in target sizes, prevent leaking changes to job
+    stocks = sorted(job.iterate_stocks(), reverse=True)
+    sizes = sorted(copy.deepcopy(job.required), reverse=True)
+    i_size = 0
 
-    stocks: list[list[tuple[int, str | None]]] = [[]]
+    layout: list[tuple[NS, list[NS]]] = []
 
-    i_target = 0
-
-    while i_target < len(sizes):
-        current_size = sizes[i_target]
-        for stock in stocks:
+    while i_size < len(sizes):
+        current_size = sizes[i_size]
+        for stock, cuts in layout:
             # calculate current stock length
-            stock_length = (sum([size[0] for size in stock]) + (len(stock) - 1) * job.cut_width)
+            cuts_length = (sum([size.length for size in cuts]) + (len(cuts) - 1) * job.cut_width)
             # step through existing stocks until current size fits; allow for omitted trailing cut
-            if (job.max_length - stock_length) >= (current_size.length + job.cut_width):
-                # add size
-                stock.append((current_size.length, current_size.name))
+            if (current_size.length + cuts_length + job.cut_width) <= stock.length:
+                cuts.append(current_size.as_base())
                 break
-        else:  # nothing fit, opening next bin
-            stocks.append([(current_size.length, current_size.name)])
+        else:  # nothing fit, using next bin
+            while stocks[-1].length < current_size.length:
+                layout.append((stocks.pop(), []))
+            layout.append((stocks.pop(), [current_size.as_base()]))
 
         # decrease/get next
         if current_size.quantity <= 1:
-            i_target += 1
+            i_size += 1
         else:
             current_size.quantity -= 1
 
-    return _sorted(stocks)
+    return sort_entries([create_result_entry(stock, cuts, job.cut_width) for stock, cuts in layout if len(cuts) > 0])
 
 
-# even faster than FFD, seems like equal results; selfmade and less proven!
-def _solve_gapfill(job: Job) -> ResultLengths:
-    # 1. Sort by magnitude (largest first)
-    # 2. stack until limit is reached
-    # 3. try smaller as long as possible
-    # 4. create new bar
+# even faster than FFD, seems like equal results; self-made and less proven!
+# might just be a more pythonic version of FFD
+def _solve_gapfill(job: Job) -> tuple[ResultEntry, ...]:
+    """
+    1. Sort by magnitude (largest first)
+    2. stack until limit is reached
+    3. try smaller as long as possible
+    4. create new bar
+    """
 
     # we are writing around in target sizes, prevent leaking changes to job
-    mutable_sizes = copy.deepcopy(job.target_sizes)
-    targets = sorted(mutable_sizes, reverse=True)
+    stocks = sorted(job.iterate_stocks(), reverse=True)
+    sizes = sorted(copy.deepcopy(job.required), reverse=True)
+    i_size = 0
 
-    stocks = []
+    layout: list[tuple[NS, list[NS]]] = []
 
     current_size = 0
-    current_stock: list[tuple[int, str | None]] = []
+    current_cuts: list[NS] = []
+    current_stock: NS = stocks.pop()
 
-    i_target = 0
-    while len(targets) > 0:
+    while len(sizes) > 0:
         # nothing fit, next stock
-        if i_target >= len(targets):
+        if i_size >= len(sizes):
             # add local result
-            stocks.append(current_stock)
+            layout.append((current_stock, current_cuts))
 
             # reset
-            current_stock = []
+            current_stock = stocks.pop()
+            current_cuts = []
             current_size = 0
-            i_target = 0
+            i_size = 0
 
-        current_target: TargetSize = targets[i_target]
+        current_target: QNS = sizes[i_size]
         # target fits inside current stock, transfer to results
-        if (current_size + current_target.length) <= job.max_length:
-            current_stock.append((current_target.length, current_target.name))
+        if (current_size + current_target.length) <= current_stock.length:
+            current_cuts.append(current_target.as_base())
             current_size += current_target.length
-            if current_size < job.max_length:
+            if current_size < current_stock.length:
                 current_size += job.cut_width
 
             # remove empty entries
             if current_target.quantity <= 1:
-                targets.remove(current_target)
+                sizes.remove(current_target)
             else:
                 current_target.quantity -= 1
         # try smaller
         else:
-            i_target += 1
+            i_size += 1
 
     # apply last "forgotten" stock
-    if current_stock:
-        stocks.append(current_stock)
+    if current_cuts:
+        layout.append((current_stock, current_cuts))
 
-    # trimming could be calculated from len(stocks) * length - sum(stocks)
-    return _sorted(stocks)
+    return sort_entries([create_result_entry(stock, cuts, job.cut_width) for stock, cuts in layout if len(cuts) > 0])
