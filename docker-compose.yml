@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:80"
     environment:
-      - BRUTEFORCE_MAX_COMBINATIONS=4000
+      - BRUTEFORCE_MAX_COMBINATIONS=8000
       - SOLVER_N_MAX=1500
 
   cutsolver_frontend:
