@@ -15,6 +15,8 @@ def test_m(solver):
 
     solved = solver(testjob_m)
 
+    assert sum(lt.trimming for lt in solved) == 855
+
     # I don't care about ordering here
     assert sorted([r.cuts for r in solved]) == sorted([
         (NS(length=500), NS(length=300), NS(length=100)),
@@ -27,7 +29,7 @@ def test_m(solver):
 # close to the max for bruteforce!
 @pytest.mark.parametrize("solver", [_solve_bruteforce, _solve_FFD, _solve_gapfill])
 def test_m_multi(solver):
-    testjob_m = Job(stocks=(INS(length=900), INS(length=500, quantity=2), INS(length=100, quantity=1)),
+    testjob_m = Job(stocks=(INS(length=900, quantity=3), INS(length=500, quantity=2), INS(length=100, quantity=1)),
                     cut_width=10,
                     required=(
                         QNS(length=500, quantity=4), QNS(length=300, quantity=3),
@@ -41,10 +43,11 @@ def test_m_multi(solver):
     perfect_trimmings = 520
     perfect_result = (
         ResultEntry(stock=NS(length=500), cuts=(NS(length=500),), trimming=0),
-        ResultEntry(stock=NS(length=500), cuts=(NS(length=300),), trimming=190),
+        ResultEntry(stock=NS(length=500), cuts=(NS(length=300), NS(length=100)), trimming=80),
         ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=300)), trimming=80),
         ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=300)), trimming=80),
-        ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=100), NS(length=100)), trimming=170))
+        ResultEntry(stock=NS(length=900), cuts=(NS(length=500), NS(length=100)), trimming=280)
+    )
 
     if solver == _solve_bruteforce:
         assert trimmings == perfect_trimmings

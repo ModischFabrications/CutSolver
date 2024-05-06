@@ -33,9 +33,9 @@ def solve(job: Job) -> Result:
 # slowest, but perfect solver; originally O(n!), now much faster (see Job.n_combinations())
 def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
     minimal_trimmings = float('inf')
-    best_results = []
+    best_results: set[tuple[ResultEntry, ...]] = set()
 
-    required_orderings = distinct_permutations(job.iterate_required())
+    required_orderings = list(distinct_permutations(job.iterate_required()))
     for stock_ordering in distinct_permutations(job.iterate_stocks()):
         for required_ordering in required_orderings:
             result = _group_into_lengths(stock_ordering, required_ordering, job.cut_width)
@@ -45,12 +45,13 @@ def _solve_bruteforce(job: Job) -> tuple[ResultEntry, ...]:
             trimmings = sum(lt.trimming for lt in result)
             if trimmings < minimal_trimmings:
                 minimal_trimmings = trimmings
-                best_results = [result]
+                best_results = set()
+                best_results.add(sort_entries(result))
             elif trimmings == minimal_trimmings:
-                best_results.append(result)
+                best_results.add(sort_entries(result))
 
     assert best_results, "No valid solution found"
-    return sort_entries(find_best_solution(best_results))
+    return find_best_solution(best_results)
 
 
 def _group_into_lengths(stocks: tuple[NS, ...], sizes: tuple[NS, ...], cut_width: int) \

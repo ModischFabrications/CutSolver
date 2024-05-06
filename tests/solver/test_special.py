@@ -123,3 +123,19 @@ def test_close_stocks(solver):
         ResultEntry(stock=NS(length=100), cuts=(NS(length=100),), trimming=0),
         ResultEntry(stock=NS(length=100), cuts=(NS(length=100),), trimming=0),
         ResultEntry(stock=NS(length=100), cuts=(NS(length=100),), trimming=0))
+
+
+# @pytest.mark.xfail(reason="bug #68")
+def test_solution_priorities():
+    testjob_equal = Job(stocks=(INS(length=2400, quantity=1), (INS(length=6000, quantity=1))), cut_width=20,
+                        required=(QNS(length=1820, quantity=1), QNS(length=666, quantity=3)))
+    # other solvers have singular result, so no priorities
+    solved = _solve_bruteforce(testjob_equal)
+
+    # assert sum(lt.trimming for lt in solved) == 2102
+
+    assert solved == (
+        ResultEntry(stock=NS(length=6000),
+                    cuts=(NS(length=1820), NS(length=666), NS(length=666), NS(length=666)),
+                    trimming=2102),
+    )

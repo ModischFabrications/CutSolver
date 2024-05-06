@@ -21,7 +21,7 @@
     ]
   },
   "solver_type": "bruteforce",
-  "time_us": 1868,
+  "time_us": 1683,
   "layout": [
     {
       "stock": {
@@ -34,8 +34,8 @@
           "name": "Part1"
         },
         {
-          "length": 200,
-          "name": "Part2"
+          "length": 500,
+          "name": "Part1"
         },
         {
           "length": 200,
@@ -46,7 +46,7 @@
           "name": "Part2"
         }
       ],
-      "trimming": 392
+      "trimming": 92
     },
     {
       "stock": {
@@ -55,15 +55,15 @@
       },
       "cuts": [
         {
-          "length": 500,
-          "name": "Part1"
+          "length": 200,
+          "name": "Part2"
         },
         {
           "length": 200,
           "name": "Part2"
         }
       ],
-      "trimming": 796
+      "trimming": 1096
     }
   ]
 }
