@@ -33,7 +33,7 @@ jobs:
       - name: Set up Python ⚙️
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11" # keep in sync with pipfile
+          python-version: "3.13" # keep in sync with pipfile
 
       - name: Install dependencies ⚙️
         run: |
@@ -112,7 +112,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64 # v7 is no longer supported by dependencies
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
