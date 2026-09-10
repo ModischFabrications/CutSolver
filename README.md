@@ -20,9 +20,8 @@ It has no concept of units, so you can use whatever you want.
 
 *Nerd talk*: This is the 2D "Cutting Stock Problem", which is NP-hard.
 No algorithm exists to calculate a perfect solution in polynomial time, therefore brute force (perfect
-solution) is used for small jobs (usually <12 entries) and FFD (fast solution) für larger ones.
-Don't be surprised if you get different results, many combinations have equal trimmings and are therefore seen as
-equally good.
+solution) is used for small jobs (usually <12 entries) and FFD (fast solution) for larger ones.
+When multiple solutions yield equal total trimmings, the solver deterministically breaks ties by comparing descending offcut sizes. This prioritizes woodworking scrap utility (favoring fewer, larger reusable offcuts over fragmented scraps) and guarantees deterministic execution under Python 3.13 hash randomization.
 
 ## Usage/Hosting
 
@@ -42,7 +41,7 @@ with `docker run [--rm -it] -p80:80 modischfabrications/cutsolver:latest`.
 Note: Replace `latest` with a version number if you depend on this interface, I can guarantee you that the interface
 will change randomly. It's more or less stable since the 1.0 release, but be ready for the unexpected.
 
-Both `linux/amd64` and `linux/arm/v7` are currently supported, more will be build whenever I get around to it, message
+Both `linux/amd64` and `linux/arm64` are currently supported, more will be build whenever I get around to it, message
 me if you need another architecture.
 
 ## Performance
@@ -64,65 +63,46 @@ Feel free to contact me or make a pull-request if you want to participate.
 
 Sponsoring and/or paid development is also very welcome, feel free to reach out.
 
-### Git
+### Git & Releases
 
-Install pre-commit with `pre-commit install && pre-commit install -t pre-push`.
-You might need to replace `#!/bin/sh` with `#!/usr/bin/env sh` in the resulting *.legacy file on Windows.
-
-All obvious errors should be checked and or fixed by pre-commit, execute `pre-commit run --all-files --hook-stage push`
-to run manually.
-
-use `git push --no-verify` if you really need to skip these tests, but you better have a good explanation.
-
-Change version number in main.py:version for newer releases, git tags will be created automatically.
+Unit tests should be run locally before releasing to save on CI executions!
+1. Bump the authoritative version string in `app/settings.py` (`version = "vX.Y.Z"`).
+2. Commit your changes and tag manually:
+   ```bash
+   git tag vX.Y.Z
+   git push origin main
+   git push origin vX.Y.Z
+   ```
+GitHub Actions CI will automatically execute the full test suite and build/publish multi-arch Docker images (`linux/amd64,linux/arm64`) to Docker Hub (`modischfabrications/cutsolver:<VERSION>`) and GHCR.
+Note: 32-bit ARM (`linux/arm/v7`) is retired.
 
 ### Testing
 
-Remember to test your changes using `pytest`. This will happen automatically both in pre-commit and in CI/CD, but manual
-tests will reduce iteration times.
-
-Make sure your changes keep app.* imports or pytest will crash and burn due to missing import settings.
-
-Code coverage and runtimes can be checked
-using `pipenv run python -m pytest --durations=5 --cov=app/ --cov-report term-missing`.
-Make sure that all critical parts of the code are covered, at v1.0.1 it is at 94%.
-
-Proper type usage can be checked using `pipenv run python -m mypy app`.
-
-### Development Docker Images
-
-1. Build and start this image using `docker-compose up`
-2. wait a while for dependencies to build... (1000s)
-3. Hope that everything works
-
-` docker run --rm -it -p 8000:80 $(docker build -q .)` is also useful to start a temporary container for testing.
-
-### Push Production Docker Images
-
-Docker Hub Images should be updated automatically, but feel free to build yourself should everything else fail.
-Adding "[skip ci]" to the commit message will prevent any ci builds should the need arise.
-Thankfully, local builds are easy with the modern `buildx` workflow.
-
-Installation of a multibuilder (once):
-
-```
-docker buildx create --name multibuilder --use
-docker buildx inspect multibuilder --bootstrap
+Run the test suite locally using `pipenv`:
+```bash
+pipenv run pytest
 ```
 
-Build and push the new multi-arch image with the following steps (add version, e.g. v0.3.7):
+- **Import Paths**: Make sure your code and test changes preserve `app.*` package imports.
+- **Coverage**: Run with coverage reporting (baseline ~94% on core solver logic):
+  ```bash
+  pipenv run python -m pytest --durations=5 --cov=app/ --cov-report term-missing
+  ```
+- **Type Checking**: Run static type verification:
+  ```bash
+  pipenv run python -m mypy app
+  ```
 
+### Docker
+
+Prebuilt multi-arch images (`linux/amd64,linux/arm64`) are published automatically on tag pushes.
+
+To build and run a container locally for development:
+```bash
+docker run --rm -it -p 8000:80 $(docker build -q .)
 ```
-docker login -u modischfabrications
-docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64 \
-    -t modischfabrications/cutsolver:<VERSION> \
-    -t modischfabrications/cutsolver:latest --push .
-```
 
-Wait a while for every dependency to build (~1000s) and all layers to be pushed (~400s). Feel free to drink some water
-and be bored, that's healthy from time to time.
-
-Check [Docker Hub](https://hub.docker.com/r/modischfabrications/cutsolver) to see results.
+Docker compose is similar, see included files on how to integrate them into your stack. 
 
 ## Dependencies
 
