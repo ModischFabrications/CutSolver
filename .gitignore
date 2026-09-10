@@ -4,3 +4,5 @@
 
 # Pipfile should be enough but some badges and deployments requires it
 # Pipfile.lock
+
+*.code-workspace

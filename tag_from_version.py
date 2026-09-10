@@ -37,6 +37,10 @@ def process():
 
     version = settings.version
 
+    if any(tag.name == version for tag in repo.tags):
+        print(f"Tag {version} already exists, job done")
+        return 0
+
     version_tags_only = tuple(filter(lambda tag: tag.name[0] == "v", repo.tags))
     newest_tag = version_tags_only[-1]
     newest_git_version = newest_tag.name

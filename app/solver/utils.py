@@ -24,8 +24,15 @@ def find_best_solution(solutions: set[tuple[ResultEntry, ...]]):
     if len(solutions) <= 0:
         raise ValueError("no solution to search")
 
-    # TODO evaluate which one aligns with user expectations best (see #68)
-    return sorted(solutions, key=lambda x: max(x), reverse=True)[0]
+    # Prioritize solutions with larger reusable offcuts across all stocks, with deterministic tie-breaking (see #68)
+    return sorted(
+        solutions,
+        key=lambda sol: (
+            tuple(sorted(sol, reverse=True)),
+            tuple(tuple(c.length for c in entry.cuts) for entry in sorted(sol, reverse=True))
+        ),
+        reverse=True
+    )[0]
 
 
 def create_result_entry(stock: NS, cuts: list[NS], cut_width: int) -> ResultEntry:
