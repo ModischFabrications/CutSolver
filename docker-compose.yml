@@ -1,7 +1,4 @@
-version: '3'
-
 services:
-
   cutsolver:
     build: .
     image: modischfabrications/cutsolver:latest
@@ -9,8 +6,8 @@ services:
     ports:
       - "8000:80"
     environment:
-      - BRUTEFORCE_MAX_COMBINATIONS=8000
-      - SOLVER_N_MAX=1500
+      BRUTEFORCE_MAX_COMBINATIONS: 8000
+      SOLVER_N_MAX: 1500
 
   cutsolver_frontend:
     image: modischfabrications/cutsolver_frontend:latest
@@ -18,7 +15,8 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - cutsolver
+      cutsolver:
+        condition: service_healthy
     environment:
-      # point this to your backend host URL
-      - VUE_APP_BACKEND_SOLVER_URL=http://localhost:8000/solve
+      # point this to your backend host URL (must end with '/')
+      VUE_APP_BACKEND_SOLVER_URL: http://localhost:8000/
