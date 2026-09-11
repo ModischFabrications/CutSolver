@@ -19,6 +19,7 @@ class HealthCheckFilter(logging.Filter):
         return record.getMessage().find("/version") == -1
 
 
+logging.basicConfig(level=logging.INFO, format="INFO:     %(message)s")
 logging.getLogger("uvicorn.access").addFilter(HealthCheckFilter())
 logger = logging.getLogger("cutsolver")
 

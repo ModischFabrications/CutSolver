@@ -32,6 +32,27 @@ Send POST-Requests to `[localhost]/solve` to get your results, see `/docs` for f
 
 Also see [example job and result](/tests/res) from tests.
 
+### Quick API Example (CLI)
+
+Calculate optimal cuts using `curl`:
+
+```bash
+curl -s -X POST https://cutsolver.modisch.me/solve \
+  -H "Content-Type: application/json" \
+  -d '{
+    "stocks": [{"length": 1000}],
+    "required": [{"length": 500, "quantity": 1}],
+    "cut_width": 5
+  }'
+```
+
+Or via PowerShell:
+
+```powershell
+$body = '{"stocks": [{"length": 1000}], "required": [{"length": 500, "quantity": 1}], "cut_width": 5}'
+Invoke-RestMethod -Uri "https://cutsolver.modisch.me/solve" -Method Post -Body $body -ContentType "application/json"
+```
+
 ### Docker
 
 You don't need to check out this repository and build your own image, I am pushing prebuild ones to Docker Hub.
