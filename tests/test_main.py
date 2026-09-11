@@ -48,3 +48,39 @@ def test_solve_full(testjob_s, testresult_s):
     assert reply.status_code == 200
     json_result = reply.json()
     assert Result.model_validate(json_result) == testresult_s
+
+
+def test_healthcheck_filter():
+    from app.main import HealthCheckFilter
+    import logging
+
+    log_filter = HealthCheckFilter()
+    health_record = logging.LogRecord(
+        name="uvicorn.access", level=logging.INFO, pathname="", lineno=0,
+        msg='127.0.0.1:12345 - "GET /version HTTP/1.1" 200 OK', args=(), exc_info=None
+    )
+    assert log_filter.filter(health_record) is False
+
+    solve_record = logging.LogRecord(
+        name="uvicorn.access", level=logging.INFO, pathname="", lineno=0,
+        msg='127.0.0.1:12345 - "POST /solve HTTP/1.1" 200 OK', args=(), exc_info=None
+    )
+    assert log_filter.filter(solve_record) is True
+
+
+def test_solve_telemetry(testjob_s, caplog):
+    import logging
+    with caplog.at_level(logging.INFO):
+        # Standalone API call (no referer)
+        client.post("/solve", json=testjob_s.model_dump())
+        assert "[STANDALONE_API]" in caplog.text
+
+        caplog.clear()
+        # Web UI call (with referer)
+        client.post(
+            "/solve",
+            json=testjob_s.model_dump(),
+            headers={"referer": "https://cutsolver.modisch.me/"}
+        )
+        assert "[WEB_UI]" in caplog.text
+

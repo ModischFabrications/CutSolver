@@ -1,3 +1,4 @@
+import logging
 import platform
 from contextlib import asynccontextmanager
 
@@ -10,6 +11,16 @@ from app.settings import version, solverSettings
 from app.solver.data.Job import Job
 from app.solver.data.Result import Result
 from app.solver.solver import solve
+
+
+# Filter out internal container healthcheck requests from uvicorn access logs
+class HealthCheckFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        return record.getMessage().find("/version") == -1
+
+
+logging.getLogger("uvicorn.access").addFilter(HealthCheckFilter())
+logger = logging.getLogger("cutsolver")
 
 
 @asynccontextmanager
@@ -55,7 +66,14 @@ app.add_middleware(
 
 # response model ensures correct documentation, exclude skips optional
 @app.post("/solve", response_model=Result, response_model_exclude_defaults=True)
-def post_solve(job: Job):
+def post_solve(job: Job, request: Request):
+    referer = request.headers.get("referer")
+    ua = request.headers.get("user-agent", "-")
+    if not referer:
+        logger.info(f"[STANDALONE_API] POST /solve | User-Agent: {ua}")
+    else:
+        logger.info(f"[WEB_UI] POST /solve | Referer: {referer}")
+
     # pydantic guarantees type safety, no need to check inputs
     solved: Result = solve(job)
 

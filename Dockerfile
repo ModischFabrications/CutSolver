@@ -1,5 +1,5 @@
 # this size should be irrelevant
-FROM python:3.13 as build
+FROM python:3.13 AS build
 # exporting here is a lot safer than depending on the dev environment. Pipenv is kept out of the container by design.
 COPY ./Pipfile /Pipfile
 RUN pip install pipenv

@@ -2,7 +2,7 @@ from pydantic import PositiveInt
 from pydantic_settings import BaseSettings
 
 # constant; used for git tags
-version = "v1.1.3"
+version = "v1.1.4"
 
 
 class SolverSettings(BaseSettings):
